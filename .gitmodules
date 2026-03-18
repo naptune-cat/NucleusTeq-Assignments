@@ -1,3 +1,6 @@
 [submodule "git-assignment"]
 	path = git-assignment
 	url = https://github.com/naptune-cat/git-assignment.git
+[submodule "ZoyaKhanam_frontend"]
+	path = ZoyaKhanam_frontend
+	url = https://github.com/naptune-cat/ZoyaKhanam_frontend
