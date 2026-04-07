@@ -1,4 +1,4 @@
-package session1.datatypes;
+package Java.session1.datatypes;
 
 public class PrimitiveAndReferenceDataType {
     public static void main(String[] args) {
