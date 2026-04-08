@@ -14,6 +14,7 @@ public class FindElementAverage {
             total += arr[i];
         }
         average = total / 10;
-        System.out.println("Average of all elements is "+ average);
+        System.out.println("Average of all elements is " + average);
+        s.close();
     }
 }
