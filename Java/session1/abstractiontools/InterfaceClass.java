@@ -1,6 +1,6 @@
 package session1.abstractiontools;
 
-// interface is a fuly abstract class we can only declare a method but not implement it  
+// interface is a fully abstract class we can only declare a method but not implement it  
 //interface provides full data hiding 
 interface Vehicle {
     void start();
