@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 //repository 
 import com.example.user_management_system.repository.UserRepository;
-
+import com.example.user_management_system.exception.UserIdAlreadyExistsException;
 //exception class
 import com.example.user_management_system.exception.UserNotFoundException;
 
@@ -34,7 +34,12 @@ public class UserService {
         return user;
     }
 
-    public User createUser(User user) {
-        return userRepository.saveUser(user);
+    public String createUser(User user) {
+        User u = userRepository.getUserById(user.getId());
+        if (u != null) {
+            throw new UserIdAlreadyExistsException("User Id already exists: " + user.getId());
+        }
+        userRepository.saveUser(user);
+        return "User added successfully";  
     }
 }
