@@ -1,0 +1,41 @@
+package com.example.user_management_system.repository;
+
+//imports
+import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.ArrayList;
+import com.example.user_management_system.model.User;
+
+//repository is used to handle the db operations
+
+@Repository
+public class UserRepository {
+    private List<User> users = new ArrayList<>();
+
+    //constructor
+    public UserRepository() {
+        //filling our arrayList with dummy data
+        users.add(new User(1, "Ritika", "ritika@gmail.com"));
+        users.add(new User(2, "Piyush", "piyushv@gmailcom"));
+        users.add((new User(3, "Arya", "arya@gmail.com")));
+    }
+
+    public List<User> getAllUsers() {
+        return users;
+    }
+
+    public User getUserById(int id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    //function for saving Users after we use POST
+    public User saveUser(User user) {
+        users.add(user);
+        return user;
+    }
+}
