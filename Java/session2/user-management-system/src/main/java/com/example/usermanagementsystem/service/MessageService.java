@@ -19,6 +19,9 @@ public class MessageService {
         if (type.equalsIgnoreCase("SHORT")) {
             return shortMessageFormatter.messageFormat();
         }
-        return longMessageFormatter.messageFormat();
+        else if (type.equalsIgnoreCase("long")) {
+            return longMessageFormatter.messageFormat();
+        }
+        return "Invalid type";
     }
 }
