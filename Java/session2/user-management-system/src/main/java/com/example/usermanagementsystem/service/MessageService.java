@@ -15,8 +15,8 @@ public class MessageService {
         this.shortMessageFormatter = shortMessageFormatter;
     }
 
-    public String getMessage(String input) {
-        if (input.equalsIgnoreCase("SHORT")) {
+    public String getMessage(String type) {
+        if (type.equalsIgnoreCase("SHORT")) {
             return shortMessageFormatter.messageFormat();
         }
         return longMessageFormatter.messageFormat();

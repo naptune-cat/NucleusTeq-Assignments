@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ShortMessageFormatter {
-    public String formatMessage() {
+    public String messageFormat() {
         return "Sale starts today";
     }
 }
