@@ -1,4 +1,4 @@
-package com.example.user_management_system.model;
+package com.example.usermanagementsystem.model;
 
 //User is like our DB It shows how the schema of our db will be
 public class User {

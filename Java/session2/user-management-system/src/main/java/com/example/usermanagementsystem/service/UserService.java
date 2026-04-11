@@ -1,18 +1,14 @@
-package com.example.user_management_system.service;
+package com.example.usermanagementsystem.service;
 
 // imports ---
 import org.springframework.stereotype.Service;
 
-//repository 
-import com.example.user_management_system.repository.UserRepository;
-import com.example.user_management_system.exception.UserIdAlreadyExistsException;
-//exception class
-import com.example.user_management_system.exception.UserNotFoundException;
+import com.example.usermanagementsystem.exception.UserIdAlreadyExistsException;
+import com.example.usermanagementsystem.exception.UserNotFoundException;
+import com.example.usermanagementsystem.model.User;
+import com.example.usermanagementsystem.repository.UserRepository;
 
 import java.util.List;
-
-//model
-import com.example.user_management_system.model.User;
 
 @Service
 public class UserService {

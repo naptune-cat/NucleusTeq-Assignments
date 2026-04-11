@@ -1,4 +1,4 @@
-package com.example.user_management_system.exception;
+package com.example.usermanagementsystem.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

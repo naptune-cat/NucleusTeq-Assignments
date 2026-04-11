@@ -1,9 +1,11 @@
-package com.example.user_management_system.controller;
+package com.example.usermanagementsystem.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.user_management_system.service.UserService;
+import com.example.usermanagementsystem.model.User;
+import com.example.usermanagementsystem.service.UserService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.List;
-
-import com.example.user_management_system.model.User;
 
 @RestController
 @RequestMapping("/users")

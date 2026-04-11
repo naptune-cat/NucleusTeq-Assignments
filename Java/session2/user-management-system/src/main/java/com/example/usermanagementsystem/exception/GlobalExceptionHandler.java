@@ -1,12 +1,12 @@
-package com.example.user_management_system.exception;
+package com.example.usermanagementsystem.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.user_management_system.exception.UserIdAlreadyExistsException;
-import com.example.user_management_system.exception.UserNotFoundException;
+import com.example.usermanagementsystem.exception.UserIdAlreadyExistsException;
+import com.example.usermanagementsystem.exception.UserNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

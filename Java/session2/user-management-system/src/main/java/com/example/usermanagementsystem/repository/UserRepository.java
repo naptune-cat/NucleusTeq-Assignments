@@ -1,10 +1,12 @@
-package com.example.user_management_system.repository;
+package com.example.usermanagementsystem.repository;
 
 //imports
 import org.springframework.stereotype.Repository;
+
+import com.example.usermanagementsystem.model.User;
+
 import java.util.List;
 import java.util.ArrayList;
-import com.example.user_management_system.model.User;
 
 //repository is used to handle the db operations
 
