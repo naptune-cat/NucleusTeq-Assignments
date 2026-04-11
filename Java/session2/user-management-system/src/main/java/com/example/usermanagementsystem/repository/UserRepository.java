@@ -51,5 +51,17 @@ public class UserRepository {
             }
         }
         return false;
-    } 
+    }
+    
+    // function for updating a user
+    public boolean updateUser(int id) {
+        for (int i = 0; i < users.size(); i++) {
+            User currUser = users.get(i);
+            if (currUser.getId() == id) {
+                users.remove(currUser);
+                return true;
+            }
+        }
+        return false;
+    }
 }

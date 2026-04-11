@@ -14,10 +14,12 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
+    //constructor injection
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
@@ -29,13 +31,20 @@ public class UserService {
         }
         return user;
     }
-    
+
     public String createUser(User user) {
         User u = userRepository.getUserById(user.getId());
         if (u != null) {
             throw new UserIdAlreadyExistsException("User Id already exists: " + user.getId());
         }
         userRepository.saveUser(user);
-        return "User added successfully";  
+        return "User added successfully";
+    }
+    
+    public String deleteUser(int id) {
+        if (!userRepository.deleteUser(id)) {
+            throw new UserNotFoundException("No such user exists");
+        }
+        return "User deleted Successfully";
     }
 }
