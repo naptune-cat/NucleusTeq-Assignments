@@ -40,4 +40,16 @@ public class UserRepository {
         users.add(user);
         return user;
     }
+
+    // function for deleting a user using id
+    public boolean deleteUser(int id) {
+        for (int i = 0; i < users.size(); i++) {
+            User currUser = users.get(i);
+            if (currUser.getId() == id) {
+                users.remove(currUser);
+                return true;
+            }
+        }
+        return false;
+    } 
 }
