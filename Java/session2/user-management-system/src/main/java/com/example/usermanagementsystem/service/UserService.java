@@ -24,7 +24,7 @@ public class UserService {
         return userRepository.getAllUsers();
     }
     
-    public User getUserById(int id) {
+    public User getUserById(Integer id) {
         User user = userRepository.getUserById(id);
         if (user == null) {
             throw new UserNotFoundException("User not found with id: " + id);
@@ -41,10 +41,21 @@ public class UserService {
         return "User added successfully";
     }
     
-    public String deleteUser(int id) {
+    public String deleteUser(Integer id) {
         if (!userRepository.deleteUser(id)) {
             throw new UserNotFoundException("No such user exists");
         }
         return "User deleted Successfully";
+    }
+
+    public String updateDetails(Integer id,User updatedUser) {
+        User user = userRepository.getUserById(id);
+        if (user == null) {
+            throw new UserNotFoundException("No such id in database");
+        }
+        else {
+            userRepository.updateUser(id, updatedUser);
+        }
+        return "Successfully updated";
     }
 }

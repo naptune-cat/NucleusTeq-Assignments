@@ -26,7 +26,7 @@ public class UserRepository {
         return users;
     }
 
-    public User getUserById(int id) {
+    public User getUserById(Integer id) {
         for (User user : users) {
             if (user.getId() == id) {
                 return user;
@@ -42,7 +42,7 @@ public class UserRepository {
     }
 
     // function for deleting a user using id
-    public boolean deleteUser(int id) {
+    public boolean deleteUser(Integer id) {
         for (int i = 0; i < users.size(); i++) {
             User currUser = users.get(i);
             if (currUser.getId() == id) {
@@ -54,11 +54,12 @@ public class UserRepository {
     }
     
     // function for updating a user
-    public boolean updateUser(int id) {
+    public boolean updateUser(Integer id,User updatedUser) {
         for (int i = 0; i < users.size(); i++) {
             User currUser = users.get(i);
             if (currUser.getId() == id) {
-                users.remove(currUser);
+                currUser.setEmail(updatedUser.getEmail());
+                currUser.setName(updatedUser.getName());
                 return true;
             }
         }
