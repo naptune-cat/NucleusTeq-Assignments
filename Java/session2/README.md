@@ -13,6 +13,8 @@ It supports basic operations like:
 * Delete a user by ID
 * Format Message (long/short/invalid)
 * Send Notification
+* Update full user details (PUT)
+* Update partial user details (PATCH)
 
 This project was created to practice Spring Boot basics such as:
 
@@ -30,7 +32,7 @@ This project was created to practice Spring Boot basics such as:
 * Java
 * Spring Boot
 * Maven
-* Thunder Client
+* Thunder Client/ Postman api
 
 ---
 
@@ -216,12 +218,28 @@ after the post request
 
 * DELETE /users/{id}
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/0eadf67f-b308-4246-b0ca-f5dfb2b13f44" />
-if we try to delee again we will get error message
+if we try to delete again we will get error message
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/5fa779a5-06e0-4301-9d80-5d04edfeaaad" />
 
+---
 
 * POST /users/notification
   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/f482537d-e8fd-4fc0-a4f4-a12a26c8dada" />
+
+---
+
+* PUT /users/{id}
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/288053b0-b0c0-480d-9ffa-264410e7daa4" />
+
+after updation
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/0b9ed042-0297-4af1-bb16-f52f6e9d6fed" />
+
+---
+
+*PATCH /users/{id}
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/556c30bc-a8ee-4a3d-a12f-cdec10656064" />
+after updation
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/00b02edb-569c-4516-a8b9-21fcfacb7308" />
 
 ---
 
