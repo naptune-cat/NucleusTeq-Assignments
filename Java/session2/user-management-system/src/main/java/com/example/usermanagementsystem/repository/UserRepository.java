@@ -65,4 +65,18 @@ public class UserRepository {
         }
         return false;
     }
+    // function for updating a user
+    public boolean updatePartialUserDetail(Integer id,User updatedUser) {
+        for (int i = 0; i < users.size(); i++) {
+            User currUser = users.get(i);
+            if (currUser.getId() == id) {
+                if(updatedUser.getEmail() != null)
+                    currUser.setEmail(updatedUser.getEmail());
+                if(updatedUser.getName() != null)
+                    currUser.setName(updatedUser.getName());
+                return true;
+            }
+        }
+        return false;
+    }
 }

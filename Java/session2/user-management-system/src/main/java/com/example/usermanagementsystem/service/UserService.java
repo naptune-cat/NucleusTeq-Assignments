@@ -48,13 +48,25 @@ public class UserService {
         return "User deleted Successfully";
     }
 
-    public String updateDetails(Integer id,User updatedUser) {
+    //for put api
+    public String updateDetails(Integer id, User updatedUser) {
+        User user = userRepository.getUserById(id);
+        if (user == null) {
+            throw new UserNotFoundException("No such id in database");
+        } else {
+            userRepository.updateUser(id, updatedUser);
+        }
+        return "Successfully updated";
+    }
+    
+    //for patch api
+    public String updatePartialDetails(Integer id,User updatedUser) {
         User user = userRepository.getUserById(id);
         if (user == null) {
             throw new UserNotFoundException("No such id in database");
         }
         else {
-            userRepository.updateUser(id, updatedUser);
+            userRepository.updatePartialUserDetail(id, updatedUser);
         }
         return "Successfully updated";
     }

@@ -52,8 +52,13 @@ public class UserController {
     // for updating partial user details
     @PatchMapping("{id}")
     // taking id as Integer because it can also take null values 
+    public String updatePatialDetails(@PathVariable Integer id, @RequestBody User user) {
+        return userService.updatePartialDetails(id, user);
+    }
+    
+    //for updating full user details
+    @PutMapping("{id}")
     public String updateDetails(@PathVariable Integer id, @RequestBody User user) {
         return userService.updateDetails(id, user);
     }
-    
 }

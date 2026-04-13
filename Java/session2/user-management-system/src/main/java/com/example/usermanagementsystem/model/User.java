@@ -28,10 +28,8 @@ public class User {
         return email;
     }
 
-    public void setId(Integer id) {
-    this.id = id;
-    }
-
+    //setters for updating
+    
     public void setEmail(String email) {
         this.email = email;
     }
