@@ -147,7 +147,21 @@ http://localhost:8080/notifications
 
 ---
 
-### 6. Send Message
+### 6. Partial updation of user details
+
+```html
+PATCH /users/{id}
+```
+
+Example:
+
+```html
+http://localhost:8080/users/1
+```
+
+---
+
+### 7. Send Message
 
 ```html
 POST /message?type=SHORT
@@ -157,6 +171,20 @@ Example:
 
 ```html
 http://localhost:8080/message?type=SHORT
+```
+
+---
+
+### 8. Update full user details
+
+```html
+PUT /users/{id}
+```
+
+Example:
+
+```html
+http://localhost:8080/users/2
 ```
 
 ---
