@@ -60,5 +60,5 @@ public class UserController {
     @PutMapping("{id}")
     public String updateDetails(@PathVariable Integer id, @RequestBody User user) {
         return userService.updateDetails(id, user);
-    }
+   }
 }
