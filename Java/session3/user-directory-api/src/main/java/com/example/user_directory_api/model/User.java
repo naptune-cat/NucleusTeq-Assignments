@@ -28,6 +28,10 @@ public class User {
         return age;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     //setters
 
     public void setName(String name) {
