@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.user_directory_api.exception.InvalidInputException;
 import com.example.user_directory_api.exception.UserNotFoundException;
 import com.example.user_directory_api.model.User;
 import com.example.user_directory_api.repository.UserRepository;
@@ -57,10 +58,10 @@ public class UserService {
             // this flag will help us know which user should be added to our matched user list
             Boolean matches = true;
 
-            if (name != null && !name.equalsIgnoreCase(user.getName())) {
+            if (name != null && !name.isBlank() && !name.equalsIgnoreCase(user.getName())) {
                 matches = false;
             }
-            if (role != null && !role.equalsIgnoreCase(user.getRole())) {
+            if (role != null && !role.equalsIgnoreCase(user.getRole()) && !role.isBlank() ) {
                 matches = false;
             }
             if (age != null && !age.equals(user.getAge())) {
@@ -83,10 +84,17 @@ public class UserService {
         if (user == null ||
                 user.getName() == null || user.getName().isBlank() ||
                 user.getRole() == null || user.getRole().isBlank() ||
-                user.getAge() == null || user.getAge() == 0) {
-            return "Invalid Input";
+                user.getAge() == null || user.getAge() <= 0) {
+            throw new InvalidInputException("Invalid Input body");
         }
-        
+
+        //checking if the given id already exists
+        User existingUser = userRepository.getUserById(user.getId());
+
+        if (existingUser != null) {
+            throw new InvalidInputException("Id already exists. Try with a valid id");
+        }
+
         Boolean isAdded = userRepository.addUser(user);
         if (!isAdded) {
             throw new RuntimeException("User could not be added");
