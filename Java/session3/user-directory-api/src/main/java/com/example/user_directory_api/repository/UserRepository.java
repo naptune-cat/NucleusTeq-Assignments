@@ -47,4 +47,8 @@ public class UserRepository {
         return null;
     }
 
+    public Boolean addUser(User currUser){
+        return users.add(new User(currUser.getId(),currUser.getName(),currUser.getAge(),currUser.getRole()));
+    }
+
 }

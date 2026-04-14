@@ -3,6 +3,8 @@ package com.example.user_directory_api.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.user_directory_api.exception.UserNotFoundException;
@@ -30,7 +32,7 @@ public class UserService {
     }
 
     public String deleteUserById(Integer id, Boolean confirm) {
-        if (!confirm || confirm ==null) {
+        if (!confirm || confirm == null) {
             return "Confirmation required";
         }
 
@@ -46,12 +48,12 @@ public class UserService {
         List<User> allUsers = userRepository.getAllUsers();
 
         //if all teh parameters are empty we will directly return all Users
-        if ((name == null || name.isBlank()) && 
-            (role == null || role.isBlank()) && 
-            (age == null || age == 0)) {
-                return allUsers;
+        if ((name == null || name.isBlank()) &&
+                (role == null || role.isBlank()) &&
+                (age == null || age == 0)) {
+            return allUsers;
         }
-        
+
         //we will store our multiple matched users inside matchedUser List
         List<User> matchedUsers = new ArrayList<>();
 
@@ -79,5 +81,22 @@ public class UserService {
             throw new UserNotFoundException("No matching users found");
         }
         return matchedUsers;
+    }
+
+    //for submit api
+    public String submitData(User user) {
+        if (user == null ||
+                user.getName() == null || user.getName().isBlank() ||
+                user.getRole() == null || user.getRole().isBlank() ||
+                user.getAge() == null || user.getAge() == 0) {
+            return "Invalid Input";
+        }
+        
+        Boolean isAdded = userRepository.addUser(user);
+        if (!isAdded) {
+            throw new RuntimeException("User could not be added");
+        }
+       
+        return "User added successfully";
     }
 }
