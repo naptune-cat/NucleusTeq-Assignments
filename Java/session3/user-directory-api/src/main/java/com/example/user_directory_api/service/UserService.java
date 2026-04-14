@@ -29,11 +29,8 @@ public class UserService {
         return user;
     }
 
-    public String deleteUserById(Integer id, Boolean confirm) {
-        if (!confirm || confirm == null) {
-            return "Confirmation required";
-        }
-
+    public String deleteUserById(Integer id) {
+      
         Boolean isUserDeleted = userRepository.deleteUser(id);
 
         if (!isUserDeleted) {
