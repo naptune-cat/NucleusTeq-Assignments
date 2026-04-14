@@ -40,9 +40,23 @@ public class UserController {
     public ResponseEntity<List<User>> searchUsers(
         @RequestParam(required = false) String name, 
         @RequestParam(required = false) String role,
-        @RequestParam(required = false) Integer age) {
+            @RequestParam(required = false) Integer age) {
         List<User> users = userService.searchUser(name, role, age);
         return ResponseEntity.ok(users);
     }
-
+    
+    //for adding user
+    @PostMapping("/submit")
+    public ResponseEntity<String> addUser(@RequestBody User user) {
+        if (user == null || user.getAge() <= 0 ||
+                user.getAge() == null || user.getName() == null ||
+                user.getName().isBlank() || user.getRole() == null ||         
+                user.getRole().isBlank()
+        ) {
+            return ResponseEntity.badRequest().body("Invalid Input");
+        }
+        
+        userService.submitData(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Added Successfully");
+    }
 }
