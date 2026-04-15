@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
-    private List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
 
     //filling the list with dummy data
     //constructor
@@ -29,8 +29,8 @@ public class UserRepository {
     public boolean deleteUser(Integer id) {
         for (int i = 0; i < users.size(); i++) {
             User currUser = users.get(i);
-            if (currUser.getId() == id) {
-                users.remove(currUser);
+            if (currUser.getId().equals(id)) {
+                users.remove(i);
                 return true;
             }
         }
@@ -47,8 +47,13 @@ public class UserRepository {
         return null;
     }
 
-    public Boolean addUser(User currUser){
-        return users.add(new User(currUser.getId(),currUser.getName(),currUser.getAge(),currUser.getRole()));
+    public boolean addUser(User currUser){
+        return users.add(new User(
+            currUser.getId(),
+            currUser.getName(),
+            currUser.getAge(),
+            currUser.getRole()
+        ));
     }
 
 }

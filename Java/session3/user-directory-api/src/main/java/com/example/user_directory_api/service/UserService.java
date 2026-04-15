@@ -3,6 +3,7 @@ package com.example.user_directory_api.service;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.springframework.stereotype.Service;
 
 import com.example.user_directory_api.exception.InvalidInputException;
@@ -30,9 +31,14 @@ public class UserService {
         return user;
     }
 
-    public String deleteUserById(Integer id) {
-      
-        Boolean isUserDeleted = userRepository.deleteUser(id);
+    public String deleteUserById(Integer id, Boolean confirm) {
+        if (confirm == null || !confirm) {
+            throw new InvalidInputException("Confirmation required as true");
+        }
+        if (id <= 0) {
+            throw new InvalidInputException("Id cannot be 0 or less");
+        }
+        boolean isUserDeleted = userRepository.deleteUser(id);
 
         if (!isUserDeleted) {
             throw new UserNotFoundException("No such user exists");
@@ -40,14 +46,18 @@ public class UserService {
         return "User deleted Successfully";
     }
 
-    public List<User> searchUser(String name, String role, Integer age) {
+    public List<User> searchUsers(String name, String role, Integer age) {
         List<User> allUsers = userRepository.getAllUsers();
 
-        //if all teh parameters are empty we will directly return all Users
+        //if all the parameters are empty we will directly return all Users
         if ((name == null || name.isBlank()) &&
-                (role == null || role.isBlank()) &&
-                (age == null || age == 0)) {
+            (role == null || role.isBlank()) &&
+            (age == null)) {
             return allUsers;
+        }
+        
+        if (age != null && age <= 0) {
+            throw new InvalidInputException("Age must be greater than 0");
         }
 
         //we will store our multiple matched users inside matchedUser List
@@ -56,12 +66,12 @@ public class UserService {
         //iterating through each user and adding matched user in list
         for (User user : allUsers) {
             // this flag will help us know which user should be added to our matched user list
-            Boolean matches = true;
+            boolean matches = true;
 
             if (name != null && !name.isBlank() && !name.equalsIgnoreCase(user.getName())) {
                 matches = false;
             }
-            if (role != null && !role.equalsIgnoreCase(user.getRole()) && !role.isBlank() ) {
+            if (role != null && !role.isBlank() && !role.equalsIgnoreCase(user.getRole())) {
                 matches = false;
             }
             if (age != null && !age.equals(user.getAge())) {
@@ -81,11 +91,21 @@ public class UserService {
 
     //for submit api
     public String submitData(User user) {
-        if (user == null ||
-                user.getName() == null || user.getName().isBlank() ||
-                user.getRole() == null || user.getRole().isBlank() ||
-                user.getAge() == null || user.getAge() <= 0) {
-            throw new InvalidInputException("Invalid Input body");
+
+        if (user == null){
+            throw new InvalidInputException("Input body cannot be empty");
+        }
+        if(user.getName() == null || user.getName().isBlank()){
+            throw new InvalidInputException("Invalid name input - cannot be null or blank"); 
+        }
+        if(user.getRole() == null || user.getRole().isBlank()){
+            throw new InvalidInputException("Invalid role input - cannot be null or blank");  
+        }
+        if (user.getAge() == null || user.getAge() <= 0) {
+            throw new InvalidInputException("Invalid age input - cannot be less than 1 or null");
+        }
+        if (user.getId() == null || user.getId() <= 0) {
+            throw new InvalidInputException("Invalid id input - cannot be null or less than 1");
         }
 
         //checking if the given id already exists
@@ -95,7 +115,7 @@ public class UserService {
             throw new InvalidInputException("Id already exists. Try with a valid id");
         }
 
-        Boolean isAdded = userRepository.addUser(user);
+        boolean isAdded = userRepository.addUser(user);
         if (!isAdded) {
             throw new RuntimeException("User could not be added");
         }

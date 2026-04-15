@@ -42,33 +42,21 @@ public class UserController {
     public ResponseEntity<List<User>> searchUsers(
         @RequestParam(required = false) String name, 
         @RequestParam(required = false) String role,
-            @RequestParam(required = false) Integer age) {
-        List<User> users = userService.searchUser(name, role, age);
+        @RequestParam(required = false) Integer age) {
+        List<User> users = userService.searchUsers(name, role, age);
         return ResponseEntity.ok(users);
     }
     
     //for adding user
     @PostMapping("/submit")
     public ResponseEntity<String> addUser(@RequestBody User user) {
-        if (user == null || user.getAge() <= 0 ||
-                user.getAge() == null || user.getName() == null ||
-                user.getName().isBlank() || user.getRole() == null ||
-                user.getRole().isBlank()) {
-            return ResponseEntity.badRequest().body("Invalid Input");
-        }
-
         userService.submitData(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("Added Successfully");
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer id, @RequestParam(required = false) Boolean confirm) {
-        
-        if (confirm == null || !confirm) {
-            return ResponseEntity.badRequest().body("Required confirmation as true");
-        }
-
-        userService.deleteUserById(id);
+        userService.deleteUserById(id,confirm);
         return ResponseEntity.ok("User deleted successfully");
     }
 }
