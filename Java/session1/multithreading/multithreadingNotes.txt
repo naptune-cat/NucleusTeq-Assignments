@@ -1,0 +1,16 @@
+Multithreading
+- Means running multiple tasks at the same time
+- A thread is a small unit of a process
+- Helps improve performance and speed
+- Achieved using two ways:- 1) Thread class 2) Runnable interface
+- Useful when different tasks need to run together
+- Saves time by not waiting for one task to finish executing fully
+    before starting another task.
+
+Examples:
+
+1. Listening to music while downloading a file
+2. A game can play sound, move characters, and update score at the 
+    same time
+3. In a chat app, one thread can send messages while another thread 
+    receives messages
