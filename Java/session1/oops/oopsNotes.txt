@@ -1,0 +1,55 @@
+Polymorphism
+
+- Means "many forms"
+- Same method name can perform different tasks
+- Achieved using method overloading and method overriding
+- Helps make code flexible and reusable
+
+Examples: 
+1. A draw() method can behave differently for Circle, Rectangle,and    
+    Triangle (function overriding)
+
+2. Two functions named sum taking different parameters (method         
+    overloading)
+    int sum(int a,int b){   return a+b;}
+    double sum(double x, double y){ return x+y;}
+
+3. '+' can work differently in different context
+    7+11 = 18                             //arithematic addition
+    "orange"+" "+"cat" = "orange cat"     //string concatenation
+
+
+----------------------------------------------------------------------
+
+Encapsulation
+
+- Means wrapping data and methods into a single unit
+- Achieved using classes
+- Variables are usually made private
+- Data can only be accessed using getters and setters
+- Helps protect data from direct access
+- Improves security and control over data
+
+Example:
+
+1. A BankAccount class has private balance variable
+    It can only be accessed using deposit() and withdraw() methods
+
+
+
+-----------------------------------------------------------------------
+
+Inheritance
+
+- Means one class can use properties and methods of another class
+- Achieved using extends keyword
+- Parent class is called superclass/ base class
+- Child class is called subclass/ derived class
+- Helps in code reusability
+
+
+Examples:
+
+1. Cat class can inherit eat() and sleep() methods from Animal class
+2. Car, Bike and Truck classes can inherit common properties from    
+  Vehicle class
