@@ -1,0 +1,19 @@
+File I/O
+
+- File I/O means reading and writing to files
+- Used to store data permanently
+- Java provides classes like File, Scanner, and FileWriter for file
+   handling
+- File class is used to create or access a file
+- Scanner class is used to read data from a file
+- FileWriter class is used to write data into a file
+- Exceptions like FileNotFoundException and IOException are used to 
+  handle errors
+- Files and scanners should be closed after use to avoid resource leaks
+
+Examples:
+
+1. Reading all lines from a text file using Scanner
+2. Writing new text into a file using FileWriter
+3. Deleting file using delete()
+4. Updating the file using FileWriter
