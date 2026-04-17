@@ -1,17 +1,23 @@
 package com.example.dto;
 
+import java.time.LocalDateTime;
+
+import com.example.enums.TodoStatus;
+
 public class ResponseDTO {
     
     private Long id;
     private String title;
     private String description;
-    private Boolean completed;
+    private TodoStatus status;
+    private LocalDateTime createdAt;
 
-    public ResponseDTO(Long id, String title, String description, Boolean completed) {
+    public ResponseDTO(Long id, String title, String description, TodoStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.completed = completed;
+        this.status = status;
+        this.createdAt = createdAt;
     }
     
     //empty constructor
@@ -32,8 +38,12 @@ public class ResponseDTO {
         return description;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    public TodoStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     //setters
@@ -50,7 +60,11 @@ public class ResponseDTO {
         this.description = description;
     }
 
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
+    public void setStatus(TodoStatus status) {
+        this.status = status;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
