@@ -1,5 +1,6 @@
 package com.example.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import com.example.dto.RequestDTO;
 import com.example.dto.ResponseDTO;
 
 import com.example.entity.Todo;
+import com.example.enums.TodoStatus;
 import com.example.exception.ResourceNotFoundException;
 import com.example.mapper.TodoMapper;
 import com.example.repository.TodoRepository;
@@ -29,6 +31,14 @@ public class TodoServiceImplementation implements TodoService {
         // requestDTO -> Entity mapping
         Todo todo = TodoMapper.dtoToEntityMapping(requestDTO);
 
+        
+        todo.setCreatedAt(LocalDateTime.now());
+        
+        //checking if status is null
+
+        if (requestDTO.getStatus() == null) {
+            todo.setStatus(TodoStatus.PENDING);
+        }
         //saving the todo in our db
         Todo savedTodo = todoRepository.save(todo);
 
