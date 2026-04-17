@@ -11,6 +11,7 @@ import com.example.dto.RequestDTO;
 import com.example.dto.ResponseDTO;
 
 import com.example.entity.Todo;
+import com.example.mapper.TodoMapper;
 import com.example.repository.TodoRepository;
 
 @Service
@@ -25,22 +26,13 @@ public class TodoServiceImplementation implements TodoService {
     public ResponseDTO createTodo(RequestDTO requestDTO) {
 
         // requestDTO -> Entity mapping
-        Todo todo = new Todo();
-        todo.setTitle(requestDTO.getTitle());
-        todo.setDescription(requestDTO.getDescription());
-        todo.setStatus(requestDTO.getStatus());
+        Todo todo = TodoMapper.dtoToEntityMapping(requestDTO);
 
         //saving the todo in our db
         Todo savedTodo = todoRepository.save(todo);
 
         // entity -> responseDTO mapping
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setId(savedTodo.getId());
-        responseDTO.setTitle(savedTodo.getTitle());
-        responseDTO.setDescription(savedTodo.getDescription());
-        responseDTO.setStatus(savedTodo.getStatus());
-        responseDTO.setCreatedAt(savedTodo.getCreatedAt());
-
+        ResponseDTO responseDTO = TodoMapper.entityToDToMapping(savedTodo);
         return responseDTO;
     }
     
@@ -51,12 +43,8 @@ public class TodoServiceImplementation implements TodoService {
         List<Todo> todos = todoRepository.findAll();
 
         return todos.stream().map(todo -> {
-            ResponseDTO dto = new ResponseDTO();
-            dto.setId(todo.getId());
-            dto.setTitle(todo.getTitle());
-            dto.setDescription(todo.getDescription());
-            dto.setStatus(todo.getStatus());
-            return dto;
+            ResponseDTO responseDTO = TodoMapper.entityToDToMapping(todo);
+            return responseDTO;
         }).collect(Collectors.toList());
     }
     
@@ -65,7 +53,7 @@ public class TodoServiceImplementation implements TodoService {
     public ResponseDTO getTodoById(Long id) {
 
         // optional is a container which allows us to handle uncertain data
-        // here todo may or may not exist
+        // here todo for this id may or may not exist
         Optional<Todo> todoOptional = todoRepository.findById(id);
 
         if (todoOptional.isEmpty()) {
@@ -76,13 +64,7 @@ public class TodoServiceImplementation implements TodoService {
         Todo todo = todoOptional.get();
 
         // entity -> DTO mapping
-
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setId(todo.getId());
-        responseDTO.setTitle(todo.getTitle());
-        responseDTO.setDescription(todo.getDescription());
-        responseDTO.setStatus(todo.getStatus());
-        responseDTO.setCreatedAt(todo.getCreatedAt());
+        ResponseDTO responseDTO = TodoMapper.entityToDToMapping(todo);
 
         return responseDTO;
     }
@@ -112,6 +94,9 @@ public class TodoServiceImplementation implements TodoService {
         Todo todo = existingTodo.get();
 
         // entity -> request dto mapping
+
+        // here we are not calling the dtoToEntityMapping() because it can lose the id and createdAt fields and db might thing this is a new Todo and hence might make a new Todo with new id
+
         todo.setTitle(requestDTO.getTitle());
         todo.setDescription(requestDTO.getDescription());
         todo.setStatus(requestDTO.getStatus());
@@ -119,12 +104,8 @@ public class TodoServiceImplementation implements TodoService {
         Todo updatedTodo = todoRepository.save(todo);
 
         // dto -> entity mapping
-        ResponseDTO responseDto = new ResponseDTO();
-        responseDto.setId(updatedTodo.getId());
-        responseDto.setTitle(updatedTodo.getTitle());
-        responseDto.setDescription(updatedTodo.getDescription());
-        responseDto.setStatus(updatedTodo.getStatus());
+        ResponseDTO responseDTO = TodoMapper.entityToDToMapping(updatedTodo);
 
-        return responseDto;
+        return responseDTO;
     }
 }

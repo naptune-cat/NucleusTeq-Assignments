@@ -7,7 +7,7 @@ import com.example.entity.Todo;
 public class TodoMapper {
 
     // for DTO -> Entity mapping
-    
+
     public static Todo dtoToEntityMapping(RequestDTO requestDTO) {
         Todo todo = new Todo();
 
