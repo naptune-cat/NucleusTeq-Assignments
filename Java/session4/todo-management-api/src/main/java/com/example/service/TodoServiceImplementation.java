@@ -11,6 +11,7 @@ import com.example.dto.RequestDTO;
 import com.example.dto.ResponseDTO;
 
 import com.example.entity.Todo;
+import com.example.exception.ResourceNotFoundException;
 import com.example.mapper.TodoMapper;
 import com.example.repository.TodoRepository;
 
@@ -57,7 +58,7 @@ public class TodoServiceImplementation implements TodoService {
         Optional<Todo> todoOptional = todoRepository.findById(id);
 
         if (todoOptional.isEmpty()) {
-            throw new RuntimeException("Id: " + id + " does not exist in DB");
+            throw new ResourceNotFoundException("Id: " + id + " does not exist in DB");
         }
 
         // converting Optional<Todo> to Todo type
@@ -74,7 +75,7 @@ public class TodoServiceImplementation implements TodoService {
         Optional<Todo> todoOptional = todoRepository.findById(id);
 
         if (todoOptional.isEmpty()) {
-            throw new RuntimeException("No such id exists");
+            throw new ResourceNotFoundException("No such id exists");
         }
 
         //converting back to Todo type
@@ -88,7 +89,7 @@ public class TodoServiceImplementation implements TodoService {
         Optional<Todo> existingTodo = todoRepository.findById(id);
 
         if (existingTodo.isEmpty()) {
-            throw new RuntimeException("No Such Id exists");
+            throw new ResourceNotFoundException("No such Id exists");
         }
 
         Todo todo = existingTodo.get();
