@@ -43,7 +43,26 @@ public class TodoServiceImplementation implements TodoService {
         return responseDTO;
     }
     
-   
     
+    @Override
+    public List<ResponseDTO> getAllTodo() {
+
+        List<Todo> todos = todoRepository.findAll();
+
+        return todos.stream().map(todo -> {
+            ResponseDTO dto = new ResponseDTO();
+            dto.setId(todo.getId());
+            dto.setTitle(todo.getTitle());
+            dto.setDescription(todo.getDescription());
+            dto.setStatus(todo.getStatus());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    
+
+    @Override
+    public ResponseDTO getTodoById(Long id) {
+        
+    }
 
 }
