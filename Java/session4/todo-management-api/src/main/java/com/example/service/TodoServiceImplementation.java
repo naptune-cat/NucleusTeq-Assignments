@@ -1,6 +1,7 @@
 package com.example.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,28 @@ public class TodoServiceImplementation implements TodoService {
 
     @Override
     public ResponseDTO getTodoById(Long id) {
-        
+
+        // optional is a container which allows us to handle uncertain data
+        // here todo may or may not exist
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+
+        if (todoOptional == null) {
+            throw new RuntimeException("Id: "+id+" does not exist in DB");
+        }
+
+        // converting Optional<Todo> to Todo type
+        Todo todo = todoOptional.get();
+
+        // entity ->DTO mapping
+
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setId(todo.getId());
+        responseDTO.setTitle(todo.getTitle());
+        responseDTO.setDescription(todo.getDescription());
+        responseDTO.setStatus(todo.getStatus());
+        responseDTO.setCreatedAt(todo.getCreatedAt());
+
+        return responseDTO;
     }
 
 }
