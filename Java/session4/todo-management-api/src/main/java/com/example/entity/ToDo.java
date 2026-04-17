@@ -1,36 +1,48 @@
 package com.example.entity;
 
+import java.time.LocalDateTime;
+
+import com.example.enums.TodoStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 @Entity
-@Table(name="todos")
-public class ToDo{
+@Table(name = "todos")
+public class Todo {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
 
     private String description;
 
-    private Boolean completed;
+    @Enumerated(EnumType.STRING)
+    private TodoStatus status;
 
-    //constructor for initializing
-    public ToDo(Long id, String title, String description, Boolean completed) {
+    private LocalDateTime createdAt;
+
+    // constructor for initializing
+    public Todo(Long id, String title, String description, TodoStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.completed = completed;
+        this.status = status;
+        this.createdAt = createdAt;
     }
 
-    //empty constructor because jpa/hibernate require it to create objects 
-    public ToDo() {
+    // empty constructor because JPA/Hibernate requires it
+    public Todo() {
     }
-    
-    //getters
+
+    // getters
     public Long getId() {
         return id;
     }
@@ -38,16 +50,20 @@ public class ToDo{
     public String getTitle() {
         return title;
     }
-    
+
     public String getDescription() {
         return description;
     }
 
-    public Boolean getCompleted() {
-        return completed;
+    public TodoStatus getStatus() {
+        return status;
     }
 
-    //setters
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    // setters
     public void setTitle(String title) {
         this.title = title;
     }
@@ -56,7 +72,11 @@ public class ToDo{
         this.description = description;
     }
 
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
+    public void setStatus(TodoStatus status) {
+        this.status = status;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
