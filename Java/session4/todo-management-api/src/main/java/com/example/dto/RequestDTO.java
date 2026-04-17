@@ -47,7 +47,7 @@ public class RequestDTO {
         return title;
     }
 
-    public String geDescription() {
+    public String getDescription() {
         return description;
     }
 
