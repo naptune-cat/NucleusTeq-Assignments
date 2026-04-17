@@ -69,7 +69,7 @@ public class TodoServiceImplementation implements TodoService {
         Optional<Todo> todoOptional = todoRepository.findById(id);
 
         if (todoOptional == null) {
-            throw new RuntimeException("Id: "+id+" does not exist in DB");
+            throw new RuntimeException("Id: " + id + " does not exist in DB");
         }
 
         // converting Optional<Todo> to Todo type
@@ -87,4 +87,18 @@ public class TodoServiceImplementation implements TodoService {
         return responseDTO;
     }
 
+    @Override
+    public void deleteTodo(Long id) {
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+
+        if (todoOptional == null) {
+            throw new RuntimeException("No such id exists");
+        }
+
+        //converting back to Todo type
+        Todo todo = todoOptional.get();
+
+        // calling delete method
+        todoRepository.delete(todo);
+    }
 }
