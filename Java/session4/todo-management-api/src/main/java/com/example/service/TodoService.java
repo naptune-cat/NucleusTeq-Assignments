@@ -2,18 +2,20 @@ package com.example.service;
 
 import java.util.List;
 
-import com.example.entity.Todo;
+import com.example.dto.RequestDTO;
+import com.example.dto.ResponseDTO;
+
 
 
 //making interface for our service for better and cleane code
 public interface TodoService {
-    Todo createTodo(Todo todo);
+    ResponseDTO createTodo(RequestDTO requestDTO);
 
-    List<Todo> getAllTodo();
+    List<ResponseDTO> getAllTodo();
 
-    Todo getTodoById(Long id);
+    ResponseDTO getTodoById(Long id);
 
     void deleteTodo(Long id);
 
-    Todo updateTodo(Long id, Todo todo);
+    ResponseDTO updateTodo(Long id, RequestDTO requestDTO);
 }
