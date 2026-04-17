@@ -17,6 +17,9 @@ public class RequestDTO {
         this.title = title;
         this.description = description;
     }
+
+    //empty constuctor required by JPA to instantiate the objects
+    public RequestDTO(){}
     
     // setters
     public void setTitle(String title) {
