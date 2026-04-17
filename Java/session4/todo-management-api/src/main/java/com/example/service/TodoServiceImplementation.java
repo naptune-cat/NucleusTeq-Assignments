@@ -75,7 +75,7 @@ public class TodoServiceImplementation implements TodoService {
         // converting Optional<Todo> to Todo type
         Todo todo = todoOptional.get();
 
-        // entity ->DTO mapping
+        // entity -> DTO mapping
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setId(todo.getId());
@@ -100,5 +100,31 @@ public class TodoServiceImplementation implements TodoService {
 
         // calling delete method
         todoRepository.delete(todo);
+    }
+
+    public ResponseDTO updateTodo(Long id, RequestDTO requestDTO) {
+        Optional<Todo> existingTodo = todoRepository.findById(id);
+
+        if (existingTodo == null) {
+            throw new RuntimeException("No Such Id exists");
+        }
+
+        Todo todo = existingTodo.get();
+
+        // entity -> request dto mapping
+        todo.setTitle(requestDTO.getTitle());
+        todo.setDescription(requestDTO.getDescription());
+        todo.setStatus(requestDTO.getStatus());
+
+        Todo updatedTodo = todoRepository.save(todo);
+
+        // dto -> entity mapping
+        ResponseDTO responseDto = new ResponseDTO();
+        responseDto.setId(updatedTodo.getId());
+        responseDto.setTitle(updatedTodo.getTitle());
+        responseDto.setDescription(updatedTodo.getDescription());
+        responseDto.setStatus(updatedTodo.getStatus());
+
+        return responseDto;
     }
 }
