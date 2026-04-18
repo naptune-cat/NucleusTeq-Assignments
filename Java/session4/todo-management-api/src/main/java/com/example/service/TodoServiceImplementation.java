@@ -16,9 +16,15 @@ import com.example.exception.ResourceNotFoundException;
 import com.example.mapper.TodoMapper;
 import com.example.repository.TodoRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 @Service
 public class TodoServiceImplementation implements TodoService {
     private final TodoRepository todoRepository;
+    private final static Logger logger = LoggerFactory.getLogger(TodoServiceImplementation.class);
+
 
     public TodoServiceImplementation(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
@@ -27,6 +33,7 @@ public class TodoServiceImplementation implements TodoService {
     @Override
     public ResponseDTO createTodo(RequestDTO requestDTO) {
 
+        logger.info("Started Creating new todo in service layer");
         // requestDTO -> Entity mapping
         Todo todo = TodoMapper.dtoToEntityMapping(requestDTO);
 
@@ -43,13 +50,14 @@ public class TodoServiceImplementation implements TodoService {
 
         // entity -> responseDTO mapping
         ResponseDTO responseDTO = TodoMapper.entityToDToMapping(savedTodo);
+        logger.info("Todo created successfully");
         return responseDTO;
     }
     
     
     @Override
     public List<ResponseDTO> getAllTodo() {
-
+        logger.info("getting all todos");
         List<Todo> todos = todoRepository.findAll();
 
         return todos.stream().map(todo -> {
@@ -64,6 +72,7 @@ public class TodoServiceImplementation implements TodoService {
 
         // optional is a container which allows us to handle uncertain data
         // here todo for this id may or may not exist
+        logger.info("getting todo by id: {}",id);
         Optional<Todo> todoOptional = todoRepository.findById(id);
 
         if (todoOptional.isEmpty()) {
@@ -75,7 +84,7 @@ public class TodoServiceImplementation implements TodoService {
 
         // entity -> DTO mapping
         ResponseDTO responseDTO = TodoMapper.entityToDToMapping(todo);
-
+        logger.info("Found todo with id: {}",id);
         return responseDTO;
     }
 
@@ -83,6 +92,7 @@ public class TodoServiceImplementation implements TodoService {
     public void deleteTodo(Long id) {
         Optional<Todo> todoOptional = todoRepository.findById(id);
 
+        logger.info("Deleting todo with id: {}",id);
         if (todoOptional.isEmpty()) {
             throw new ResourceNotFoundException("No such id exists");
         }
@@ -92,9 +102,13 @@ public class TodoServiceImplementation implements TodoService {
 
         // calling delete method
         todoRepository.delete(todo);
+        logger.info("Deleted todo with id: {}",id);
     }
 
+   @Override
     public ResponseDTO updateTodo(Long id, RequestDTO requestDTO) {
+        logger.info("Updating todo with id: {}", id);
+
         Optional<Todo> existingTodo = todoRepository.findById(id);
 
         if (existingTodo.isEmpty()) {
@@ -103,18 +117,23 @@ public class TodoServiceImplementation implements TodoService {
 
         Todo todo = existingTodo.get();
 
-        // entity -> request dto mapping
-
+        // entity -> request dto mapping 
         // here we are not calling the dtoToEntityMapping() because it can lose the id and createdAt fields and db might thing this is a new Todo and hence might make a new Todo with new id
 
         todo.setTitle(requestDTO.getTitle());
         todo.setDescription(requestDTO.getDescription());
-        todo.setStatus(requestDTO.getStatus());
+
+        if (requestDTO.getStatus() == null) {
+        todo.setStatus(TodoStatus.PENDING);
+        } else {
+            todo.setStatus(requestDTO.getStatus());
+        }
 
         Todo updatedTodo = todoRepository.save(todo);
 
-        // dto -> entity mapping
         ResponseDTO responseDTO = TodoMapper.entityToDToMapping(updatedTodo);
+
+        logger.info("Updated todo successfully with id: {}", id);
 
         return responseDTO;
     }
