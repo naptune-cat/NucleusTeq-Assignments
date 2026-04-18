@@ -19,15 +19,19 @@ import com.example.repository.TodoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.example.client.NotificationServiceClient;
 
 @Service
 public class TodoServiceImplementation implements TodoService {
     private final TodoRepository todoRepository;
-    private final static Logger logger = LoggerFactory.getLogger(TodoServiceImplementation.class);
+    private final static Logger logger = LoggerFactory.getLogger
+    (TodoServiceImplementation.class);
+    private final NotificationServiceClient notificationServiceClient;
 
-
-    public TodoServiceImplementation(TodoRepository todoRepository) {
-        this.todoRepository = todoRepository;
+    public TodoServiceImplementation(TodoRepository todoRepository,
+        NotificationServiceClient notificationServiceClient) {
+            this.notificationServiceClient = notificationServiceClient;
+            this.todoRepository = todoRepository;
     }
 
     @Override
@@ -47,6 +51,10 @@ public class TodoServiceImplementation implements TodoService {
         }
         //saving the todo in our db
         Todo savedTodo = todoRepository.save(todo);
+
+        //sending notification
+        notificationServiceClient.sendNotification("Notification sent for new Todo");
+
 
         // entity -> responseDTO mapping
         ResponseDTO responseDTO = TodoMapper.entityToDToMapping(savedTodo);
