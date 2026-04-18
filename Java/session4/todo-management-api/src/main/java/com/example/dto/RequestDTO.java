@@ -11,14 +11,15 @@ import jakarta.validation.constraints.Size;
 public class RequestDTO {
 
     // creating private data members with validation
-    @NotNull(message = "title required")
+    @NotNull(message = "Title is required")
     @Size(min=3,message = "Title must be atleast 3 characters")
     private String title;
 
-    @NotBlank(message = "description requied")
+    @NotBlank(message = "description is required")
     private String description;
 
     private TodoStatus status;
+ 
 
     public RequestDTO(String title, String description, TodoStatus status) {
         this.title = title;
