@@ -247,7 +247,7 @@ Examples of logs used:
 
 ---
 
-## Postman API Testing Snapshots
+## ThunderClient API Testing Snapshots
 
 1. GET  /todos
    <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/6a1d2205-1781-4888-9391-57edf0862ce4" />
@@ -256,9 +256,18 @@ Examples of logs used:
    <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/c100aabc-4ae0-49ef-b169-3f14061616b7" />
 
 3. POST  /todos
-    
-5. PUT  /todos/{id}
-6. DELETE  /todos/{id}
+    <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/e6c51a2f-4562-4942-820a-5ff946a37634" />
+
+4. PUT  /todos/{id}  
+   Invalid transition
+   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/85be61b9-27d8-480d-a841-99aebea65726" />
+   
+   Valid transition
+   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/18792e69-a72f-4bce-898d-9e07d93c8996" />
+
+5. DELETE  /todos/{id}
+   <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/163b3aee-06cb-4e8a-b6e5-bf03ade07b5f" />
+
 ---
 
 ## Unit Testing
