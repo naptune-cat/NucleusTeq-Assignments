@@ -36,8 +36,9 @@ public class TodoServiceImplementation implements TodoService {
 
     @Override
     public ResponseDTO createTodo(RequestDTO requestDTO) {
-
+        
         logger.info("Started Creating new todo in service layer");
+
         // requestDTO -> Entity mapping
         Todo todo = TodoMapper.dtoToEntityMapping(requestDTO);
 
@@ -131,11 +132,23 @@ public class TodoServiceImplementation implements TodoService {
         todo.setTitle(requestDTO.getTitle());
         todo.setDescription(requestDTO.getDescription());
 
-        if (requestDTO.getStatus() == null) {
-        todo.setStatus(TodoStatus.PENDING);
-        } else {
-            todo.setStatus(requestDTO.getStatus());
+        TodoStatus currentStatus = todo.getStatus();
+        TodoStatus newStatus = requestDTO.getStatus();
+
+       if (newStatus != null) {
+
+            boolean isValidTransition =
+                (currentStatus == TodoStatus.PENDING && newStatus == TodoStatus.COMPLETED) ||
+                (currentStatus == TodoStatus.COMPLETED && newStatus == TodoStatus.PENDING);
+
+            if (!isValidTransition) {
+                throw new IllegalArgumentException(
+                        "Invalid status transition from " + currentStatus + " to " + newStatus);
+            }
+            todo.setStatus(newStatus);
         }
+
+        
 
         Todo updatedTodo = todoRepository.save(todo);
 
