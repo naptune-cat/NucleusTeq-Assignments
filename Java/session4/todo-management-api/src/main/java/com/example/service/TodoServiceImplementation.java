@@ -12,6 +12,7 @@ import com.example.dto.ResponseDTO;
 
 import com.example.entity.Todo;
 import com.example.enums.TodoStatus;
+import com.example.exception.InvalidStatusTransitionException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.mapper.TodoMapper;
 import com.example.repository.TodoRepository;
@@ -142,7 +143,7 @@ public class TodoServiceImplementation implements TodoService {
                 (currentStatus == TodoStatus.COMPLETED && newStatus == TodoStatus.PENDING);
 
             if (!isValidTransition) {
-                throw new IllegalArgumentException(
+                throw new InvalidStatusTransitionException(
                         "Invalid status transition from " + currentStatus + " to " + newStatus);
             }
             todo.setStatus(newStatus);
