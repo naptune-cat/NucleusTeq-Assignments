@@ -1,0 +1,42 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Logs ###
+*.log
+logs/
+
+### Runtime Files ###
+*.pid
+*.seed
+*.pid.lock
+
+### Environment Files ###
+.env
+.env.*
+application-local.properties
+application-dev.properties
+
+### OS Generated Files ###
+.DS_Store
+Thumbs.db
+
+### VS Code ###
+.vscode/
+
+### Java ###
+*.class
+
+### Maven ###
+dependency-reduced-pom.xml
+
+### Coverage Reports ###
+coverage/
+jacoco.exec
+/site/
+
+### Temporary Files ###
+*.tmp
+*.swp
