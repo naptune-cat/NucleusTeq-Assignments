@@ -5,9 +5,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.zoya.backend.security.JwtAuthFilter;
 
 @Configuration
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
+
+    // inject the filter
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -16,15 +25,17 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/evently.in/auth/**").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers("/evently.in/auth/**").permitAll() 
+                .anyRequest().authenticated()  
             )
 
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            .formLogin(form -> form.disable());
+            .formLogin(form -> form.disable())
+
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
