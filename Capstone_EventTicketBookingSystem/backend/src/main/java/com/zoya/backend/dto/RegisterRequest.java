@@ -21,6 +21,10 @@ public class RegisterRequest {
     )
     private String password;
 
+    @NotBlank(message = "Number is required")
+    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
+    private String phone;
+
 
     // getters
     public String getName() {
@@ -37,6 +41,10 @@ public class RegisterRequest {
         return password;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
 
     // setters
 
@@ -50,5 +58,9 @@ public class RegisterRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
