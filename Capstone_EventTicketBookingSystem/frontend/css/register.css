@@ -1,0 +1,128 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #14092d, #2b1055, #4b1f72);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  border-radius: 30px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  padding: 52px 48px;
+  color: #fff;
+}
+
+/* Heading area */
+.container h1,
+.container h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.container p.subtitle,
+.container > p:first-of-type {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+/* Form fields */
+.input-group,
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+  width: 100%;
+  padding: 13px 18px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.22);
+}
+
+input:focus {
+  border-color: #c084fc;
+  background: rgba(192, 132, 252, 0.08);
+  box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.15);
+}
+
+/* Submit button */
+button[type="submit"],
+button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 20px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #c084fc, #f472b6);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.97rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 20px rgba(192, 132, 252, 0.35);
+  transition:
+    opacity 0.2s,
+    transform 0.15s,
+    box-shadow 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(192, 132, 252, 0.45);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.switch-link a {
+  color: white;
+}

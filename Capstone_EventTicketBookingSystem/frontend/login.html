@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="./css/login.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel">
+        <div class="overlay"></div>
+        <div class="left-content">
+          <h1>Evently.in</h1>
+          <h2>Your next experience awaits</h2>
+          <p>
+            Book tickets for amazing events and create memories at Evently.in
+          </p>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="form-card">
+          <h2>Welcome Back</h2>
+          <p>Login to continue booking events</p>
+
+          <form id="loginForm">
+            <div class="input-group">
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+
+            <button type="submit">Log In</button>
+          </form>
+
+          <p class="switch-link">
+            Don't have an account?
+            <a href="register.html">Sign Up</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/api.js"></script>
+    <script src="./js/login.js"></script>
+  </body>
+</html>

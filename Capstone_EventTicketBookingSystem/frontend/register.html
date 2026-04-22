@@ -1,0 +1,87 @@
+<!doctype html>
+
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="./css/register.css" />
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Start your journey</h1>
+            <p>Create an account and explore unforgettable events.</p>
+            <div class="form-card">
+            <div class="ticket-icon">🎫</div>
+
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <div class="input-group">
+                    <label for="fullName">Full Name</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Full Name"
+                        required
+                        minlength="3"
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Email" required />
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="Phone Number"
+                        required
+                        pattern="[0-9]{10}"
+                        title="Phone number must be exactly 10 digits" 
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Password"
+                        required
+                        minlength="8"
+                        maxlength="12"
+                        pattern="^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,12}$"
+                        title="Password must be 8-12 characters long, contain at least 1 uppercase letter and 1 special character"
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm Password"
+                    required
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="organizer-code">Organizer Code</label>
+                    <input type="text" id="organizer-code" placeholder="Organizer code" />
+                </div>
+
+                <button type="submit">Create Account</button>
+            </form>
+            <p class="switch-link">
+                Already have an account?
+                <a href="login.html">Log in</a>
+          </p>
+            <script src="./js/api.js"></script>
+            <script src="./js/register.js"></script>
+
+        </div>
+    </body>
+</html>
