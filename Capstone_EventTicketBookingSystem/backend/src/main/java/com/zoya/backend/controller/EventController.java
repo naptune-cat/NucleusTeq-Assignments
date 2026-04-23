@@ -43,4 +43,11 @@ public class EventController {
                 return ResponseEntity.ok(response);
         }
         
+        // for getting event by organizer
+        @GetMapping("/organizer")
+        public ResponseEntity<List<EventResponseDTO>> getMyEvents(
+                        @RequestAttribute("userEmail") String email) {
+                return ResponseEntity.ok(eventService.getOrganizerEvents(email));
+        }
+        
 }
