@@ -25,6 +25,7 @@ public class RegisterRequest {
     @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
     private String phone;
 
+    private String organizerCode;
 
     // getters
     public String getName() {
@@ -45,6 +46,9 @@ public class RegisterRequest {
         return phone;
     }
 
+    public String getOrganizerCode() {
+        return organizerCode;
+    }
 
     // setters
 
@@ -63,4 +67,9 @@ public class RegisterRequest {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public void setOrganizerCode(String organizerCode) {
+        this.organizerCode = organizerCode;
+    }
+
 }

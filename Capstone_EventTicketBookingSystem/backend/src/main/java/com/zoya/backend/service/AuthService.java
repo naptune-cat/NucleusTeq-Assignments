@@ -39,10 +39,19 @@ public class AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        // calling password encoder method to encrypt the password and save it to db
+
+        /* calling password encoder method to encrypt the password and save it to db */
+        
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(UserRole.CUSTOMER);
+
+        /* for making role as organizer i am using a code if the user enters PartyPalooza9988 during registering that user will have role set as organizer */
+
+        if ("PartyPalooza9988".equals(request.getOrganizerCode())) {
+            user.setRole(UserRole.ORGANIZER);
+        } else {
+            user.setRole(UserRole.CUSTOMER);
+        }
         user.setPhone(request.getPhone());
         userRepository.save(user);
 
@@ -64,7 +73,7 @@ public class AuthService {
             return new LoginResponse(null, "Invalid password");
         }
 
-        // it will generate token using email
+        /*  it will generate token using email */
         String token = jwtService.generateToken(user.getEmail());
 
         return new LoginResponse(token, "Login successful");
