@@ -1,5 +1,7 @@
 package com.zoya.backend.entity;
 
+import java.time.LocalDateTime;
+
 import com.zoya.backend.enums.EventStatus;
 
 import jakarta.persistence.Column;
@@ -51,6 +53,15 @@ public class Event {
     private User organizer;
     
 
+    @Column(nullable = false)
+    private LocalDateTime eventDateTime;
+
+    @Column
+    private String category;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     // constructors
 
     public Event(Long id, String eventName, String description, String venue, Integer totalSeats,
@@ -66,6 +77,9 @@ public class Event {
             this.ticketPrice = ticketPrice;
             this.status = status;
             this.organizer = organizer;
+            this.eventDateTime = eventDateTime;
+            this.category = category;
+            this.createdAt = LocalDateTime.now();
     }
 
     public Event() {
@@ -101,9 +115,7 @@ public class Event {
         return bookedSeats;
     }
 
-    public void setBookedSeats(Integer bookedSeats) {
-        this.bookedSeats = bookedSeats;
-    }
+  
 
     public Double getTicketPrice() {
         return ticketPrice;
@@ -117,6 +129,17 @@ public class Event {
         return organizer;
     }
 
+    public LocalDateTime getEventDateTime() {
+        return eventDateTime;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
     // setters
 
@@ -154,6 +177,19 @@ public class Event {
 
     public void setAvailableSeats(Integer availableSeats) {
         this.availableSeats = availableSeats;
+    }
+
+    public void setBookedSeats(Integer bookedSeats) {
+        this.bookedSeats = bookedSeats;
+    }
+
+    public void setEventDateTime(LocalDateTime eventDateTime) {
+        this.eventDateTime = eventDateTime;
+    }
+    
+    public void setCategory(String category) {
+        this.category = category;
+        
     }
 }
 
