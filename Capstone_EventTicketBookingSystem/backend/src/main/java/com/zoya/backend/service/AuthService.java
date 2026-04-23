@@ -11,6 +11,9 @@ import com.zoya.backend.dto.LoginResponse;
 import com.zoya.backend.dto.RegisterRequest;
 import com.zoya.backend.entity.User;
 import com.zoya.backend.enums.UserRole;
+import com.zoya.backend.exception.InvalidPasswordException;
+import com.zoya.backend.exception.UserAlreadyExistsException;
+import com.zoya.backend.exception.UserNotFoundException;
 import com.zoya.backend.repository.UserRepository;
 
 @Service
@@ -33,7 +36,7 @@ public class AuthService {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
         if (existingUser.isPresent()) {
-            return "Email already present";
+            throw new UserAlreadyExistsException("Email already exists");
         }
 
         User user = new User();
@@ -64,13 +67,13 @@ public class AuthService {
 
         // if email isn't registered 
         if (existingUser.isEmpty()) {
-            return new LoginResponse(null, "User not found");
+            throw new UserNotFoundException("User not found");
         }
 
         User user = existingUser.get();
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return new LoginResponse(null, "Invalid password");
+            throw new InvalidPasswordException("Invalid password");
         }
 
         /*  it will generate token using email */
