@@ -16,18 +16,12 @@ registerForm.addEventListener("submit", async function (e) {
     return;
   }
 
-  let role = "CUSTOMER";
-
-  if (organizerCode === "PartyPalooza9988") {
-    role = "ORGANIZER";
-  }
-
   const userData = {
     name: fullName,
     email: email,
     phone: phone,
     password: password,
-    role: role,
+    organizerCode: organizerCode,
   };
 
   try {
