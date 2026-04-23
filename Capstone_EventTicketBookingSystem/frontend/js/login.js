@@ -7,10 +7,7 @@ if (loginForm) {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const userData = {
-      email,
-      password,
-    };
+    const userData = { email, password };
 
     try {
       const response = await fetch("http://localhost:8080/api/auth/login", {
@@ -24,14 +21,22 @@ if (loginForm) {
       const result = await response.json();
 
       if (response.ok) {
+        // saving role and token in localstorage
         localStorage.setItem("token", result.token);
-        alert("✔️ Login successful");
-        window.location.href = "./index.html";
+        localStorage.setItem("role", result.role);
+
+        // redirecting to diff pages absed on role
+        if (result.role === "ORGANIZER") {
+          window.location.href = "dashboard.html";
+        } else {
+          window.location.href = "home.html";
+        }
       } else {
-        alert("❌ " + result.message);
+        alert("❌ " + (result.message || "Login failed"));
       }
     } catch (error) {
-      alert("Invalid email or password");
+      console.error(error);
+      alert("⚠️ Server error. Try again.");
     }
   });
 }
