@@ -21,7 +21,7 @@ public class EventResponseDTO {
     private EventStatus status;
     private LocalDateTime createdAt;
 
-    // Constructor
+    // Constructors
     public EventResponseDTO(Long id, String eventName, String description,
             LocalDateTime eventDateTime, String venue, String category,
             Integer totalSeats, Integer availableSeats, Integer bookedSeats,
@@ -42,6 +42,7 @@ public class EventResponseDTO {
         this.status = status;
         this.createdAt = createdAt;
     }
+    public EventResponseDTO(){}
 
     // Getters
     public Long getId() {
@@ -98,5 +99,63 @@ public class EventResponseDTO {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    // Setters
+    
+    public void setId(Long id) {
+        this.id = id;        
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;        
+    }
+
+    public void setDescription(String description) {
+        this.description = description;        
+    }
+
+    public void setEventDateTime(LocalDateTime eventDateTime) {
+        this.eventDateTime = eventDateTime;        
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;        
+    }
+
+    public void setCategory(String category) {
+        this.category = category;        
+    }
+
+    public void setTotalSeats(Integer totalSeats) {
+        this.totalSeats = totalSeats;        
+    }
+
+    public void setAvailableSeats(Integer availableSeats) {
+        this.availableSeats = availableSeats;        
+    }
+
+    public void setBookedSeats(Integer bookedSeats) {
+        this.bookedSeats = bookedSeats;        
+    }
+
+    public void setTicketPrice(Double ticketPrice) {
+        this.ticketPrice = ticketPrice;        
+    }
+
+    public void setOrganizerName(String organizerName) {
+        this.organizerName = organizerName;        
+    }
+
+    public void setOrganizerEmail(String organizerEmail) {
+        this.organizerEmail = organizerEmail;        
+    }
+
+    public void setStatus(EventStatus status) {
+        this.status = status;        
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;        
     }
 }

@@ -7,12 +7,12 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class EventRequestDTO {
 
     @NotBlank(message = "Event name is required")
-    @Pattern(regexp = "^[a-zA-Z ]{2,}$", 
-             message = "Name must be alphabets only, min 2 characters")
+    @Size(min=2)
     private String eventName;
 
     @NotBlank(message = "Description is required")

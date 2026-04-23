@@ -64,29 +64,29 @@ public class Event {
 
     // constructors
 
-    public Event(Long id, String eventName, String description, String venue, Integer totalSeats,
-        Integer availableSeats, Integer bookedSeats, Double ticketPrice, EventStatus status,
-        User organizer) {
-            this.id = id;
-            this.eventName = eventName;
-            this.description = description;
-            this.venue = venue;
-            this.totalSeats = totalSeats;
-            this.availableSeats = availableSeats;
-            this.bookedSeats = bookedSeats;
-            this.ticketPrice = ticketPrice;
-            this.status = status;
-            this.organizer = organizer;
-            this.eventDateTime = eventDateTime;
-            this.category = category;
-            this.createdAt = LocalDateTime.now();
+     public Event(Long id, String eventName, String description, String venue,
+                 Integer totalSeats, Integer availableSeats, Integer bookedSeats,
+                 Double ticketPrice, EventStatus status, User organizer,
+                 LocalDateTime eventDateTime, String category, LocalDateTime createdAt) {
+        this.id = id;
+        this.eventName = eventName;
+        this.description = description;
+        this.venue = venue;
+        this.totalSeats = totalSeats;
+        this.availableSeats = availableSeats;
+        this.bookedSeats = bookedSeats;
+        this.ticketPrice = ticketPrice;
+        this.status = status;
+        this.organizer = organizer;
+        this.eventDateTime = eventDateTime;  
+        this.category = category;
+        this.createdAt = createdAt;           
     }
 
     public Event() {
     }
 
     // getters
-
     public Long getId() {
         return id;
     }
@@ -186,10 +186,13 @@ public class Event {
     public void setEventDateTime(LocalDateTime eventDateTime) {
         this.eventDateTime = eventDateTime;
     }
-    
+
     public void setCategory(String category) {
         this.category = category;
-        
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
 
