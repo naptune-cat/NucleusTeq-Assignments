@@ -1,7 +1,5 @@
 package com.zoya.backend.repository;
 
-public package com.zoya.backend.repository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
