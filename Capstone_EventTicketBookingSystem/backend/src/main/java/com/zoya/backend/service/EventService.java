@@ -1,6 +1,8 @@
 package com.zoya.backend.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -62,5 +64,20 @@ public class EventService {
 
         Event saved = eventRepository.save(event);
         return eventMapper.mapToDTO(saved);
+    }
+
+    // get event by organizer 
+    public List<EventResponseDTO> getOrganizerEvents(String organizerEmail) {
+        User organizer = userRepository.findByEmail(organizerEmail)
+                .orElseThrow(() -> new RuntimeException("Organizer not found"));
+
+        //this will only keep events made by specified organizer 
+        List<Event> events = eventRepository.findByOrganizer(organizer);
+        List<EventResponseDTO> responseList = new ArrayList<>();
+
+        for (Event event : events) {
+            responseList.add(eventMapper.mapToDTO(event));
+        }
+        return responseList;
     }
 }
