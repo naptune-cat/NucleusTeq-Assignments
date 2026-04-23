@@ -3,6 +3,7 @@ package com.zoya.backend.security;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority; // ✅ added
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -42,11 +43,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             String email = jwtService.extractEmail(token);
+            String role = jwtService.extractRole(token); 
 
             // Set authentication in Spring Security context
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                SimpleGrantedAuthority authority =
+                        new SimpleGrantedAuthority("ROLE_" + role);
+
                 UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(email, null, List.of());
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                List.of(authority) // 
+                        );
+
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (Exception e) {

@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import com.zoya.backend.security.JwtAuthFilter;
 
 @Configuration
@@ -13,7 +14,6 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    // inject the filter
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
@@ -25,8 +25,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() 
-                .anyRequest().authenticated()  
+                .requestMatchers("/api/auth/**").permitAll()
+
+                .requestMatchers("/api/organizer/**").hasRole("ORGANIZER")
+                .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
+
+                .anyRequest().authenticated()
             )
 
             .sessionManagement(session -> session
