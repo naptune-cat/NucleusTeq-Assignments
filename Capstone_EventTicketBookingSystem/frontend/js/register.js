@@ -39,8 +39,7 @@ registerForm.addEventListener("submit", async function (e) {
       alert("✔️ " + message);
 
       registerForm.reset();
-
-      window.location.href = "../login.html";
+      window.location.href = "./login.html";
     } else {
       alert("❌ " + message);
     }
