@@ -22,26 +22,7 @@ public class EventResponseDTO {
     private LocalDateTime createdAt;
 
     // Constructors
-    public EventResponseDTO(Long id, String eventName, String description,
-            LocalDateTime eventDateTime, String venue, String category,
-            Integer totalSeats, Integer availableSeats, Integer bookedSeats,
-            Double ticketPrice, String organizerName, String organizerEmail,
-            EventStatus status, LocalDateTime createdAt) {
-        this.id = id;
-        this.eventName = eventName;
-        this.description = description;
-        this.eventDateTime = eventDateTime;
-        this.venue = venue;
-        this.category = category;
-        this.totalSeats = totalSeats;
-        this.availableSeats = availableSeats;
-        this.bookedSeats = bookedSeats;
-        this.ticketPrice = ticketPrice;
-        this.organizerName = organizerName;
-        this.organizerEmail = organizerEmail;
-        this.status = status;
-        this.createdAt = createdAt;
-    }
+  
     public EventResponseDTO(){}
 
     // Getters
@@ -61,7 +42,7 @@ public class EventResponseDTO {
         return eventDateTime;
      }
 
-     public String getVenue() {
+    public String getVenue() {
          return venue;        
     }
 

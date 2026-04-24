@@ -41,7 +41,8 @@ public class EventMapper {
     // RequestDTO → Entity mapping
 
     public Event mapToEntity(EventRequestDTO dto, User organizer) {
-        if (dto == null) return null;
+        if (dto == null)
+            return null;
 
         Event event = new Event();
         event.setEventName(dto.getEventName());
@@ -59,5 +60,22 @@ public class EventMapper {
         return event;
     }
 
+   //  RequestDTO → existing Entity for updation
+
+    public void updateEntityFromDTO(EventRequestDTO dto, Event event) {
+        if (dto == null || event == null) return;
+
+        event.setEventName(dto.getEventName());
+        event.setDescription(dto.getDescription());
+        event.setEventDateTime(dto.getEventDateTime());
+        event.setVenue(dto.getVenue());
+        event.setCategory(dto.getCategory());
+        event.setTicketPrice(dto.getTicketPrice());
+
+        // recalculating available seats if totalSeats changed
+        int previouslyBooked = event.getBookedSeats();
+        event.setTotalSeats(dto.getTotalSeats());
+        event.setAvailableSeats(dto.getTotalSeats() - previouslyBooked);
+    }
  
 }

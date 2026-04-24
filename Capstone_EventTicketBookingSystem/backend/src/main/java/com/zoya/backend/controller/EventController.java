@@ -1,53 +1,71 @@
 package com.zoya.backend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.zoya.backend.dto.EventRequestDTO;
 import com.zoya.backend.dto.EventResponseDTO;
 import com.zoya.backend.service.EventService;
-import com.zoya.backend.service.JwtService;
 
 import jakarta.validation.Valid;
 
-@Controller
-@RequestMapping("/api")
+@CrossOrigin(origins = "*")
+@RestController                    
+@RequestMapping("/api/events")  
 public class EventController {
-        private final EventService eventService;
-        private final JwtService jwtService;
 
-        public EventController(EventService eventService, JwtService jwtService) {
-                this.eventService = eventService;
-                this.jwtService = jwtService;
-        }
+    private final EventService eventService;
 
-        //for creating event
-        @PostMapping("/events")
-        public ResponseEntity<EventResponseDTO> createEvent( @Valid
-        @RequestBody EventRequestDTO request,
-        @RequestHeader("Authorization") String authHeader
-        ) {
-                String token = authHeader.substring(7);
-                String email = jwtService.extractEmail(token);
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
-                EventResponseDTO response = eventService.createEvent(request, email);
-                return ResponseEntity.ok(response);
-        }
-        
-        // for getting event by organizer
-        @GetMapping("/organizer")
-        public ResponseEntity<List<EventResponseDTO>> getMyEvents(
-                        @RequestAttribute("userEmail") String email) {
-                return ResponseEntity.ok(eventService.getOrganizerEvents(email));
-        }
-        
+    // for creating event
+    @PostMapping
+    public ResponseEntity<EventResponseDTO> createEvent(
+            @Valid @RequestBody EventRequestDTO dto,
+            @RequestAttribute("userEmail") String email) {   
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(eventService.createEvent(dto, email));
+    }
+
+   
+    @GetMapping("/organizer")
+    public ResponseEntity<List<EventResponseDTO>> getMyEvents(
+            @RequestAttribute("userEmail") String email) {
+        return ResponseEntity.ok(eventService.getOrganizerEvents(email));
+    }
+
+  
+    @GetMapping("/organizer/stats")
+    public ResponseEntity<Map<String, Long>> getStats(
+            @RequestAttribute("userEmail") String email) {
+        return ResponseEntity.ok(eventService.getOrganizerStats(email));
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EventResponseDTO> getEvent(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.getEventById(id));
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EventResponseDTO> updateEvent(
+            @PathVariable Long id,
+            @Valid @RequestBody EventRequestDTO dto,
+            @RequestAttribute("userEmail") String email) {
+        return ResponseEntity.ok(eventService.updateEvent(id, dto, email));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<String> cancelEvent(
+            @PathVariable Long id,
+            @RequestAttribute("userEmail") String email) {
+        return ResponseEntity.ok(eventService.cancelEvent(id, email));
+    }
 }

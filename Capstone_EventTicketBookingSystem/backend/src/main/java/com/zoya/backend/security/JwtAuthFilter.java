@@ -33,36 +33,37 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        // If no token, just continue (public endpoints will pass, protected ones won't)
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7); // Remove "Bearer "
-
+        String token = authHeader.substring(7);
         try {
-            String email = jwtService.extractEmail(token);
-            String role = jwtService.extractRole(token); 
+    String email = jwtService.extractEmail(token);
+    String role = jwtService.extractRole(token);
 
-            // Set authentication in Spring Security context
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                SimpleGrantedAuthority authority =
-                        new SimpleGrantedAuthority("ROLE_" + role);
+        SimpleGrantedAuthority authority =
+                new SimpleGrantedAuthority("ROLE_" + role);
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                List.of(authority) // 
-                        );
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(
+                        email,
+                        null,
+                        List.of(authority)
+                );
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        request.setAttribute("userEmail", email);
+        request.setAttribute("userRole", role);
+        }
         } catch (Exception e) {
-            // Token invalid or expired 
-            // Spring Security will return 401 automatically for protected routes
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
+        return;
         }
 
         filterChain.doFilter(request, response);
