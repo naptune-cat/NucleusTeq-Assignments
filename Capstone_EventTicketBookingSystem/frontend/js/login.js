@@ -1,8 +1,13 @@
+console.log("JS loaded");
 const loginForm = document.getElementById("loginForm");
 
-if (loginForm) {
+if (!loginForm) {
+  console.log(" loginForm not found");
+} else {
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+
+    alert("Form submitted ✅");
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -20,22 +25,34 @@ if (loginForm) {
 
       const result = await response.json();
 
+      console.log("FULL RESPONSE  " + JSON.stringify(result));
+
       if (response.ok) {
-        // saving role and token in localstorage
+        // Save token & role
         localStorage.setItem("token", result.token);
         localStorage.setItem("role", result.role);
 
-        // redirecting to diff pages absed on role
-        if (result.role === "ORGANIZER") {
+        // Normalize role safely
+        let role = "";
+
+        if (result.role) {
+          role = result.role.toString().toUpperCase().trim();
+        } else if (result.roles && result.roles.length > 0) {
+          role = result.roles[0].toString().toUpperCase().trim();
+        }
+
+        //  Role-based redirect
+        if (role.includes("ORGANIZER")) {
+          console.log("Redirecting to dashboard ");
           window.location.href = "dashboard.html";
         } else {
-          window.location.href = "home.html";
+          console.log("Redirecting to index");
+          window.location.href = "index.html";
         }
       } else {
         alert("❌ " + (result.message || "Login failed"));
       }
     } catch (error) {
-      console.error(error);
       alert("⚠️ Server error. Try again.");
     }
   });

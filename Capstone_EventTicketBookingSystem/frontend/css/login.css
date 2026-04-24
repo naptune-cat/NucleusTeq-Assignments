@@ -29,7 +29,6 @@ body {
 
 .left-panel {
   flex: 1;
-  background: url("../assets/images/concert.jpg") center/cover;
   position: relative;
   display: flex;
   align-items: center;

@@ -33,27 +33,27 @@ public class EventController {
                 .body(eventService.createEvent(dto, email));
     }
 
-   
+    // getting events from organizer for organizer my events page
     @GetMapping("/organizer")
     public ResponseEntity<List<EventResponseDTO>> getMyEvents(
             @RequestAttribute("userEmail") String email) {
         return ResponseEntity.ok(eventService.getOrganizerEvents(email));
     }
 
-  
+    // organizer stats which willbe shown in dashboard
     @GetMapping("/organizer/stats")
     public ResponseEntity<Map<String, Long>> getStats(
             @RequestAttribute("userEmail") String email) {
         return ResponseEntity.ok(eventService.getOrganizerStats(email));
     }
 
-
+    // get event by id for both organizer and customer
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventById(id));
     }
 
-
+    // organizer can update an event only if he/she has organized it
     @PutMapping("/{id}")
     public ResponseEntity<EventResponseDTO> updateEvent(
             @PathVariable Long id,
@@ -61,7 +61,7 @@ public class EventController {
             @RequestAttribute("userEmail") String email) {
         return ResponseEntity.ok(eventService.updateEvent(id, dto, email));
     }
-
+    // cancel event
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<String> cancelEvent(
             @PathVariable Long id,

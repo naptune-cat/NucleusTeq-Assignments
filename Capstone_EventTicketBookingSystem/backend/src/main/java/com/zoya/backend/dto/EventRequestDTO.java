@@ -23,8 +23,8 @@ public class EventRequestDTO {
     private LocalDateTime eventDateTime;
 
     @NotBlank(message = "Venue is required")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]{2,}$", 
-             message = "Venue must be alphanumeric")
+    @Pattern(regexp = "^[a-zA-Z0-9 ,.-]{2,}$", 
+         message = "Venue must be valid")
     private String venue;
 
     @NotNull(message = "Total seats required")

@@ -29,8 +29,6 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
-
-
     
     public String registerUser(RegisterRequest request) {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
@@ -62,7 +60,7 @@ public class AuthService {
     }
     
  
-    public LoginResponse loginUser(LoginRequest request) {
+        public LoginResponse loginUser(LoginRequest request) {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
         // if email isn't registered 
@@ -79,8 +77,10 @@ public class AuthService {
         /*  it will generate token using email */
         String token = jwtService.generateToken(user.getEmail(),user.getRole().name());
 
-        return new LoginResponse(token, "Login successful");
+        return new LoginResponse(token, user.getRole().name(), "Login successful");
 
     }
 
 }
+
+

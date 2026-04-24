@@ -21,7 +21,7 @@ public class EventResponseDTO {
     private EventStatus status;
     private LocalDateTime createdAt;
 
-    // Constructors
+    // Constructor
   
     public EventResponseDTO(){}
 

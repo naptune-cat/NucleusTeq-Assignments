@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f0c29;
+  color: white;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: #1a1333;
+}
+
+/* Layout */
+.container {
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #140f2d;
+  height: 100vh;
+  padding-top: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar li:hover {
+  background: #2a1f55;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+/* Sections */
+.section {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Cards */
+.cards {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  padding: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff7a7a, #8f5cff);
+  width: 150px;
+  text-align: center;
+}
+
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+input {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff7a7a, #8f5cff);
+  color: white;
+  cursor: pointer;
+}
+
+/* Event Cards */
+.event-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+}
