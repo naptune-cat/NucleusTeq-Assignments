@@ -22,6 +22,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Preventing double booking by checking if user already has active booking for event
     boolean existsByUserAndEventIdAndBookingStatus(User user, Long eventId, BookingStatus status);
 
-    // Count confirmed bookings for an event for stats in organizer view
+    // this count confirmed bookings for an event for stats in organizer view
     long countByEventIdAndBookingStatus(Long eventId, BookingStatus status);
 }
