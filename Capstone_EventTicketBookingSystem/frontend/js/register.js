@@ -1,4 +1,47 @@
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  const icon = btn.querySelector("i");
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.replace("fa-eye", "fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.replace("fa-eye-slash", "fa-eye");
+  }
+}
+
 const registerForm = document.getElementById("registerForm");
+const phoneInput = document.getElementById("phone");
+const phoneError = document.getElementById("phoneError");
+
+phoneInput.addEventListener("input", function () {
+  this.value = this.value.replace(/[^0-9]/g, "");
+});
+
+// Blur pe length check
+phoneInput.addEventListener("blur", function () {
+  if (this.value.length !== 10) {
+    phoneError.textContent = "Phone number must be exactly 10 digits";
+    phoneInput.style.border = "1px solid red";
+  } else {
+    phoneError.textContent = "";
+    phoneInput.style.border = "1px solid green";
+  }
+});
+
+const emailInput = document.getElementById("email");
+const emailError = document.getElementById("emailError");
+
+emailInput.addEventListener("blur", function () {
+  const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  if (!gmailRegex.test(this.value)) {
+    emailError.textContent = "Please enter a valid Gmail address (@gmail.com)";
+    emailInput.style.border = "1px solid red";
+  } else {
+    emailError.textContent = "";
+    emailInput.style.border = "1px solid green";
+  }
+});
 
 registerForm.addEventListener("submit", async function (e) {
   e.preventDefault();

@@ -114,9 +114,42 @@ button {
 button:hover {
   border: 1px solid white;
 }
+
 .switch-link a {
   color: azure;
 }
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  width: auto !important;
+  margin-top: 0 !important;
+  padding: 4px 8px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  color: #000 !important;
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.eye-btn:hover {
+  border: none !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .container {
