@@ -5,15 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.stream.Collectors;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.zoya.backend.dto.EventRequestDTO;
 import com.zoya.backend.dto.EventResponseDTO;
+import com.zoya.backend.entity.Booking;
 import com.zoya.backend.entity.Event;
 import com.zoya.backend.entity.User;
+import com.zoya.backend.enums.BookingStatus;
 import com.zoya.backend.enums.EventStatus;
 import com.zoya.backend.exception.EventNotFoundException;
 import com.zoya.backend.exception.UserNotFoundException;
+import com.zoya.backend.repository.BookingRepository;
 import com.zoya.backend.repository.EventRepository;
 import com.zoya.backend.repository.UserRepository;
 
@@ -21,56 +29,76 @@ import com.zoya.backend.mapper.EventMapper;
 
 @Service
 public class EventService {
+    private static final Logger logger = LoggerFactory.getLogger(EventService
+        .class);
+
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final EventMapper eventMapper;
+
 
     // constructor
     
-    public EventService(EventRepository eventRepository, UserRepository userRepository, EventMapper eventMapper) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, BookingRepository bookingRepository, EventMapper eventMapper) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
         this.eventMapper = eventMapper;
     }
     
 
     // for creating event using event form data and organizer email
-    public EventResponseDTO createEvent(EventRequestDTO request, String organizerEmail) {
-        Optional<User> organizerExists = userRepository.findByEmail(organizerEmail);
-        
-        if (organizerExists.isEmpty()) {
-            throw new UserNotFoundException("Organizer not found");
-        }
+   public EventResponseDTO createEvent(EventRequestDTO request, String organizerEmail) {
 
-        User organizer = organizerExists.get();
-        Event event = new Event();
+    logger.info("Creating event '{}' by organizer={}", request.getEventName(), organizerEmail);
 
-        //filling all the fields
-        event.setEventName(request.getEventName());
-        event.setDescription(request.getDescription());
-        event.setEventDateTime(request.getEventDateTime());
-        event.setVenue(request.getVenue());
-        event.setTotalSeats(request.getTotalSeats());
-        event.setTicketPrice(request.getTicketPrice());
-        event.setCategory(request.getCategory());
-        event.setStatus(EventStatus.ACTIVE);
-
-        //initially all tickets are available
-        event.setAvailableSeats(request.getTotalSeats());
-        // and booked seats are 0 initially
-        event.setBookedSeats(0);
-        event.setOrganizer(organizer);
-
-        event.setCreatedAt(LocalDateTime.now());
-
-        Event saved = eventRepository.save(event);
-        return eventMapper.mapToDTO(saved);
+    Optional<User> organizerExists = userRepository.findByEmail(organizerEmail);
+    
+    if (organizerExists.isEmpty()) {
+        logger.error("Organizer not found: {}", organizerEmail);
+        throw new UserNotFoundException("Organizer not found");
     }
+
+    User organizer = organizerExists.get();
+    Event event = new Event();
+
+    //filling all the fields
+    event.setEventName(request.getEventName());
+    event.setDescription(request.getDescription());
+    event.setEventDateTime(request.getEventDateTime());
+    event.setVenue(request.getVenue());
+    event.setTotalSeats(request.getTotalSeats());
+    event.setTicketPrice(request.getTicketPrice());
+    event.setCategory(request.getCategory());
+    event.setStatus(EventStatus.ACTIVE);
+
+    //initially all tickets are available
+    event.setAvailableSeats(request.getTotalSeats());
+    // and booked seats are 0 initially
+    event.setBookedSeats(0);
+    event.setOrganizer(organizer);
+
+    event.setCreatedAt(LocalDateTime.now());
+
+    Event saved = eventRepository.save(event);
+
+    logger.info("Event created successfully with id={}", saved.getId());
+
+    return eventMapper.mapToDTO(saved);
+}
 
     // get event by organizer 
     public List<EventResponseDTO> getOrganizerEvents(String organizerEmail) {
+
+        logger.info("Fetching events for organizer={}", organizerEmail);
+
+        // checking if organizer exists
         User organizer = userRepository.findByEmail(organizerEmail)
-                .orElseThrow(() -> new RuntimeException("Organizer not found"));
+                .orElseThrow(() -> {
+                    logger.error("Organizer not found: {}", organizerEmail);
+                    return new RuntimeException("Organizer not found");
+                });
 
         //this will only keep events made by specified organizer 
         List<Event> events = eventRepository.findByOrganizer(organizer);
@@ -79,49 +107,74 @@ public class EventService {
         for (Event event : events) {
             responseList.add(eventMapper.mapToDTO(event));
         }
+
+        logger.info("Total events fetched for organizer={} : {}", organizerEmail, responseList.size());
+
         return responseList;
     }
 
     // update event 
     public EventResponseDTO updateEvent(Long id, EventRequestDTO dto, String organizerEmail) {
+        logger.info("Update request for eventId={} by {}", id, organizerEmail);
+
         Optional<Event> existingEvent = eventRepository.findById(id);
         if (existingEvent.isEmpty()) {
+            logger.error("Event not found: {}", id);
             throw new EventNotFoundException("Event does not exists");
         }
+
         Event event = existingEvent.get();
 
-        // checking Authorization only the organizer of this event can update
-       if (!event.getOrganizer().getEmail().equals(organizerEmail))
-           throw new RuntimeException("Unauthorized: You don't own this event");
+        // checking Authorization. only the organizer of this event can update
+        if (!event.getOrganizer().getEmail().equals(organizerEmail)) {
+        logger.warn("Unauthorized update attempt for eventId={} by {}", id, organizerEmail);
+        throw new RuntimeException("Unauthorized: You don't own this event");
+        }
 
-       //cancellation only valid 4 hours before event time
+        //cancellation only valid 4 hours before event time
         
-        if (event.getEventDateTime().isBefore(LocalDateTime.now().plusHours(4)))
+        if (event.getEventDateTime().isBefore(LocalDateTime.now().plusHours(4))) {
+            logger.warn("Update not allowed within 4 hours for eventId={}", id);
             throw new RuntimeException("Cannot update event within 4 hours of start time");
+        }
 
-        if (dto.getTotalSeats() < event.getBookedSeats())
+        if (dto.getTotalSeats() < event.getBookedSeats()) {
+            logger.warn("Invalid seat reduction attempt for eventId={}", id);
             throw new RuntimeException(
             "Cannot reduce seats below already booked count: " + event.getBookedSeats());
+        }
 
         eventMapper.updateEntityFromDTO(dto, event);
 
-        return eventMapper.mapToDTO(eventRepository.save(event));
+        Event updated = eventRepository.save(event);
+
+        logger.info("Event updated successfully: eventId={}", id);
+
+        return eventMapper.mapToDTO(updated);
     }
 
     
     // for cancelling an event
     public String cancelEvent(Long id, String organizerEmail) {
+        logger.info("Cancel request for eventId={} by {}", id, organizerEmail);
         Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Event not found"));
+                .orElseThrow(() -> {
+                logger.error("Event not found: {}", id);
+                return new EventNotFoundException("Event not found");
+            });
 
-        if (!event.getOrganizer().getEmail().equals(organizerEmail))
+        if (!event.getOrganizer().getEmail().equals(organizerEmail)) {
+            logger.warn("Unauthorized cancel attempt for eventId={} by {}", id, organizerEmail);
             throw new RuntimeException("Unauthorized: You don't own this event");
-
-        if (event.getStatus() == EventStatus.CANCELLED)
+            }
+        if (event.getStatus() == EventStatus.CANCELLED) {
+            logger.warn("Event already cancelled: {}", id);
             throw new RuntimeException("Event is already cancelled");
-
+        }
+        
         event.setStatus(EventStatus.CANCELLED);
         eventRepository.save(event);
+        logger.info("Event cancelled successfully: eventId={}", id);
         return "Event cancelled successfully";
     }
 
@@ -145,12 +198,22 @@ public class EventService {
         long cancelled = allEvents.stream()
                 .filter(e -> e.getStatus() == EventStatus.CANCELLED)
                 .count();
+        double totalEarned = 0.0;
+        for (Event e : allEvents) {
+        List<Booking> bookings = bookingRepository.findByEventId(e.getId());
+            for (Booking b : bookings) {
+                if (b.getBookingStatus() == BookingStatus.CONFIRMED) {
+                    totalEarned += b.getTotalAmount();
+                }
+            }
+        }
 
         return java.util.Map.of(
                 "total", total,
                 "active", active,
                 "past", past,
-                "cancelled", cancelled);
+                "cancelled", cancelled,
+                "totalEarned", (long) totalEarned);
     }
 
     // get event by ID (for both organizer and customer)
@@ -159,5 +222,18 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + id));
         return eventMapper.mapToDTO(event);
     }
+    
+        //  event listing for customers. this will be shown at home page
+    public List<EventResponseDTO> getAllUpcomingEvents() {
+    // making a list to store all the upcoming events 
+    List<Event> upcomingEvents = eventRepository.findByStatusAndEventDateTimeAfter(
+            EventStatus.ACTIVE, LocalDateTime.now()
+    );
 
+    logger.info("Fetched {} upcoming events for public listing", upcomingEvents.size());
+
+    return upcomingEvents.stream()
+            .map(eventMapper::mapToDTO)
+            .collect(Collectors.toList());
+    }
 }
