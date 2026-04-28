@@ -1,13 +1,19 @@
 console.log("JS loaded");
+
+function toast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.innerHTML = msg; 
+  t.className = "toast " + type + " show";
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
 const loginForm = document.getElementById("loginForm");
 
 if (!loginForm) {
-  console.log(" loginForm not found");
+  console.log("loginForm not found");
 } else {
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
-
-    alert("Form submitted ✅");
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -25,14 +31,12 @@ if (!loginForm) {
 
       const result = await response.json();
 
-      console.log("FULL RESPONSE  " + JSON.stringify(result));
+      console.log("FULL RESPONSE ", result);
 
       if (response.ok) {
-        // Save token & role
         localStorage.setItem("token", result.token);
         localStorage.setItem("role", result.role);
 
-        // Normalize role safely
         let role = "";
 
         if (result.role) {
@@ -41,19 +45,27 @@ if (!loginForm) {
           role = result.roles[0].toString().toUpperCase().trim();
         }
 
-        //  Role-based redirect
+        toast("Login successful ✅", "success");
+
         if (role.includes("ORGANIZER")) {
-          console.log("Redirecting to dashboard ");
-          window.location.href = "dashboard.html";
+          console.log("Redirecting to dashboard");
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1500);
         } else {
           console.log("Redirecting to index");
-          window.location.href = "index.html";
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
         }
       } else {
-        alert("❌ " + (result.message || "Login failed"));
+        toast(result.message || "Login failed ", "error");
       }
     } catch (error) {
-      alert("⚠️ Server error. Try again.");
+      toast(
+        '<i class="fa-solid fa-triangle-exclamation"></i> Server error. Try again.',
+        "error",
+      );
     }
   });
 }
