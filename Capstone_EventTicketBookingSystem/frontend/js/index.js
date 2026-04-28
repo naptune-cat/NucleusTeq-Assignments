@@ -29,7 +29,7 @@ async function loadEvents() {
     renderEvents(allEvents);
   } catch (e) {
     document.getElementById("eventsGrid").innerHTML =
-      `<div style="grid-column:1/-1" class="state-box"><div class="state-icon">⚠️</div><h3>Could not load events</h3><p>Make sure the server is running</p></div>`;
+      `<div style="grid-column:1/-1" class="state-box"><div class="state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Could not load events</h3><p>Make sure the server is running</p></div>`;
   }
 }
 
@@ -62,18 +62,18 @@ document.getElementById("searchInput").addEventListener("input", filterEvents);
 
 function categoryEmoji(cat) {
   const map = {
-    technology: "💻",
-    music: "🎵",
-    sports: "⚽",
-    art: "🎨",
-    food: "🍕",
-    comedy: "😂",
-    dance: "💃",
-    business: "💼",
-    health: "🏥",
-    gaming: "🎮",
+    technology: '<i class="fa-solid fa-laptop-code"></i>',
+    music: '<i class="fa-solid fa-music"></i>',
+    sports: '<i class="fa-solid fa-futbol"></i>',
+    art: '<i class="fa-solid fa-palette"></i>',
+    food: '<i class="fa-solid fa-pizza-slice"></i>',
+    comedy: '<i class="fa-solid fa-face-laugh-squint"></i>',
+    dance: '<i class="fa-solid fa-person-dress"></i>',
+    business: '<i class="fa-solid fa-briefcase"></i>',
+    health: '<i class="fa-solid fa-hospital"></i>',
+    gaming: '<i class="fa-solid fa-gamepad"></i>',
   };
-  return map[(cat || "").toLowerCase()] || "🎪";
+  return map[(cat || "").toLowerCase()] || '<i class="fa-solid fa-tent"></i>';
 }
 
 function renderEvents(events) {
@@ -81,7 +81,7 @@ function renderEvents(events) {
   document.getElementById("eventsCount").textContent =
     events.length + " event" + (events.length !== 1 ? "s" : "") + " found";
   if (!events.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1" class="state-box"><div class="state-icon">🎫</div><h3>No events found</h3><p>Try a different search or filter</p></div>`;
+    grid.innerHTML = `<div style="grid-column:1/-1" class="state-box"><div class="state-icon"><i class="fa-solid fa-ticket"></i></div><h3>No events found</h3><p>Try a different search or filter</p></div>`;
     return;
   }
   grid.innerHTML = "";
@@ -110,9 +110,9 @@ function renderEvents(events) {
           <div class="card-category">${e.category || "General"}</div>
           <div class="card-name">${e.eventName}</div>
           <div class="card-meta">
-            <div class="card-meta-row">📅 ${dt.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</div>
-            <div class="card-meta-row">⏰ ${dt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</div>
-            <div class="card-meta-row">📍 ${e.venue}</div>
+            <div class="card-meta-row"><i class="fa-regular fa-calendar"></i> ${dt.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</div>
+            <div class="card-meta-row"><i class="fa-regular fa-clock"></i> ${dt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</div>
+            <div class="card-meta-row"><i class="fa-solid fa-location-dot"></i> ${e.venue}</div>
           </div>
           <div class="card-seats">
             <span class="seats-text">Availability</span>
