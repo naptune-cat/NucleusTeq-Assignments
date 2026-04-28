@@ -2,7 +2,7 @@ console.log("JS loaded");
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
-  t.innerHTML = msg; 
+  t.innerHTML = msg;
   t.className = "toast " + type + " show";
   setTimeout(() => t.classList.remove("show"), 3000);
 }
@@ -13,10 +13,17 @@ if (!loginForm) {
   console.log("loginForm not found");
 } else {
   loginForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
-
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    if (!email || !password) {
+      toast("Please fill in all fields", "error");
+      e.preventDefault();
+      return;
+    }
+    
+    e.preventDefault();
+
+
 
     const userData = { email, password };
 
