@@ -10,9 +10,30 @@ function togglePassword(id, btn) {
   }
 }
 
+function toast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + type + " show";
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
 const registerForm = document.getElementById("registerForm");
 const phoneInput = document.getElementById("phone");
 const phoneError = document.getElementById("phoneError");
+
+const nameInput = document.getElementById("fullName");
+const nameError = document.getElementById("nameError");
+
+nameInput.addEventListener("blur", function () {
+  const pattern = new RegExp(this.pattern);
+  if (this.value && !pattern.test(this.value)) {
+    nameError.textContent = this.title;
+    nameInput.style.border = "1px solid red";
+  } else if (this.value) {
+    nameError.textContent = "";
+    nameInput.style.border = "1px solid green";
+  }
+});
 
 phoneInput.addEventListener("input", function () {
   this.value = this.value.replace(/[^0-9]/g, "");
@@ -43,6 +64,33 @@ emailInput.addEventListener("blur", function () {
   }
 });
 
+const passwordInput = document.getElementById("password");
+const passwordError = document.getElementById("passwordError");
+
+passwordInput.addEventListener("blur", function () {
+  const pattern = new RegExp(this.pattern);
+  if (this.value && !pattern.test(this.value)) {
+    passwordError.textContent = this.title;
+    passwordInput.style.border = "1px solid red";
+  } else if (this.value) {
+    passwordError.textContent = "";
+    passwordInput.style.border = "1px solid green";
+  }
+});
+
+const confirmPasswordInput = document.getElementById("confirmPassword");
+const confirmPasswordError = document.getElementById("confirmPasswordError");
+
+confirmPasswordInput.addEventListener("blur", function () {
+  if (this.value && this.value !== passwordInput.value) {
+    confirmPasswordError.textContent = "Passwords do not match";
+    confirmPasswordInput.style.border = "1px solid red";
+  } else if (this.value) {
+    confirmPasswordError.textContent = "";
+    confirmPasswordInput.style.border = "1px solid green";
+  }
+});
+
 registerForm.addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -55,7 +103,7 @@ registerForm.addEventListener("submit", async function (e) {
 
   console.log(password, confirmPassword);
   if (password !== confirmPassword) {
-    alert("Passwords do not match");
+    toast("Passwords do not match", "error");
     return;
   }
 
@@ -79,15 +127,17 @@ registerForm.addEventListener("submit", async function (e) {
     const message = await response.text();
 
     if (response.ok) {
-      alert("✔️ " + message);
+      toast(message, "success");
 
       registerForm.reset();
-      window.location.href = "./login.html";
+      setTimeout(() => {
+        window.location.href = "./login.html";
+      }, 1500);
     } else {
-      alert("❌ " + message);
+      toast(message, "error");
     }
   } catch (error) {
     console.error("Error:", error);
-    alert("Something went wrong. Please try again.");
+    toast("Something went wrong. Please try again.", "error");
   }
 });
