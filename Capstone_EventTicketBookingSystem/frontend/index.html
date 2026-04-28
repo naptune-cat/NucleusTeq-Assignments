@@ -9,10 +9,11 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./css/index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   </head>
   <body>
     <nav class="navbar">
-      <div class="nav-logo">Evently 🎟</div>
+      <div class="nav-logo">Evently <i class="fa-solid fa-ticket"></i></div>
       <div class="nav-links">
         <div class="nav-user">
           <div class="avatar" id="avatarInitial">U</div>
@@ -31,7 +32,7 @@
     </nav>
 
     <div class="hero">
-      <div class="hero-tag">✨ Live Events Near You</div>
+      <div class="hero-tag"><i class="fa-solid fa-star"></i> Live Events Near You</div>
       <h1>Find Your Next<br /><span>Unforgettable</span> Experience</h1>
       <p>
         Browse events — music, tech, sports, and more. Book your tickets in
@@ -50,16 +51,16 @@
           All Events
         </button>
         <button class="chip" onclick="setFilter('Technology', this)">
-          💻 Technology
+          <i class="fa-solid fa-laptop-code"></i> Technology
         </button>
         <button class="chip" onclick="setFilter('Music', this)">
-          🎵 Music
+          <i class="fa-solid fa-music"></i> Music
         </button>
         <button class="chip" onclick="setFilter('Sports', this)">
-          ⚽ Sports
+          <i class="fa-solid fa-futbol"></i> Sports
         </button>
-        <button class="chip" onclick="setFilter('Art', this)">🎨 Art</button>
-        <button class="chip" onclick="setFilter('Food', this)">🍕 Food</button>
+        <button class="chip" onclick="setFilter('Art', this)"><i class="fa-solid fa-palette"></i> Art</button>
+        <button class="chip" onclick="setFilter('Food', this)"><i class="fa-solid fa-pizza-slice"></i> Food</button>
       </div>
     </div>
 

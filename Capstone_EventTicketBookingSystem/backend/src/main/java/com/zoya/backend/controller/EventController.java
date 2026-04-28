@@ -40,7 +40,7 @@ public class EventController {
         return ResponseEntity.ok(eventService.getOrganizerEvents(email));
     }
 
-    // organizer stats which willbe shown in dashboard
+    // organizer stats which will be shown in dashboard
     @GetMapping("/organizer/stats")
     public ResponseEntity<Map<String, Long>> getStats(
             @RequestAttribute("userEmail") String email) {
@@ -67,5 +67,12 @@ public class EventController {
             @PathVariable Long id,
             @RequestAttribute("userEmail") String email) {
         return ResponseEntity.ok(eventService.cancelEvent(id, email));
+    }
+
+    /*public no auth needed available in home page for all the customers to see upcoming events*/
+     
+    @GetMapping
+    public ResponseEntity<List<EventResponseDTO>> getAllUpcomingEvents() {
+        return ResponseEntity.ok(eventService.getAllUpcomingEvents());
     }
 }

@@ -46,8 +46,8 @@ public class BookingService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + userEmail));
 
-        Event event = eventRepository.findById(request.getEventId())
-                .orElseThrow(() -> new EventNotFoundException("Event not found: " + request.getEventId()));
+        Event event = eventRepository.findByIdWithLock(request.getEventId())
+        .orElseThrow(() -> new EventNotFoundException("Event not found"));
 
         // Validations
         if (event.getStatus() == EventStatus.CANCELLED) {
@@ -105,7 +105,9 @@ public class BookingService {
             throw new InvalidBookingException("Booking is not in PENDING state.");
         }
 
-        Event event = booking.getEvent();
+        Event event = eventRepository.findByIdWithLock(booking.getEvent().getId())
+            .orElseThrow(() -> new EventNotFoundException("Event not found."));
+
 
         // Re checking availability again because seats might have changed since PENDING
         // to avoid race condition

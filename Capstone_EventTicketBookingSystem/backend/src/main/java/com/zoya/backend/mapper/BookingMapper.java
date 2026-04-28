@@ -25,6 +25,9 @@ public class BookingMapper {
         dto.setBookingStatus(booking.getBookingStatus());
         dto.setBookingTime(booking.getBookingTime());
         dto.setCancellationTime(booking.getCancellationTime());
+        dto.setUserName(booking.getUser().getName());
+        dto.setUserEmail(booking.getUser().getEmail());
+        dto.setBookingId(booking.getId());
         return dto;
     }
     
