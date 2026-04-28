@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evently — Payment</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/payment.css"
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-logo">Evently <i class="fa-solid fa-ticket"></i></div>
+      <button class="back-btn" onclick="history.back()">← Back</button>
+    </nav>
+
+    <div class="page" id="pageContent">
+      <div style="grid-column: 1/-1"><div class="spinner-sm"></div></div>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="overlay-card" id="overlayCard">
+        <div class="proc-ring"></div>
+        <div class="proc-title">Processing Payment</div>
+        <div class="proc-sub">Please wait, do not close this page...</div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="./js/payment.js"></script>
+  </body>
+</html>
