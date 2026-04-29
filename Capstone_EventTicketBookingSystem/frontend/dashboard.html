@@ -4,11 +4,15 @@
     <meta charset="UTF-8" />
     <title>Organizer Dashboard</title>
     <link rel="stylesheet" href="./css/dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
   </head>
   <body>
     <!-- Navbar -->
     <nav class="navbar">
-      <h2>Evently 🎟</h2>
+      <h2>Evently <i class="fa-solid fa-ticket"></i></h2>
       <button onclick="logout()">Logout</button>
     </nav>
     <div id="welcome"></div>
@@ -17,9 +21,15 @@
       <!-- Sidebar -->
       <div class="sidebar">
         <ul>
-          <li onclick="showSection('dashboard')">🏠 Dashboard</li>
-          <li onclick="showSection('events')">🎟 My Events</li>
-          <li onclick="showSection('create')">➕ Create Event</li>
+          <li onclick="showSection('dashboard')">
+            <i class="fa-solid fa-house"></i> Dashboard
+          </li>
+          <li onclick="showSection('events')">
+            <i class="fa-solid fa-ticket"></i> My Events
+          </li>
+          <li onclick="showSection('create')">
+            <i class="fa-solid fa-plus"></i> Create Event
+          </li>
         </ul>
       </div>
 
@@ -33,6 +43,7 @@
             <div class="card">Active: <span id="active"></span></div>
             <div class="card">Past: <span id="past"></span></div>
             <div class="card">Cancelled: <span id="cancelled"></span></div>
+            <div class="card">Total Earned: <span id="totalEarned"></span></div>
           </div>
         </div>
 
@@ -45,26 +56,45 @@
         <!-- Create Event -->
         <div id="create" class="section hidden">
           <h2>Create Event</h2>
-
-          <form id="eventForm">
-            <input type="text" placeholder="Event Name" id="name" required />
-            <input type="text" placeholder="Venue" id="venue" required />
-            <input type="datetime-local" id="date" required />
-            <input type="number" placeholder="Seats" id="seats" required />
-            <input type="number" placeholder="Price" id="price" required />
-            <input
-              type="text"
-              placeholder="Description"
-              id="description"
-              required
-            />
-            <input type="text" placeholder="Category" id="category" required />
-            <button type="submit">Create</button>
-          </form>
+          <div id="form-div">
+            <form id="eventForm">
+              <input type="text" placeholder="Event Name" id="name" required />
+              <input type="text" placeholder="Venue" id="venue" required />
+              <input type="datetime-local" id="date" required />
+              <input
+                type="number"
+                placeholder="Seats"
+                id="seats"
+                min="1"
+                required
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                id="price"
+                min="50"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                id="description"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Category"
+                id="category"
+                required
+              />
+              <button type="submit">Create</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
 
+    <div class="toast" id="toast"></div>
     <script src="./js/dashboard.js"></script>
   </body>
 </html>
