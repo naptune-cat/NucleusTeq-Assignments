@@ -51,12 +51,13 @@ public class EventService {
     // for creating event using event form data and organizer email
    public EventResponseDTO createEvent(EventRequestDTO request, String organizerEmail) {
 
-    logger.info("Creating event '{}' by organizer={}", request.getEventName(), organizerEmail);
+    logger.info("creating a new event '{}' for organizer: {}", request.getEventName(), organizerEmail);
 
+    // checking if the organizer actually exists in our database
     Optional<User> organizerExists = userRepository.findByEmail(organizerEmail);
     
     if (organizerExists.isEmpty()) {
-        logger.error("Organizer not found: {}", organizerEmail);
+        logger.error("could not find organizer with email: {}", organizerEmail);
         throw new UserNotFoundException("Organizer not found");
     }
 
@@ -83,7 +84,7 @@ public class EventService {
 
     Event saved = eventRepository.save(event);
 
-    logger.info("Event created successfully with id={}", saved.getId());
+    logger.info("successfully saved the new event with id: {}", saved.getId());
 
     return eventMapper.mapToDTO(saved);
 }
@@ -91,12 +92,12 @@ public class EventService {
     // get event by organizer 
     public List<EventResponseDTO> getOrganizerEvents(String organizerEmail) {
 
-        logger.info("Fetching events for organizer={}", organizerEmail);
+        logger.info("grabbing all events for organizer: {}", organizerEmail);
 
-        // checking if organizer exists
+        // checking if organizer exists first
         User organizer = userRepository.findByEmail(organizerEmail)
                 .orElseThrow(() -> {
-                    logger.error("Organizer not found: {}", organizerEmail);
+                    logger.error("organizer not found: {}", organizerEmail);
                     return new RuntimeException("Organizer not found");
                 });
 
@@ -127,7 +128,7 @@ public class EventService {
 
         // checking Authorization. only the organizer of this event can update
         if (!event.getOrganizer().getEmail().equals(organizerEmail)) {
-        logger.warn("Unauthorized update attempt for eventId={} by {}", id, organizerEmail);
+        logger.warn("someone tried to update an event they dont own: eventId={}, user={}", id, organizerEmail);
         throw new RuntimeException("Unauthorized: You don't own this event");
         }
 
@@ -138,6 +139,7 @@ public class EventService {
             throw new RuntimeException("Cannot update event within 4 hours of start time");
         }
 
+        // making sure they dont reduce seats below what is already booked
         if (dto.getTotalSeats() < event.getBookedSeats()) {
             logger.warn("Invalid seat reduction attempt for eventId={}", id);
             throw new RuntimeException(
@@ -163,6 +165,7 @@ public class EventService {
                 return new EventNotFoundException("Event not found");
             });
 
+        // security check so others cant cancel it
         if (!event.getOrganizer().getEmail().equals(organizerEmail)) {
             logger.warn("Unauthorized cancel attempt for eventId={} by {}", id, organizerEmail);
             throw new RuntimeException("Unauthorized: You don't own this event");
@@ -218,13 +221,18 @@ public class EventService {
 
     // get event by ID (for both organizer and customer)
     public EventResponseDTO getEventById(Long id) {
+        logger.info("fetching event details for id: {}", id);
         Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + id));
+                .orElseThrow(() -> {
+                    logger.error("event not found for id: {}", id);
+                    return new EventNotFoundException("Event not found with id: " + id);
+                });
         return eventMapper.mapToDTO(event);
     }
     
         //  event listing for customers. this will be shown at home page
     public List<EventResponseDTO> getAllUpcomingEvents() {
+    logger.info("fetching all upcoming events to show on home page");
     // making a list to store all the upcoming events 
     List<Event> upcomingEvents = eventRepository.findByStatusAndEventDateTimeAfter(
             EventStatus.ACTIVE, LocalDateTime.now()

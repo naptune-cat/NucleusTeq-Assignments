@@ -3,6 +3,8 @@ package com.zoya.backend.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import com.zoya.backend.repository.UserRepository;
 
 @Service
 public class AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+    
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -31,9 +35,13 @@ public class AuthService {
     }
     
     public String registerUser(RegisterRequest request) {
+        logger.info("someone is trying to register with email: {}", request.getEmail());
+        
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
+        // checking if email is already used
         if (existingUser.isPresent()) {
+            logger.warn("registration failed because email already exists: {}", request.getEmail());
             throw new UserAlreadyExistsException("Email already exists");
         }
 
@@ -54,33 +62,38 @@ public class AuthService {
             user.setRole(UserRole.CUSTOMER);
         }
         user.setPhone(request.getPhone());
+        // saving the user in database
         userRepository.save(user);
+        logger.info("successfully registered new user: {}", request.getEmail());
 
         return "User registered Successfully!";
     }
     
  
         public LoginResponse loginUser(LoginRequest request) {
+        logger.info("login attempt for email: {}", request.getEmail());
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
         // if email isn't registered 
         if (existingUser.isEmpty()) {
+            logger.warn("login failed because user not found: {}", request.getEmail());
             throw new UserNotFoundException("User not found");
         }
 
         User user = existingUser.get();
 
+        // verifying the password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            logger.warn("login failed due to wrong password for user: {}", request.getEmail());
             throw new InvalidPasswordException("Invalid password");
         }
 
         /*  it will generate token using email */
         String token = jwtService.generateToken(user.getEmail(),user.getRole().name());
+        logger.info("login successful and token generated for user: {}", request.getEmail());
 
         return new LoginResponse(token, user.getRole().name(), "Login successful");
 
     }
 
 }
-
-
