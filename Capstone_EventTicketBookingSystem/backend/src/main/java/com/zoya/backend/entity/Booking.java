@@ -1,5 +1,6 @@
 package com.zoya.backend.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.zoya.backend.enums.BookingStatus;
@@ -34,8 +35,8 @@ public class Booking {
     @Column(nullable = false)
     private Integer numberOfTickets;
 
-    @Column(nullable = false)
-    private Double totalAmount;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -51,7 +52,7 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Long id, User user, Event event, Integer numberOfTickets, Double totalAmount,
+    public Booking(Long id, User user, Event event, Integer numberOfTickets, BigDecimal totalAmount,
             BookingStatus bookingStatus, LocalDateTime bookingTime, LocalDateTime cancellationTime) {
         this.id = id;
         this.user = user;
@@ -80,7 +81,7 @@ public class Booking {
         return numberOfTickets;
     }
 
-    public Double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
@@ -113,7 +114,7 @@ public class Booking {
         this.numberOfTickets = numberOfTickets;
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 

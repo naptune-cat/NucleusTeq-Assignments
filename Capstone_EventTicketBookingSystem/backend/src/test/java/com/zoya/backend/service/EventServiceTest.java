@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -51,7 +52,7 @@ class EventServiceTest {
         event.setTotalSeats(100);
         event.setAvailableSeats(100);
         event.setBookedSeats(0);
-        event.setTicketPrice(499.0);
+        event.setTicketPrice(BigDecimal.valueOf(499.00));
         event.setStatus(EventStatus.ACTIVE);
         event.setOrganizer(organizer);
 
@@ -61,7 +62,7 @@ class EventServiceTest {
         requestDTO.setEventDateTime(LocalDateTime.now().plusDays(10));
         requestDTO.setVenue("Bangalore Hall 1");
         requestDTO.setTotalSeats(100);
-        requestDTO.setTicketPrice(499.0);
+        requestDTO.setTicketPrice(BigDecimal.valueOf(499.00));
     }
 
     //  Create Event Tests 

@@ -1,5 +1,6 @@
 package com.zoya.backend.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -182,7 +183,7 @@ public class EventService {
     }
 
     //statistics for organizer
-    public java.util.Map<String, Long> getOrganizerStats(String organizerEmail) {
+    public java.util.Map<String, Object> getOrganizerStats(String organizerEmail) {
         User organizer = userRepository.findByEmail(organizerEmail)
                 .orElseThrow(() -> new RuntimeException("Organizer not found"));
 
@@ -201,12 +202,12 @@ public class EventService {
         long cancelled = allEvents.stream()
                 .filter(e -> e.getStatus() == EventStatus.CANCELLED)
                 .count();
-        double totalEarned = 0.0;
+        BigDecimal totalEarned = BigDecimal.ZERO;
         for (Event e : allEvents) {
         List<Booking> bookings = bookingRepository.findByEventId(e.getId());
             for (Booking b : bookings) {
                 if (b.getBookingStatus() == BookingStatus.CONFIRMED) {
-                    totalEarned += b.getTotalAmount();
+                    totalEarned = totalEarned.add(b.getTotalAmount());
                 }
             }
         }
@@ -216,7 +217,7 @@ public class EventService {
                 "active", active,
                 "past", past,
                 "cancelled", cancelled,
-                "totalEarned", (long) totalEarned);
+                "totalEarned",totalEarned);
     }
 
     // get event by ID (for both organizer and customer)

@@ -47,7 +47,7 @@ public class EventController {
 
     // organizer stats which will be shown in dashboard
     @GetMapping("/organizer/stats")
-    public ResponseEntity<Map<String, Long>> getStats(
+    public ResponseEntity<Map<String, Object>> getStats(
             @RequestAttribute("userEmail") String email) {
         logger.info("fetching dashboard stats for organizer {}", email);
         return ResponseEntity.ok(eventService.getOrganizerStats(email));

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -83,7 +84,7 @@ public class BookingService {
         }
 
         // calculation of amount
-        double totalAmount = event.getTicketPrice() * request.getNumberOfTickets();
+        BigDecimal totalAmount = event.getTicketPrice().multiply(BigDecimal.valueOf(request.getNumberOfTickets()));
 
         Booking booking = new Booking();
         booking.setUser(user);

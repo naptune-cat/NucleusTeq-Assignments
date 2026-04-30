@@ -1,5 +1,6 @@
 package com.zoya.backend.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.zoya.backend.enums.EventStatus;
@@ -15,7 +16,7 @@ public class EventResponseDTO {
     private Integer totalSeats;
     private Integer availableSeats;
     private Integer bookedSeats;
-    private Double ticketPrice;
+    private BigDecimal ticketPrice;
     private String organizerName; 
     private String organizerEmail;  
     private EventStatus status;
@@ -62,7 +63,7 @@ public class EventResponseDTO {
         return bookedSeats;        
     }
 
-    public Double getTicketPrice() {
+    public BigDecimal getTicketPrice() {
         return ticketPrice;        
     }
 
@@ -120,7 +121,7 @@ public class EventResponseDTO {
         this.bookedSeats = bookedSeats;        
     }
 
-    public void setTicketPrice(Double ticketPrice) {
+    public void setTicketPrice(BigDecimal ticketPrice) {
         this.ticketPrice = ticketPrice;        
     }
 

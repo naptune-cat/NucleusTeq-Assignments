@@ -1,13 +1,15 @@
 package com.zoya.backend.dto;
 
 import com.zoya.backend.enums.PaymentStatus;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class PaymentResponseDTO {
 
     private Long paymentId;
     private Long bookingId;
-    private Double amount;
+    private BigDecimal  amount;
     private PaymentStatus paymentStatus;
     private String paymentMethod;
     private String transactionId;
@@ -30,11 +32,11 @@ public class PaymentResponseDTO {
         this.bookingId = bookingId;        
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;        
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;        
     }
 

@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -55,7 +56,7 @@ class BookingServiceTest {
         event.setTotalSeats(100);
         event.setAvailableSeats(50);
         event.setBookedSeats(50);
-        event.setTicketPrice(500.0);
+        event.setTicketPrice(BigDecimal.valueOf(500.00));
         event.setStatus(EventStatus.ACTIVE);
         event.setOrganizer(organizer);
 
@@ -64,7 +65,7 @@ class BookingServiceTest {
         booking.setUser(customer);
         booking.setEvent(event);
         booking.setNumberOfTickets(2);
-        booking.setTotalAmount(1000.0);
+        booking.setTotalAmount(BigDecimal.valueOf(1000.00));
         booking.setBookingStatus(BookingStatus.PENDING);
         booking.setBookingTime(LocalDateTime.now());
 
@@ -156,7 +157,7 @@ class BookingServiceTest {
         Payment payment = new Payment();
         payment.setId(1L);
         payment.setBooking(booking);
-        payment.setAmount(1000.0);
+        payment.setAmount(BigDecimal.valueOf(1000.00));
         payment.setPaymentStatus(PaymentStatus.SUCCESSFUL);
         payment.setTransactionId("txn-123");
         payment.setPaymentTime(LocalDateTime.now());

@@ -2,6 +2,8 @@ package com.zoya.backend.entity;
 
 import com.zoya.backend.enums.PaymentStatus;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,8 +18,8 @@ public class Payment {
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
-    @Column(nullable = false)
-    private Double amount;
+    @Column(nullable = false, precision = 10, scale = 2 )
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -36,7 +38,7 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Long id, Booking booking, Double amount, PaymentStatus paymentStatus,
+    public Payment(Long id, Booking booking, BigDecimal amount, PaymentStatus paymentStatus,
             String paymentMethod, String transactionId, LocalDateTime paymentTime) {
         this.id = id;
         this.booking = booking;
@@ -56,7 +58,7 @@ public class Payment {
         this.booking = booking;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -86,7 +88,7 @@ public class Payment {
         return booking;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 

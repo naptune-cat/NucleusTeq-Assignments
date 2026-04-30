@@ -1,6 +1,8 @@
 package com.zoya.backend.dto;
 
 import com.zoya.backend.enums.BookingStatus;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BookingResponseDTO {
@@ -13,7 +15,7 @@ public class BookingResponseDTO {
     private String venue;
     private LocalDateTime eventDateTime;
     private Integer numberOfTickets;
-    private Double totalAmount;
+    private BigDecimal totalAmount;
     private BookingStatus bookingStatus;
     private LocalDateTime bookingTime;
     private LocalDateTime cancellationTime;
@@ -92,11 +94,11 @@ public class BookingResponseDTO {
         this.numberOfTickets = numberOfTickets;        
     }
 
-    public Double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;        
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;        
     }
 

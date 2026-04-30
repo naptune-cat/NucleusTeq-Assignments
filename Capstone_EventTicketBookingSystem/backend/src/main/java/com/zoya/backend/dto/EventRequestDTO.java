@@ -1,12 +1,13 @@
 package com.zoya.backend.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class EventRequestDTO {
@@ -23,17 +24,16 @@ public class EventRequestDTO {
     private LocalDateTime eventDateTime;
 
     @NotBlank(message = "Venue is required")
-    @Pattern(regexp = "^[a-zA-Z0-9 ,.-]{2,}$", 
-         message = "Venue must be valid")
+    @Size(min=2, message = "Venue must be at least 2 characters")
     private String venue;
 
     @NotNull(message = "Total seats required")
-    @Min(value = 1, message = "Seats must be positive")
+    @Positive( message = "Seats must be positive")
     private Integer totalSeats;
 
     @NotNull(message = "Ticket price required")
     @Min(value = 0, message = "Price cannot be negative")
-    private Double ticketPrice;
+    private BigDecimal ticketPrice;
 
     private String category;
 
@@ -77,11 +77,11 @@ public class EventRequestDTO {
         this.totalSeats = totalSeats;        
     }
 
-    public Double getTicketPrice() {
+    public BigDecimal getTicketPrice() {
         return ticketPrice;
     }
 
-    public void setTicketPrice(Double ticketPrice) {
+    public void setTicketPrice(BigDecimal ticketPrice) {
         this.ticketPrice = ticketPrice;        
     }
 
