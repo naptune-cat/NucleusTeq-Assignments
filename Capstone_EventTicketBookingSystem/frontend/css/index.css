@@ -64,7 +64,7 @@ body {
 .nav-btn.ghost {
   background: transparent;
   border: 1px solid var(--border2);
-  color: var(--muted);
+  color: white;
 }
 .nav-btn.ghost:hover {
   border-color: var(--accent);
@@ -183,7 +183,7 @@ body {
   border-radius: 20px;
   border: 1px solid var(--border2);
   background: transparent;
-  color: var(--muted);
+  color: white;
   font-family: "DM Sans", sans-serif;
   font-size: 13px;
   cursor: pointer;
