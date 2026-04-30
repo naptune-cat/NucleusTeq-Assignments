@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+
 import java.util.List;
 
 @RestController
@@ -79,19 +79,5 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.getBookingsForEvent(userEmail, eventId));
     }
 
-    // Organizer will download attendees list
-    @GetMapping("/event/{eventId}/export")
-    public void exportAttendees(
-            @RequestAttribute("userEmail") String userEmail,
-            @PathVariable Long eventId,
-            HttpServletResponse response) throws IOException {
-        
-        logger.info("organizer {} is downloading attendees list for event {}", userEmail, eventId);
-        List<BookingResponseDTO> attendees = bookingService.getBookingsForEvent(userEmail, eventId);
-        
-        response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=\"attendees_event_" + eventId + ".csv\"");
-        
-        exportService.exportAttendeesToCsv(response.getWriter(), attendees);
-    }
+  
 }

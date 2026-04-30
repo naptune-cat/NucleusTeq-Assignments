@@ -14,14 +14,33 @@ public class ExportService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExportService.class);
 
+    private final BookingService bookingService;
+
+    // constructor injection
+    public ExportService(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
+
+    // exportEventAttendees handles both fetching and exporting
+    public void exportEventAttendees(String email, Long eventId, PrintWriter writer) {
+        logger.info("Exporting attendees for event {}", eventId);
+
+        List<BookingResponseDTO> attendees =
+                bookingService.getBookingsForEvent(email, eventId);
+
+        exportAttendeesToCsv(writer, attendees);
+    }
+
+    // CSV writing 
     public void exportAttendeesToCsv(PrintWriter writer, List<BookingResponseDTO> attendees) {
-        logger.info("starting to export attendees to csv file");
-        // writing the header row first
+        logger.info("Starting CSV generation");
+
+        // header
         writer.println("Booking ID,Customer Name,Customer Email,Tickets Booked,Status,Booking Time");
 
-        // writing the actual data row by row
+        // data rows
         for (BookingResponseDTO attendee : attendees) {
-            writer.println(String.format("%s,%s,%s,%s,%s,%s",
+            writer.println(String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"",
                     attendee.getBookingId(),
                     attendee.getUserName(),
                     attendee.getUserEmail(),
@@ -30,6 +49,8 @@ public class ExportService {
                     attendee.getBookingTime()
             ));
         }
-        logger.info("finished writing all attendees to the csv file");
+
+        writer.flush(); // used to clear any buffered data 
+        logger.info("CSV export completed");
     }
 }
