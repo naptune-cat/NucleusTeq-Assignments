@@ -1,4 +1,4 @@
-console.log("JS loaded");
+console.log("login page script loaded successfully");
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
@@ -23,8 +23,7 @@ if (!loginForm) {
     
     e.preventDefault();
 
-
-
+    // packing up user credentials to send to backend
     const userData = { email, password };
 
     try {
@@ -41,6 +40,7 @@ if (!loginForm) {
       console.log("FULL RESPONSE ", result);
 
       if (response.ok) {
+        // saving tokens so user stays logged in
         localStorage.setItem("token", result.token);
         localStorage.setItem("role", result.role);
 
@@ -66,9 +66,11 @@ if (!loginForm) {
           }, 1500);
         }
       } else {
+        console.log("login failed:", result.message);
         toast(result.message || "Login failed ", "error");
       }
     } catch (error) {
+      console.error("something went wrong while logging in:", error);
       toast(
         '<i class="fa-solid fa-triangle-exclamation"></i> Server error. Try again.',
         "error",

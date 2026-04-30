@@ -3,7 +3,10 @@ const eventId = new URLSearchParams(location.search).get("id");
 let ticketPrice = 0,
   maxSeats = 0,
   qty = 1;
-if (!eventId) location.href = "index.html";
+if (!eventId) {
+  console.log("no event id found in url, sending back to home page");
+  location.href = "index.html";
+}
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
@@ -30,16 +33,21 @@ function categoryEmoji(cat) {
 
 function changeQty(d) {
   qty = Math.max(1, Math.min(maxSeats, qty + d));
+  console.log("user changed ticket quantity to:", qty);
+  // updating the ui with new quantity and total price
   document.getElementById("qtyVal").textContent = qty;
   document.getElementById("totalVal").textContent =
     "₹" + (ticketPrice * qty).toLocaleString("en-IN");
 }
 
 async function loadEvent() {
+  console.log("fetching event details for id:", eventId);
   try {
     const res = await fetch(`${BASE}/events/${eventId}`);
     if (!res.ok) throw new Error();
     const e = await res.json();
+    console.log("successfully loaded event details:", e.eventName);
+    
     ticketPrice = e.ticketPrice || 0;
     maxSeats = e.availableSeats || 0;
     const dt = new Date(e.eventDateTime);
@@ -108,18 +116,24 @@ async function loadEvent() {
           </div>
         </div>`;
   } catch (err) {
+    console.error("failed to load event details:", err);
     document.getElementById("pageContent").innerHTML =
       `<div style="text-align:center;padding:80px;"><div style="font-size:52px;opacity:0.4;"><i class="fa-solid fa-triangle-exclamation"></i></div><h3 style="font-family:'Syne',sans-serif;font-size:20px;margin:16px 0 8px;">Event not found</h3><p style="color:var(--muted);">This event may have been removed</p></div>`;
   }
 }
 
 function proceedToPayment() {
+  console.log("user clicked proceed to payment");
   if (!localStorage.getItem("token")) {
+    console.log("user is not logged in, cant proceed");
     toast("Please login first", "error");
     return;
   }
+  
+  // saving these so the payment page knows what we're paying for
   localStorage.setItem("pendingEventId", eventId);
   localStorage.setItem("pendingQty", qty);
+  console.log("redirecting to payment page...");
   location.href = "payment.html";
 }
 

@@ -24,6 +24,7 @@ const phoneError = document.getElementById("phoneError");
 const nameInput = document.getElementById("fullName");
 const nameError = document.getElementById("nameError");
 
+// checking if the user typed a valid name when they click away
 nameInput.addEventListener("blur", function () {
   const pattern = new RegExp(this.pattern);
   if (this.value && !pattern.test(this.value)) {
@@ -39,7 +40,7 @@ phoneInput.addEventListener("input", function () {
   this.value = this.value.replace(/[^0-9]/g, "");
 });
 
-// Blur pe length check
+// making sure phone number is exactly 10 digits when they leave the field
 phoneInput.addEventListener("blur", function () {
   if (this.value.length !== 10) {
     phoneError.textContent = "Phone number must be exactly 10 digits";
@@ -53,6 +54,7 @@ phoneInput.addEventListener("blur", function () {
 const emailInput = document.getElementById("email");
 const emailError = document.getElementById("emailError");
 
+// validating the email format
 emailInput.addEventListener("blur", function () {
   const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
   if (!gmailRegex.test(this.value)) {
@@ -93,6 +95,7 @@ confirmPasswordInput.addEventListener("blur", function () {
 
 registerForm.addEventListener("submit", async function (e) {
   e.preventDefault();
+  console.log("someone is trying to register");
 
   const fullName = document.getElementById("fullName").value.trim();
   const email = document.getElementById("email").value.trim();
@@ -101,7 +104,8 @@ registerForm.addEventListener("submit", async function (e) {
   const confirmPassword = document.getElementById("confirmPassword").value;
   const organizerCode = document.getElementById("organizerCode").value.trim();
 
-  console.log(password, confirmPassword);
+  // double checking passwords match
+  console.log("checking if passwords match...");
   if (password !== confirmPassword) {
     toast("Passwords do not match", "error");
     return;
@@ -115,6 +119,8 @@ registerForm.addEventListener("submit", async function (e) {
     organizerCode: organizerCode,
   };
 
+  console.log("sending registration data to the backend for:", email);
+
   try {
     const response = await fetch(`${BASE_URL}/register`, {
       method: "POST",
@@ -127,9 +133,11 @@ registerForm.addEventListener("submit", async function (e) {
     const message = await response.text();
 
     if (response.ok) {
+      console.log("registration successful!", message);
       toast(message, "success");
 
       registerForm.reset();
+      console.log("sending user to login page now");
       setTimeout(() => {
         window.location.href = "./login.html";
       }, 1500);
@@ -137,7 +145,7 @@ registerForm.addEventListener("submit", async function (e) {
       toast(message, "error");
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("something went wrong during registration:", error);
     toast("Something went wrong. Please try again.", "error");
   }
 });

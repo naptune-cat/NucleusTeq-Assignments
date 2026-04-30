@@ -1,6 +1,8 @@
 const BASE_URL = "http://localhost:8080/api/events";
 const eventId = localStorage.getItem("editEventId");
+// sending user back to dashboard if they didn't click edit from there
 if (!eventId) {
+  console.log("no event id found to edit, going back to dashboard");
   window.location.href = "dashboard.html";
 }
 function toast(msg, type = "success") {
@@ -23,8 +25,9 @@ if (!eventId) {
   window.location.href = "dashboard.html";
 }
 
-// to load xisting event data
+// to load existing event data so we can prefill the form
 async function loadEvent() {
+  console.log("fetching event details to edit for id:", eventId);
   try {
     const res = await fetch(`${BASE_URL}/${eventId}`, {
       headers: getHeaders(),
@@ -36,7 +39,9 @@ async function loadEvent() {
     }
 
     const e = await res.json();
+    console.log("loaded event data to edit:", e.eventName);
 
+    // filling up the inputs with what we got from the server
     document.getElementById("name").value = e.eventName;
     document.getElementById("venue").value = e.venue;
     document.getElementById("seats").value = e.totalSeats;
@@ -56,7 +61,9 @@ async function loadEvent() {
 // Submit — update API call
 document.getElementById("editForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  console.log("organizer submitted the edit form");
 
+  // packaging the updated data
   const data = {
     eventName: document.getElementById("name").value,
     description: document.getElementById("description").value,
@@ -75,12 +82,15 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
     });
 
     if (res.ok) {
+      console.log("event updated successfully!");
       toast("Event updated successfully!", "success");
       setTimeout(() => {
+        // cleaning up
         localStorage.removeItem("editEventId");
         window.location.href = "dashboard.html";
       }, 1500);
     } else {
+      console.log("failed to update event");
       const err = await res.json();
       toast("❌ " + (err.error || "Update failed"), "error");
     }

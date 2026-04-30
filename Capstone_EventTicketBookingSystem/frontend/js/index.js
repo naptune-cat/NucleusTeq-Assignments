@@ -1,14 +1,8 @@
 const BASE = "http://localhost:8080/api";
+console.log("home page script is ready");
+
 let allEvents = [];
 let activeFilter = "ALL";
-
-const name = localStorage.getItem("name") || "";
-if (name) {
-  document.getElementById("navName").textContent = name.split(" ")[0];
-  document.getElementById("avatarInitial").textContent = name
-    .charAt(0)
-    .toUpperCase();
-}
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
@@ -18,22 +12,27 @@ function toast(msg, type = "success") {
 }
 
 function logout() {
+  console.log("user logged out, clearing local storage");
   localStorage.clear();
   location.href = "login.html";
 }
 
 async function loadEvents() {
+  console.log("fetching all upcoming events from server...");
   try {
     const res = await fetch(`${BASE}/events`);
     allEvents = await res.json();
+    console.log("successfully loaded events:", allEvents.length);
     renderEvents(allEvents);
   } catch (e) {
+    console.error("failed to load events:", e);
     document.getElementById("eventsGrid").innerHTML =
       `<div style="grid-column:1/-1" class="state-box"><div class="state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Could not load events</h3><p>Make sure the server is running</p></div>`;
   }
 }
 
 function setFilter(cat, el) {
+  console.log("user clicked on category filter:", cat);
   activeFilter = cat;
   document
     .querySelectorAll(".chip")
@@ -45,16 +44,21 @@ function setFilter(cat, el) {
 function filterEvents() {
   const q = document.getElementById("searchInput").value.toLowerCase();
   let filtered = allEvents;
+  
+  // filtering by category if they selected one
   if (activeFilter !== "ALL")
     filtered = filtered.filter(
       (e) => (e.category || "").toLowerCase() === activeFilter.toLowerCase(),
     );
+    
+  // searching by name or venue
   if (q)
     filtered = filtered.filter(
       (e) =>
         e.eventName.toLowerCase().includes(q) ||
         (e.venue || "").toLowerCase().includes(q),
     );
+    
   renderEvents(filtered);
 }
 
@@ -127,7 +131,10 @@ function renderEvents(events) {
 }
 
 function goToEvent(id) {
+  console.log("user wants to view event details for id:", id);
+  // making sure they are logged in before booking
   if (!localStorage.getItem("token")) {
+    console.log("user not logged in, sending to login page");
     toast("Please login to book tickets", "error");
     setTimeout(() => (location.href = "login.html"), 1500);
     return;

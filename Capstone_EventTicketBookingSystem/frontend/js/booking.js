@@ -5,7 +5,10 @@ const qty = parseInt(localStorage.getItem("pendingQty") || "1");
 let selectedMethod = "UPI";
 let eventData = null;
 
-if (!token || !eventId) location.href = "index.html";
+if (!token || !eventId) {
+  console.log("missing token or event id, sending back to home page");
+  location.href = "index.html";
+}
 
 function hdrs(json = false) {
   const h = { Authorization: "Bearer " + token };
@@ -50,9 +53,12 @@ function catEmoji(cat) {
 }
 
 async function loadPage() {
+  console.log("loading payment page for event:", eventId);
   try {
     const res = await fetch(`${BASE}/events/${eventId}`);
     eventData = await res.json();
+    console.log("loaded event details for payment:", eventData.eventName);
+    
     const dt = new Date(eventData.eventDateTime);
     const total = (eventData.ticketPrice || 0) * qty;
 
@@ -103,15 +109,18 @@ async function loadPage() {
           <div class="secure-note">🔒 256-bit encrypted · Powered by Evently</div>
         </div>`;
   } catch (e) {
+    console.error("could not load event details:", e);
     toast("Failed to load event");
   }
 }
 
 async function processPayment() {
+  console.log("user clicked pay button, starting payment process...");
   document.getElementById("payBtn").disabled = true;
   document.getElementById("overlay").classList.add("show");
   try {
-    // Step 1 — Create PENDING booking
+    // Create PENDING booking
+    console.log("creating a pending booking first...");
     const bookRes = await fetch(`${BASE}/bookings`, {
       method: "POST",
       headers: hdrs(true),
@@ -121,6 +130,7 @@ async function processPayment() {
       }),
     });
     if (!bookRes.ok) {
+      console.log("failed to create pending booking");
       const err = await bookRes.json();
       document.getElementById("overlay").classList.remove("show");
       toast(err.message || "Booking failed");
@@ -128,11 +138,14 @@ async function processPayment() {
       return;
     }
     const booking = await bookRes.json();
+    console.log("pending booking created successfully:", booking.bookingId);
 
-    // Step 2 — Simulate processing delay
+    // Simulate processing delay
+    console.log("simulating payment delay...");
     await new Promise((r) => setTimeout(r, 2200));
 
-    // Step 3 — Confirm payment
+    // Confirm payment
+    console.log("confirming the payment now...");
     const payRes = await fetch(`${BASE}/bookings/payment`, {
       method: "POST",
       headers: hdrs(true),
@@ -142,6 +155,7 @@ async function processPayment() {
       }),
     });
     if (!payRes.ok) {
+      console.log("payment confirmation failed");
       const err = await payRes.json();
       document.getElementById("overlay").classList.remove("show");
       toast(err.message || "Payment failed");
@@ -149,6 +163,7 @@ async function processPayment() {
       return;
     }
     const payment = await payRes.json();
+    console.log("payment successful! transaction id:", payment.transactionId);
 
     // Step 4 — Show success
     document.getElementById("overlayCard").innerHTML = `
@@ -158,9 +173,11 @@ async function processPayment() {
         <div class="txn-id">Txn ID: ${payment.transactionId}</div>
         <button class="goto-btn" onclick="location.href='bookings.html'">View My Bookings →</button>`;
 
+    // clearing local storage so they don't accidentally book again
     localStorage.removeItem("pendingEventId");
     localStorage.removeItem("pendingQty");
   } catch (e) {
+    console.error("server error during payment:", e);
     document.getElementById("overlay").classList.remove("show");
     toast("Server error. Please try again.");
     document.getElementById("payBtn").disabled = false;
