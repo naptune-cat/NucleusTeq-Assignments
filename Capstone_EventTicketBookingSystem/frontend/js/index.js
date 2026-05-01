@@ -44,13 +44,13 @@ function setFilter(cat, el) {
 function filterEvents() {
   const q = document.getElementById("searchInput").value.toLowerCase();
   let filtered = allEvents;
-  
+
   // filtering by category if they selected one
   if (activeFilter !== "ALL")
     filtered = filtered.filter(
       (e) => (e.category || "").toLowerCase() === activeFilter.toLowerCase(),
     );
-    
+
   // searching by name or venue
   if (q)
     filtered = filtered.filter(
@@ -58,26 +58,36 @@ function filterEvents() {
         e.eventName.toLowerCase().includes(q) ||
         (e.venue || "").toLowerCase().includes(q),
     );
-    
+
   renderEvents(filtered);
 }
 
 document.getElementById("searchInput").addEventListener("input", filterEvents);
 
-function categoryEmoji(cat) {
+function categoryImage(cat) {
   const map = {
-    technology: '<i class="fa-solid fa-laptop-code"></i>',
-    music: '<i class="fa-solid fa-music"></i>',
-    sports: '<i class="fa-solid fa-futbol"></i>',
-    art: '<i class="fa-solid fa-palette"></i>',
-    food: '<i class="fa-solid fa-pizza-slice"></i>',
-    comedy: '<i class="fa-solid fa-face-laugh-squint"></i>',
-    dance: '<i class="fa-solid fa-person-dress"></i>',
-    business: '<i class="fa-solid fa-briefcase"></i>',
-    health: '<i class="fa-solid fa-hospital"></i>',
-    gaming: '<i class="fa-solid fa-gamepad"></i>',
+    technology: "",
+    music:
+      "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&q=80",
+    sports:
+      "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?q=80&w=1007&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    art: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=500&q=80",
+    food: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80",
+    comedy:
+      "https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhbmQlMjB1cCUyMGNvbWVkeXxlbnwwfHwwfHx8MA%3D%3D",
+    dance:
+      "https://images.unsplash.com/photo-1537365587684-f490102e1225?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGRhbmNlfGVufDB8fDB8fHww",
+    business:
+      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80",
+    health:
+      "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500&q=80",
+    gaming:
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=500&q=80",
   };
-  return map[(cat || "").toLowerCase()] || '<i class="fa-solid fa-tent"></i>';
+  const url =
+    map[(cat || "").toLowerCase()] ||
+    "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80";
+  return `<img src="${url}" alt="${cat || "event"} image" />`;
 }
 
 function renderEvents(events) {
@@ -107,7 +117,7 @@ function renderEvents(events) {
     card.style.animationDelay = i * 0.06 + "s";
     card.innerHTML = `
         <div class="card-top">
-          <div class="card-emoji">${categoryEmoji(e.category)}</div>
+          <div class="card-image-wrapper">${categoryImage(e.category)}</div>
           <div class="card-price-badge">₹${(e.ticketPrice || 0).toLocaleString("en-IN")}</div>
         </div>
         <div class="card-body">

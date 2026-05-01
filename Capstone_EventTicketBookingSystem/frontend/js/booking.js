@@ -16,7 +16,7 @@ function hdrs(json = false) {
   return h;
 }
 
-function toast(msg, type = "error") {
+function toast(msg, type = "success") {
   const t = document.getElementById("toast");
   t.textContent = msg;
   t.className = "toast " + type + " show";
@@ -110,7 +110,7 @@ async function loadPage() {
         </div>`;
   } catch (e) {
     console.error("could not load event details:", e);
-    toast("Failed to load event");
+    toast(e.message || "Failed to load event", "error");
   }
 }
 
@@ -133,7 +133,7 @@ async function processPayment() {
       console.log("failed to create pending booking");
       const err = await bookRes.json();
       document.getElementById("overlay").classList.remove("show");
-      toast(err.message || "Booking failed");
+      toast(err.message || "Booking failed", "error");
       document.getElementById("payBtn").disabled = false;
       return;
     }
@@ -158,7 +158,7 @@ async function processPayment() {
       console.log("payment confirmation failed");
       const err = await payRes.json();
       document.getElementById("overlay").classList.remove("show");
-      toast(err.message || "Payment failed");
+      toast(err.message || "Payment failed", "error");
       document.getElementById("payBtn").disabled = false;
       return;
     }
@@ -179,7 +179,7 @@ async function processPayment() {
   } catch (e) {
     console.error("server error during payment:", e);
     document.getElementById("overlay").classList.remove("show");
-    toast("Server error. Please try again.");
+    toast(e.message || "Server error. Please try again.", "error");
     document.getElementById("payBtn").disabled = false;
   }
 }

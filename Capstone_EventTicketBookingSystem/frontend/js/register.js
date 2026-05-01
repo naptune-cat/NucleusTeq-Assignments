@@ -146,6 +146,6 @@ registerForm.addEventListener("submit", async function (e) {
     }
   } catch (error) {
     console.error("something went wrong during registration:", error);
-    toast("Something went wrong. Please try again.", "error");
+    toast(error.message || "Registration failed. Please try again.", "error");
   }
 });

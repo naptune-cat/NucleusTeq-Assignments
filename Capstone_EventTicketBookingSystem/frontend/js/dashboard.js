@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       toast("CSV downloaded successfully <3", "success");
     } catch (e) {
       console.error(e);
-      toast("Something went wrong", "error");
+      toast(e.message || "Failed to export attendees. Please try again.", "error");
     }
   }
   // Cancel Event button
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("organizer requested to cancel event:", id);
     if (status === "CANCELLED") {
       console.log("event is already cancelled, ignoring click");
-      alert("Event is already cancelled ", "error");
+      toast("Event is already cancelled", "error");
       return;
     }
 
@@ -149,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loadStats();
     } catch (e) {
       console.error(e);
+      toast(e.message || "Failed to cancel event", "error");
     }
   }
   window.cancelEvent = cancelEvent;
@@ -162,11 +163,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const difference = (new Date(eventDateTime) - now) / (1000 * 60 * 60); 
     if (difference <= 4) {
       console.log("too close to start time to edit");
-      alert("Event can only be edited up to 4 hours before start time.");
+      toast("Event can only be edited up to 4 hours before start time.", "error");
       return;
     }
     if (difference <= 0) {
-      alert("Event has already started. Cannot edit.");
+      toast("Event has already started. Cannot edit.", "error");
       return;
     }
     localStorage.setItem("editEventId", id);
@@ -185,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const now = new Date();
       if (selectedDate < now) {
         console.log("selected date is in the past, rejecting");
-        alert("Event cannot be created in the past ");
+        toast("Event cannot be created in the past", "error");
         return;
       }
 
@@ -229,6 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loadStats();
       } catch (e) {
         console.error(e);
+        toast(e.message || "Failed to create event", "error");
       }
     });
   }

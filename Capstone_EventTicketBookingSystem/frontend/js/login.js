@@ -72,7 +72,7 @@ if (!loginForm) {
     } catch (error) {
       console.error("something went wrong while logging in:", error);
       toast(
-        '<i class="fa-solid fa-triangle-exclamation"></i> Server error. Try again.',
+        '<i class="fa-solid fa-triangle-exclamation"></i> ' + (error.message || "Server error. Try again."),
         "error",
       );
     }

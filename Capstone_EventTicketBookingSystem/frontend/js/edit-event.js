@@ -54,7 +54,7 @@ async function loadEvent() {
     document.getElementById("date").value = formatted;
   } catch (err) {
     console.error(err);
-    toast("Something went wrong", "error");
+    toast(err.message || "Failed to load event details. Please try again.", "error");
   }
 }
 
@@ -92,11 +92,11 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
     } else {
       console.log("failed to update event");
       const err = await res.json();
-      toast("❌ " + (err.error || "Update failed"), "error");
+      toast(err.message || "Update failed", "error");
     }
   } catch (err) {
     console.error(err);
-    toast("Something went wrong", "error");
+    toast(err.message || "Failed to update event. Please try again.", "error");
   }
 });
 

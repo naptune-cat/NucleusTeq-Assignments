@@ -184,7 +184,7 @@ async function cancelBooking(id) {
     }
   } catch (e) {
     console.error("error while cancelling booking:", e);
-    toast("Server error", "error");
+    toast(e.message || "Server error. Please try again.", "error");
   }
 }
 

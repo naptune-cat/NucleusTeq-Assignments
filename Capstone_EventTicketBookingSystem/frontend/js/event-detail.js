@@ -15,20 +15,21 @@ function toast(msg, type = "success") {
   setTimeout(() => t.classList.remove("show"), 3500);
 }
 
-function categoryEmoji(cat) {
+function categoryImage(cat) {
   const map = {
-    technology: '"<i class="fa-solid fa-laptop-code"></i>"',
-    music: '"<i class="fa-solid fa-music"></i>"',
-    sports: '"<i class="fa-solid fa-futbol"></i>"',
-    art: '"<i class="fa-solid fa-palette"></i>"',
-    food: '"<i class="fa-solid fa-pizza-slice"></i>"',
-    comedy: '"<i class="fa-solid fa-face-laugh-squint"></i>"',
-    dance: '"<i class="fa-solid fa-person-dress"></i>"',
-    business: '"<i class="fa-solid fa-briefcase"></i>"',
-    health: '"<i class="fa-solid fa-hospital"></i>"',
-    gaming: '"<i class="fa-solid fa-gamepad"></i>"',
+    technology: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80',
+    music: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&q=80',
+    sports: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&q=80',
+    art: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=500&q=80',
+    food: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80',
+    comedy: 'https://images.unsplash.com/photo-1527224857830-43a7abe85266?w=500&q=80',
+    dance: 'https://images.unsplash.com/photo-1504609774014-98403d6d061f?w=500&q=80',
+    business: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80',
+    health: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500&q=80',
+    gaming: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=500&q=80',
   };
-  return map[(cat || "").toLowerCase()] || '"<i class="fa-solid fa-tent"></i>"';
+  const url = map[(cat || "").toLowerCase()] || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500&q=80';
+  return `<img src="${url}" alt="${cat || 'event'} image" />`;
 }
 
 function changeQty(d) {
@@ -61,7 +62,7 @@ async function loadEvent() {
         <div class="event-hero">
           <div class="event-hero-top">
             <div>
-              <div class="event-big-emoji">${categoryEmoji(e.category)}</div>
+              <div class="event-big-image-wrapper">${categoryImage(e.category)}</div>
               <div class="event-badge ${isCancelled ? "badge-cancelled" : "badge-active"}">
                 <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;"></span>
                 ${isCancelled ? "Cancelled" : "Active"}
