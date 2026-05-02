@@ -13,15 +13,35 @@ if (!loginForm) {
   console.log("loginForm not found");
 } else {
   loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    if (!email || !password) {
-      toast("Please fill in all fields", "error");
-      e.preventDefault();
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    // Client-side validations with toasts
+    if (!email) {
+      toast("Please enter your email address", "error");
+      emailInput.focus();
       return;
     }
     
-    e.preventDefault();
+    if (!password) {
+      toast("Please enter your password", "error");
+      passwordInput.focus();
+      return;
+    }
+
+    if (!emailInput.checkValidity()) {
+      toast(emailInput.title || "Please enter a valid Gmail address", "error");
+      return;
+    }
+
+    if (!passwordInput.checkValidity()) {
+      toast(passwordInput.title || "Invalid password format", "error");
+      return;
+    }
 
     // packing up user credentials to send to backend
     const userData = { email, password };
@@ -35,11 +55,10 @@ if (!loginForm) {
         body: JSON.stringify(userData),
       });
 
-      const result = await response.json();
-
-      console.log("FULL RESPONSE ", result);
-
       if (response.ok) {
+        const result = await response.json();
+        console.log("FULL RESPONSE ", result);
+        
         // saving tokens so user stays logged in
         localStorage.setItem("token", result.token);
         localStorage.setItem("role", result.role);
@@ -52,7 +71,7 @@ if (!loginForm) {
           role = result.roles[0].toString().toUpperCase().trim();
         }
 
-        toast("Login successful ✅", "success");
+        toast("Welcome back! Login successful ✅", "success");
 
         if (role.includes("ORGANIZER")) {
           console.log("Redirecting to dashboard");
@@ -66,13 +85,14 @@ if (!loginForm) {
           }, 1500);
         }
       } else {
-        console.log("login failed:", result.message);
-        toast(result.message || "Login failed ", "error");
+        const errorMessage = await handleBackendError(response);
+        console.log("login failed:", errorMessage);
+        toast(errorMessage, "error");
       }
     } catch (error) {
       console.error("something went wrong while logging in:", error);
       toast(
-        '<i class="fa-solid fa-triangle-exclamation"></i> ' + (error.message || "Server error. Try again."),
+        '<i class="fa-solid fa-triangle-exclamation"></i> ' + getFriendlyMessage(error.message || "Server error. Try again."),
         "error",
       );
     }

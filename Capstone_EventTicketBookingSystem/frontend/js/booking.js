@@ -18,7 +18,7 @@ function hdrs(json = false) {
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
+  t.innerHTML = msg;
   t.className = "toast " + type + " show";
   setTimeout(() => t.classList.remove("show"), 3500);
 }
@@ -29,11 +29,6 @@ function selectMethod(method, el) {
     .querySelectorAll(".method-btn")
     .forEach((b) => b.classList.remove("selected"));
   el.classList.add("selected");
-  document.getElementById("upiFields").className =
-    "extra-fields" + (method === "UPI" ? " show" : "");
-  document.getElementById("cardFields").className =
-    "extra-fields" +
-    (method === "CREDIT_CARD" || method === "DEBIT_CARD" ? " show" : "");
 }
 
 function catEmoji(cat) {
@@ -56,9 +51,15 @@ async function loadPage() {
   console.log("loading payment page for event:", eventId);
   try {
     const res = await fetch(`${BASE}/events/${eventId}`);
+    if (!res.ok) {
+      const errMsg = await handleBackendError(res);
+      toast(errMsg, "error");
+      setTimeout(() => (location.href = "index.html"), 2000);
+      return;
+    }
     eventData = await res.json();
     console.log("loaded event details for payment:", eventData.eventName);
-    
+
     const dt = new Date(eventData.eventDateTime);
     const total = (eventData.ticketPrice || 0) * qty;
 
@@ -68,20 +69,10 @@ async function loadPage() {
           <div class="pay-sub">Choose your preferred payment method</div>
           <div class="method-label">Payment Method</div>
           <div class="methods-grid">
-            <button class="method-btn selected" onclick="selectMethod('UPI',this)">📱 UPI</button>
-            <button class="method-btn" onclick="selectMethod('NET_BANKING',this)">🏦 Net Banking</button>
-            <button class="method-btn" onclick="selectMethod('CREDIT_CARD',this)">💳 Credit Card</button>
-            <button class="method-btn" onclick="selectMethod('DEBIT_CARD',this)">🏧 Debit Card</button>
-          </div>
-          <div class="extra-fields show" id="upiFields">
-            <div class="field"><label>UPI ID</label><input type="text" placeholder="yourname@upi"/></div>
-          </div>
-          <div class="extra-fields" id="cardFields">
-            <div class="field"><label>Card Number</label><input type="text" placeholder="1234 5678 9012 3456" maxlength="19"/></div>
-            <div class="field-row">
-              <div class="field"><label>Expiry</label><input type="text" placeholder="MM/YY" maxlength="5"/></div>
-              <div class="field"><label>CVV</label><input type="text" placeholder="•••" maxlength="3"/></div>
-            </div>
+            <button class="method-btn selected" onclick="selectMethod('UPI',this)"><i class="fa-solid fa-mobile-alt"></i> UPI</button>
+            <button class="method-btn" onclick="selectMethod('NET_BANKING',this)"><i class="fa-solid fa-piggy-bank"></i>  Net Banking</button>
+            <button class="method-btn" onclick="selectMethod('CREDIT_CARD',this)"><i class="fa-solid fa-credit-card"></i>  Credit Card</button>
+            <button class="method-btn" onclick="selectMethod('DEBIT_CARD',this)"><i class="fa-solid fa-money-bill"></i>  Debit Card</button>
           </div>
           <div class="divider"></div>
           <p style="font-size:13px;color:var(--muted);line-height:1.7;">This is a <strong style="color:var(--text);">mock payment</strong> — no real transaction will occur. Clicking Pay will simulate a successful payment confirmation.</p>
@@ -110,7 +101,10 @@ async function loadPage() {
         </div>`;
   } catch (e) {
     console.error("could not load event details:", e);
-    toast(e.message || "Failed to load event", "error");
+    toast(
+      getFriendlyMessage(e.message) || "Failed to load event details.",
+      "error",
+    );
   }
 }
 
@@ -131,9 +125,9 @@ async function processPayment() {
     });
     if (!bookRes.ok) {
       console.log("failed to create pending booking");
-      const err = await bookRes.json();
+      const errMsg = await handleBackendError(bookRes);
       document.getElementById("overlay").classList.remove("show");
-      toast(err.message || "Booking failed", "error");
+      toast(errMsg, "error");
       document.getElementById("payBtn").disabled = false;
       return;
     }
@@ -156,22 +150,22 @@ async function processPayment() {
     });
     if (!payRes.ok) {
       console.log("payment confirmation failed");
-      const err = await payRes.json();
+      const errMsg = await handleBackendError(payRes);
       document.getElementById("overlay").classList.remove("show");
-      toast(err.message || "Payment failed", "error");
+      toast(errMsg, "error");
       document.getElementById("payBtn").disabled = false;
       return;
     }
     const payment = await payRes.json();
     console.log("payment successful! transaction id:", payment.transactionId);
 
-    // Step 4 — Show success
+    //Show success
     document.getElementById("overlayCard").innerHTML = `
         <div class="success-ring">✓</div>
         <div class="success-title">Payment Successful!</div>
         <div class="success-sub">Your booking is confirmed. Enjoy <strong>${eventData?.eventName || "the event"}</strong>!</div>
         <div class="txn-id">Txn ID: ${payment.transactionId}</div>
-        <button class="goto-btn" onclick="location.href='bookings.html'">View My Bookings →</button>`;
+        <button class="goto-btn" onclick="location.href='myBooking.html'">View My Bookings →</button>`;
 
     // clearing local storage so they don't accidentally book again
     localStorage.removeItem("pendingEventId");
@@ -179,7 +173,10 @@ async function processPayment() {
   } catch (e) {
     console.error("server error during payment:", e);
     document.getElementById("overlay").classList.remove("show");
-    toast(e.message || "Server error. Please try again.", "error");
+    toast(
+      getFriendlyMessage(e.message) || "Server error. Please try again.",
+      "error",
+    );
     document.getElementById("payBtn").disabled = false;
   }
 }

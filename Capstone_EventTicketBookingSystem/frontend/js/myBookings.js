@@ -18,7 +18,7 @@ function hdrs(json = false) {
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
+  t.innerHTML = msg;
   t.className = "toast " + type + " show";
   setTimeout(() => t.classList.remove("show"), 3500);
 }
@@ -59,7 +59,11 @@ async function loadBookings() {
   console.log("fetching my bookings from the server...");
   try {
     const res = await fetch(`${BASE}/bookings/my`, { headers: hdrs() });
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+        const errMsg = await handleBackendError(res);
+        toast(errMsg, "error");
+        throw new Error(errMsg);
+    }
     allBookings = await res.json();
     console.log("loaded bookings:", allBookings.length);
     updateCounts();
@@ -67,7 +71,7 @@ async function loadBookings() {
   } catch (e) {
     console.error("failed to load bookings:", e);
     document.getElementById("bookingsList").innerHTML =
-      `<div class="state-box"><div class="state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Could not load bookings</h3><p>Make sure you are logged in</p></div>`;
+      `<div class="state-box"><div class="state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Could not load bookings</h3><p>${getFriendlyMessage(e.message) || "Make sure you are logged in"}</p></div>`;
   }
 }
 
@@ -175,16 +179,16 @@ async function cancelBooking(id) {
     });
     if (res.ok) {
       console.log("booking cancelled successfully!");
-      toast("Booking cancelled successfully");
+      toast("Booking has been cancelled successfully. Refund will be processed soon.", "success");
       await loadBookings();
     } else {
       console.log("failed to cancel booking");
-      const err = await res.json();
-      toast(err.message || "Could not cancel booking", "error");
+      const errMsg = await handleBackendError(res);
+      toast(errMsg, "error");
     }
   } catch (e) {
     console.error("error while cancelling booking:", e);
-    toast(e.message || "Server error. Please try again.", "error");
+    toast(getFriendlyMessage(e.message) || "Server error. Please try again.", "error");
   }
 }
 

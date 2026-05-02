@@ -7,7 +7,7 @@ if (!eventId) {
 }
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
+  t.innerHTML = msg;
   t.className = "toast " + type + " show";
   setTimeout(() => t.classList.remove("show"), 3000);
 }
@@ -34,7 +34,9 @@ async function loadEvent() {
     });
 
     if (!res.ok) {
-      toast("Failed to load event", "error");
+      const errMsg = await handleBackendError(res);
+      toast(errMsg, "error");
+      setTimeout(() => location.href = "dashboard.html", 2000);
       return;
     }
 
@@ -54,7 +56,7 @@ async function loadEvent() {
     document.getElementById("date").value = formatted;
   } catch (err) {
     console.error(err);
-    toast(err.message || "Failed to load event details. Please try again.", "error");
+    toast(getFriendlyMessage(err.message) || "Failed to load event details. Please try again.", "error");
   }
 }
 
@@ -63,14 +65,46 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   console.log("organizer submitted the edit form");
 
+  const name = document.getElementById("name").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const venue = document.getElementById("venue").value.trim();
+  const dateVal = document.getElementById("date").value;
+  const seatsVal = document.getElementById("seats").value;
+  const priceVal = document.getElementById("price").value;
+
+  // Frontend validations with toasts
+  if (!name || !description || !venue || !dateVal || !seatsVal || !priceVal) {
+    toast("Please fill in all event details", "error");
+    return;
+  }
+
+  const selectedDate = new Date(dateVal);
+  const now = new Date();
+  if (selectedDate < now) {
+    toast("Event date cannot be in the past.", "error");
+    return;
+  }
+
+  const seats = parseInt(seatsVal);
+  if (isNaN(seats) || seats < 1) {
+    toast("Total seats must be at least 1", "error");
+    return;
+  }
+
+  const price = parseFloat(priceVal);
+  if (isNaN(price) || price < 0) {
+    toast("Ticket price cannot be negative", "error");
+    return;
+  }
+
   // packaging the updated data
   const data = {
-    eventName: document.getElementById("name").value,
-    description: document.getElementById("description").value,
-    venue: document.getElementById("venue").value,
-    eventDateTime: document.getElementById("date").value,
-    totalSeats: parseInt(document.getElementById("seats").value),
-    ticketPrice: parseFloat(document.getElementById("price").value),
+    eventName: name,
+    description: description,
+    venue: venue,
+    eventDateTime: dateVal,
+    totalSeats: seats,
+    ticketPrice: price,
     category: document.getElementById("category").value,
   };
 
@@ -83,7 +117,7 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
 
     if (res.ok) {
       console.log("event updated successfully!");
-      toast("Event updated successfully!", "success");
+      toast("Event updated successfully! ✨", "success");
       setTimeout(() => {
         // cleaning up
         localStorage.removeItem("editEventId");
@@ -91,12 +125,12 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
       }, 1500);
     } else {
       console.log("failed to update event");
-      const err = await res.json();
-      toast(err.message || "Update failed", "error");
+      const errMsg = await handleBackendError(res);
+      toast(errMsg, "error");
     }
   } catch (err) {
     console.error(err);
-    toast(err.message || "Failed to update event. Please try again.", "error");
+    toast(getFriendlyMessage(err.message) || "Failed to update event. Please try again.", "error");
   }
 });
 

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function toast(msg, type = "success") {
     const t = document.getElementById("toast");
-    t.textContent = msg;
+    t.innerHTML = msg;
     t.className = "toast " + type + " show";
     setTimeout(() => t.classList.remove("show"), 3000);
   }
@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isJson) headers["Content-Type"] = "application/json";
     return headers;
   }
+  // for small screen hamburger menu
+  function toggleMenu() {
+    document.querySelector(".sidebar").classList.toggle("open");
+    document.getElementById("overlayBg").classList.toggle("show");
+  }
+  window.toggleMenu = toggleMenu;
 
   // Switch Sections
   function showSection(id) {
@@ -23,6 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
       sec.classList.add("hidden");
     });
     document.getElementById(id).classList.remove("hidden");
+
+    // mobile pe sidebar close karo
+    document.querySelector(".sidebar").classList.remove("open");
+    document.getElementById("overlayBg").classList.remove("show");
   }
   window.showSection = showSection;
 
@@ -33,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${BASE_URL}/organizer/stats`, {
         headers: getHeaders(),
       });
+      if (!res.ok) {
+        console.warn("Could not load stats");
+        return;
+      }
       const data = await res.json();
       console.log("got dashboard stats:", data);
 
@@ -54,6 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${BASE_URL}/organizer`, {
         headers: getHeaders(),
       });
+      if (!res.ok) {
+        toast("Failed to load events", "error");
+        return;
+      }
       const events = await res.json();
       console.log("found this many events:", events.length);
       const container = document.getElementById("eventList");
@@ -91,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } catch (e) {
       console.error(e);
+      toast(getFriendlyMessage(e.message) || "Failed to load events", "error");
     }
   }
 
@@ -106,7 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (!res.ok) {
-        toast("Failed to export attendees", "error");
+        const errMsg = await handleBackendError(res);
+        toast(errMsg, "error");
         return;
       }
 
@@ -122,10 +142,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       window.URL.revokeObjectURL(url);
 
-      toast("CSV downloaded successfully <3", "success");
+      toast("Attendees list downloaded successfully! 📄", "success");
     } catch (e) {
       console.error(e);
-      toast(e.message || "Failed to export attendees. Please try again.", "error");
+      toast(
+        getFriendlyMessage(e.message) ||
+          "Failed to export attendees. Please try again.",
+        "error",
+      );
     }
   }
   // Cancel Event button
@@ -138,18 +162,31 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (
+      !confirm(
+        "Are you sure you want to cancel this event? This action cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
     try {
-      await fetch(`${BASE_URL}/${id}/cancel`, {
+      const res = await fetch(`${BASE_URL}/${id}/cancel`, {
         method: "PATCH",
         headers: getHeaders(),
       });
 
-      toast("Event cancelled", "success");
-      loadEvents();
-      loadStats();
+      if (res.ok) {
+        toast("Event has been cancelled successfully.", "success");
+        loadEvents();
+        loadStats();
+      } else {
+        const errMsg = await handleBackendError(res);
+        toast(errMsg, "error");
+      }
     } catch (e) {
       console.error(e);
-      toast(e.message || "Failed to cancel event", "error");
+      toast(getFriendlyMessage(e.message) || "Failed to cancel event", "error");
     }
   }
   window.cancelEvent = cancelEvent;
@@ -160,14 +197,17 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("editEventId", id);
     const now = new Date();
     // calculating difference in hours
-    const difference = (new Date(eventDateTime) - now) / (1000 * 60 * 60); 
-    if (difference <= 4) {
+    const difference = (new Date(eventDateTime) - now) / (1000 * 60 * 60);
+    if (difference <= 4 && difference > 0) {
       console.log("too close to start time to edit");
-      toast("Event can only be edited up to 4 hours before start time.", "error");
+      toast(
+        "Events can only be edited up to 4 hours before start time.",
+        "error",
+      );
       return;
     }
     if (difference <= 0) {
-      toast("Event has already started. Cannot edit.", "error");
+      toast("This event has already started or passed. Cannot edit.", "error");
       return;
     }
     localStorage.setItem("editEventId", id);
@@ -181,56 +221,89 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       console.log("creating a new event from the form data");
 
-      // checking for valid date as it cannot be in the past
-      const selectedDate = new Date(document.getElementById("date").value);
+      const name = document.getElementById("name").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const venue = document.getElementById("venue").value.trim();
+      const dateVal = document.getElementById("date").value;
+      const seatsVal = document.getElementById("seats").value;
+      const priceVal = document.getElementById("price").value;
+
+      // Frontend validations with toasts
+      if (
+        !name ||
+        !description ||
+        !venue ||
+        !dateVal ||
+        !seatsVal ||
+        !priceVal
+      ) {
+        toast("Please fill in all event details", "error");
+        return;
+      }
+
+      const selectedDate = new Date(dateVal);
       const now = new Date();
       if (selectedDate < now) {
         console.log("selected date is in the past, rejecting");
-        toast("Event cannot be created in the past", "error");
+        toast(
+          "Event date cannot be in the past. Please pick a future date.",
+          "error",
+        );
         return;
       }
 
-      // seats must be at least 1
-      const seats = parseInt(document.getElementById("seats").value);
+      const seats = parseInt(seatsVal);
       if (isNaN(seats) || seats < 1) {
-        toast("Seats must be at least 1", "error");
+        toast("Total seats must be at least 1", "error");
         return;
       }
 
-      // price must be positive
-      const price = parseFloat(document.getElementById("price").value);
+      const price = parseFloat(priceVal);
       if (isNaN(price) || price < 0) {
-        toast("Price cannot be negative", "error");
+        toast("Ticket price cannot be negative", "error");
         return;
       }
+
       const data = {
-        eventName: document.getElementById("name").value,
-        description: document.getElementById("description").value,
-        venue: document.getElementById("venue").value,
-        eventDateTime: document.getElementById("date").value,
-        totalSeats: parseInt(document.getElementById("seats").value),
-        ticketPrice: parseFloat(document.getElementById("price").value),
+        eventName: name,
+        description: description,
+        venue: venue,
+        eventDateTime: dateVal,
+        totalSeats: seats,
+        ticketPrice: price,
         category: document.getElementById("category").value,
       };
 
       console.log("sending new event data to backend...");
 
       try {
-        await fetch(BASE_URL, {
+        const res = await fetch(BASE_URL, {
           method: "POST",
           headers: getHeaders(true),
           body: JSON.stringify(data),
         });
 
-        console.log("event successfully created!");
-        toast("Event created!", "success");
-        form.reset();
-        showSection("events");
-        loadEvents();
-        loadStats();
+        if (res.ok) {
+          console.log("event successfully created!");
+          toast(
+            "Great! Your event has been created successfully. 🎉",
+            "success",
+          );
+          form.reset();
+          showSection("events");
+          loadEvents();
+          loadStats();
+        } else {
+          const errMsg = await handleBackendError(res);
+          toast(errMsg, "error");
+        }
       } catch (e) {
         console.error(e);
-        toast(e.message || "Failed to create event", "error");
+        toast(
+          getFriendlyMessage(e.message) ||
+            "Failed to create event. Please try again.",
+          "error",
+        );
       }
     });
   }

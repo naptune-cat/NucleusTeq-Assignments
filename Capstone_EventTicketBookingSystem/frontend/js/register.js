@@ -12,7 +12,7 @@ function togglePassword(id, btn) {
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
+  t.innerHTML = msg;
   t.className = "toast " + type + " show";
   setTimeout(() => t.classList.remove("show"), 3000);
 }
@@ -30,6 +30,7 @@ nameInput.addEventListener("blur", function () {
   if (this.value && !pattern.test(this.value)) {
     nameError.textContent = this.title;
     nameInput.style.border = "1px solid red";
+    toast(this.title || "Invalid name", "error");
   } else if (this.value) {
     nameError.textContent = "";
     nameInput.style.border = "1px solid green";
@@ -42,10 +43,11 @@ phoneInput.addEventListener("input", function () {
 
 // making sure phone number is exactly 10 digits when they leave the field
 phoneInput.addEventListener("blur", function () {
-  if (this.value.length !== 10) {
+  if (this.value && this.value.length !== 10) {
     phoneError.textContent = "Phone number must be exactly 10 digits";
     phoneInput.style.border = "1px solid red";
-  } else {
+    toast("Phone number must be exactly 10 digits", "error");
+  } else if (this.value) {
     phoneError.textContent = "";
     phoneInput.style.border = "1px solid green";
   }
@@ -57,10 +59,11 @@ const emailError = document.getElementById("emailError");
 // validating the email format
 emailInput.addEventListener("blur", function () {
   const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-  if (!gmailRegex.test(this.value)) {
+  if (this.value && !gmailRegex.test(this.value)) {
     emailError.textContent = "Please enter a valid Gmail address (@gmail.com)";
     emailInput.style.border = "1px solid red";
-  } else {
+    toast("Please enter a valid Gmail address (@gmail.com)", "error");
+  } else if (this.value) {
     emailError.textContent = "";
     emailInput.style.border = "1px solid green";
   }
@@ -74,6 +77,7 @@ passwordInput.addEventListener("blur", function () {
   if (this.value && !pattern.test(this.value)) {
     passwordError.textContent = this.title;
     passwordInput.style.border = "1px solid red";
+    toast(this.title || "Invalid password format", "error");
   } else if (this.value) {
     passwordError.textContent = "";
     passwordInput.style.border = "1px solid green";
@@ -87,6 +91,7 @@ confirmPasswordInput.addEventListener("blur", function () {
   if (this.value && this.value !== passwordInput.value) {
     confirmPasswordError.textContent = "Passwords do not match";
     confirmPasswordInput.style.border = "1px solid red";
+    toast("Passwords do not match", "error");
   } else if (this.value) {
     confirmPasswordError.textContent = "";
     confirmPasswordInput.style.border = "1px solid green";
@@ -104,8 +109,12 @@ registerForm.addEventListener("submit", async function (e) {
   const confirmPassword = document.getElementById("confirmPassword").value;
   const organizerCode = document.getElementById("organizerCode").value.trim();
 
-  // double checking passwords match
-  console.log("checking if passwords match...");
+  // Final validation check before submission
+  if (!fullName || !email || !phone || !password || !confirmPassword) {
+    toast("Please fill in all required fields", "error");
+    return;
+  }
+
   if (password !== confirmPassword) {
     toast("Passwords do not match", "error");
     return;
@@ -130,11 +139,10 @@ registerForm.addEventListener("submit", async function (e) {
       body: JSON.stringify(userData),
     });
 
-    const message = await response.text();
-
     if (response.ok) {
+      const message = await response.text();
       console.log("registration successful!", message);
-      toast(message, "success");
+      toast(getFriendlyMessage(message) || "Account created successfully! 🎉", "success");
 
       registerForm.reset();
       console.log("sending user to login page now");
@@ -142,10 +150,11 @@ registerForm.addEventListener("submit", async function (e) {
         window.location.href = "./login.html";
       }, 1500);
     } else {
-      toast(message, "error");
+      const errorMessage = await handleBackendError(response);
+      toast(errorMessage, "error");
     }
   } catch (error) {
     console.error("something went wrong during registration:", error);
-    toast(error.message || "Registration failed. Please try again.", "error");
+    toast(getFriendlyMessage(error.message) || "Registration failed. Please try again.", "error");
   }
 });

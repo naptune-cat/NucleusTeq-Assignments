@@ -6,7 +6,7 @@ let activeFilter = "ALL";
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
+  t.innerHTML = msg;
   t.className = "toast " + type + " show";
   setTimeout(() => t.classList.remove("show"), 3000);
 }
@@ -21,13 +21,18 @@ async function loadEvents() {
   console.log("fetching all upcoming events from server...");
   try {
     const res = await fetch(`${BASE}/events`);
+    if (!res.ok) {
+        const errMsg = await handleBackendError(res);
+        toast(errMsg, "error");
+        return;
+    }
     allEvents = await res.json();
     console.log("successfully loaded events:", allEvents.length);
     renderEvents(allEvents);
   } catch (e) {
     console.error("failed to load events:", e);
     document.getElementById("eventsGrid").innerHTML =
-      `<div style="grid-column:1/-1" class="state-box"><div class="state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Could not load events</h3><p>Make sure the server is running</p></div>`;
+      `<div style="grid-column:1/-1" class="state-box"><div class="state-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><h3>Could not load events</h3><p>${getFriendlyMessage(e.message) || "Our servers are taking a break. Please try again later."}</p></div>`;
   }
 }
 
@@ -74,7 +79,7 @@ function categoryImage(cat) {
     art: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=500&q=80",
     food: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80",
     comedy:
-      "https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhbmQlMjB1cCUyMGNvbWVkeXxlbnwwfHwwfHx8MA%3D%3D",
+      "https://images.unsplash.com/photo-1527224857830-43a7abe85266?w=500&q=80",
     dance:
       "https://images.unsplash.com/photo-1537365587684-f490102e1225?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGRhbmNlfGVufDB8fDB8fHww",
     business:
@@ -106,10 +111,10 @@ function renderEvents(events) {
     let seatClass = "seats-ok",
       seatLabel = available + " seats left";
     if (available === 0) {
-      seatClass = "seats-full";
+      seatClass = "seats-full",
       seatLabel = "Sold Out";
     } else if (pct < 0.2) {
-      seatClass = "seats-low";
+      seatClass = "seats-low",
       seatLabel = "Only " + available + " left!";
     }
     const card = document.createElement("div");
@@ -145,11 +150,13 @@ function goToEvent(id) {
   // making sure they are logged in before booking
   if (!localStorage.getItem("token")) {
     console.log("user not logged in, sending to login page");
-    toast("Please login to book tickets", "error");
-    setTimeout(() => (location.href = "login.html"), 1500);
+    toast("Hey there! You need to log in first to book tickets. ", "error");
+    setTimeout(() => (location.href = "login.html"), 1800);
     return;
   }
   location.href = "event-detail.html?id=" + id;
 }
+
+
 
 loadEvents();

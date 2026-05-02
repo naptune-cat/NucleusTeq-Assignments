@@ -10,7 +10,7 @@ if (!eventId) {
 
 function toast(msg, type = "success") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
+  t.innerHTML = msg;
   t.className = "toast " + type + " show";
   setTimeout(() => t.classList.remove("show"), 3500);
 }
@@ -45,7 +45,11 @@ async function loadEvent() {
   console.log("fetching event details for id:", eventId);
   try {
     const res = await fetch(`${BASE}/events/${eventId}`);
-    if (!res.ok) throw new Error();
+    if (!res.ok) {
+        const errMsg = await handleBackendError(res);
+        toast(errMsg, "error");
+        throw new Error(errMsg);
+    }
     const e = await res.json();
     console.log("successfully loaded event details:", e.eventName);
     
@@ -119,7 +123,7 @@ async function loadEvent() {
   } catch (err) {
     console.error("failed to load event details:", err);
     document.getElementById("pageContent").innerHTML =
-      `<div style="text-align:center;padding:80px;"><div style="font-size:52px;opacity:0.4;"><i class="fa-solid fa-triangle-exclamation"></i></div><h3 style="font-family:'Syne',sans-serif;font-size:20px;margin:16px 0 8px;">Event not found</h3><p style="color:var(--muted);">This event may have been removed</p></div>`;
+      `<div style="text-align:center;padding:80px;"><div style="font-size:52px;opacity:0.4;"><i class="fa-solid fa-triangle-exclamation"></i></div><h3 style="font-family:'Syne',sans-serif;font-size:20px;margin:16px 0 8px;">Event not found</h3><p style="color:var(--muted);">${getFriendlyMessage(err.message) || "This event may have been removed or is unavailable."}</p></div>`;
   }
 }
 
@@ -127,10 +131,15 @@ function proceedToPayment() {
   console.log("user clicked proceed to payment");
   if (!localStorage.getItem("token")) {
     console.log("user is not logged in, cant proceed");
-    toast("Please login first", "error");
+    toast("Wait! Please log in first to book tickets. 🎟️", "error");
     return;
   }
   
+  if (qty < 1) {
+    toast("Please select at least 1 ticket", "error");
+    return;
+  }
+
   // saving these so the payment page knows what we're paying for
   localStorage.setItem("pendingEventId", eventId);
   localStorage.setItem("pendingQty", qty);
