@@ -397,3 +397,9 @@ body {
     transform: rotate(360deg);
   }
 }
+@media screen and (max-width: 480px) {
+  .two-col {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}

@@ -18,6 +18,10 @@
   padding: 0;
   box-sizing: border-box;
 }
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
 body {
   font-family: "DM Sans", sans-serif;
   background: var(--bg);
@@ -65,12 +69,16 @@ body {
   grid-template-columns: 1fr 340px;
   gap: 24px;
   align-items: start;
+  width: 100%;
+  box-sizing: border-box;
 }
 .pay-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 28px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .pay-title {
   font-family: "Syne", sans-serif;
@@ -132,46 +140,6 @@ body {
   gap: 8px;
   margin-bottom: 16px;
 }
-.field label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.field input {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 13px 14px;
-  color: var(--text);
-  font-family: "DM Sans", sans-serif;
-  font-size: 14px;
-  outline: none;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-}
-.field input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
-}
-.field input::placeholder {
-  color: var(--muted2);
-}
-.field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-.extra-fields {
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height 0.3s ease;
-}
-.extra-fields.show {
-  max-height: 300px;
-}
 .summary-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -179,6 +147,8 @@ body {
   padding: 28px;
   position: sticky;
   top: 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .summary-title {
   font-family: "Syne", sans-serif;
@@ -413,4 +383,57 @@ body {
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   margin: 100px auto;
+}
+@media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .summary-card {
+    position: static;
+    top: unset;
+  }
+}
+@media (max-width: 480px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .navbar {
+    padding: 12px 16px;
+  }
+
+  .page {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .pay-card,
+  .summary-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .methods-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pay-title {
+    font-size: 18px;
+  }
+
+  .summary-total-val {
+    font-size: 20px;
+  }
+
+  .pay-btn {
+    font-size: 14px;
+    padding: 13px;
+  }
+
+  .overlay-card {
+    padding: 32px 24px;
+  }
 }

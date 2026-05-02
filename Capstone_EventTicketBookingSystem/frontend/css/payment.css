@@ -414,3 +414,11 @@ body {
   animation: spin 0.7s linear infinite;
   margin: 100px auto;
 }
+
+/* for responsive design */
+@media (max-width: 480px) {
+  #pageContent {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}

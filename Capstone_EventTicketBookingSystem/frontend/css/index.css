@@ -109,7 +109,8 @@ body {
 }
 .hero h1 {
   font-family: "Syne", sans-serif;
-  font-size: 52px;
+  font-size: clamp(28px, 5vw, 52px);
+  word-break: break-word;
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -1px;
@@ -440,4 +441,13 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--border2);
   border-radius: 4px;
+}
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
 }
