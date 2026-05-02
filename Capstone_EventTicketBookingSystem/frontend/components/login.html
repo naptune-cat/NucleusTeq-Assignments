@@ -35,7 +35,7 @@
                 id="email"
                 placeholder="Enter your email"
                 pattern="[a-zA-Z0-9._%+\-]+@gmail\.com"
-                title="Please enter a valid Google email address"
+                title="Please enter a valid Google email address (@gmail.com)"
                 required
                 autocomplete="email"
               />
@@ -46,6 +46,8 @@
                 <input
                   type="password"
                   id="password"
+                  pattern="^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,12}$"
+                  title="Password must be 8-12 characters long, contain at least 1 uppercase letter and 1 special character"
                   placeholder="Enter your password"
                   required
                   autocomplete="current-password"
