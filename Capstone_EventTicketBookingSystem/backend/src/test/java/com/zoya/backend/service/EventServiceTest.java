@@ -81,8 +81,7 @@ class EventServiceTest {
         responseDTO.setEventName("Rock Concert");
     }
 
-    // test for createEvent to ensure it creates event successfully when organizer exists
-
+    @SuppressWarnings("null")
     @Test
     void createEvent_success_whenOrganizerExists() {
         when(userRepository.findByEmail("organizer@test.com")).thenReturn(Optional.of(organizer));
@@ -95,6 +94,7 @@ class EventServiceTest {
         verify(eventRepository).save(any(Event.class));
     }
 
+    @SuppressWarnings("null")
     @Test
     void createEvent_setsStatusToActive() {
         when(userRepository.findByEmail("organizer@test.com")).thenReturn(Optional.of(organizer));
@@ -106,6 +106,7 @@ class EventServiceTest {
         verify(eventRepository).save(argThat(e -> e.getStatus() == EventStatus.ACTIVE));
     }
 
+    @SuppressWarnings("null")
     @Test
     void createEvent_setsAvailableSeatsEqualToTotalSeats() {
         when(userRepository.findByEmail("organizer@test.com")).thenReturn(Optional.of(organizer));
@@ -117,6 +118,7 @@ class EventServiceTest {
         verify(eventRepository).save(argThat(e -> e.getAvailableSeats() == requestDTO.getTotalSeats()));
     }
 
+    @SuppressWarnings("null")
     @Test
     void createEvent_setsBookedSeatsToZero() {
         when(userRepository.findByEmail("organizer@test.com")).thenReturn(Optional.of(organizer));
@@ -167,8 +169,7 @@ class EventServiceTest {
                 .isInstanceOf(RuntimeException.class);
     }
 
-    // test for updateEvent
-
+    @SuppressWarnings("null")
     @Test
     void updateEvent_success_whenValidRequest() {
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
@@ -210,7 +211,7 @@ class EventServiceTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Cannot update event within 4 hours");
     }
-    // edge case: reducing total seats below already booked count should throw exception
+
     @Test
     void updateEvent_throwsRuntimeException_whenReducingSeatsBelowBookedCount() {
         event.setBookedSeats(50);
@@ -222,7 +223,7 @@ class EventServiceTest {
                 .hasMessageContaining("Cannot reduce seats below already booked count");
     }
 
-    // tests for cancelEvent to ensure it sets status to CANCELLED and handles edge cases like already cancelled or not owner
+    @SuppressWarnings("null")
     @Test
     void cancelEvent_success_whenValidRequest() {
         Booking confirmedBooking = new Booking();

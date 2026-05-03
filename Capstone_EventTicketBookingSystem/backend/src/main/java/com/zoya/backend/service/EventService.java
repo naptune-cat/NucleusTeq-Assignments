@@ -181,6 +181,7 @@ public class EventService {
             logger.info("Event status updated to CANCELLED for eventId={}", id);
         } else {
             logger.info("Event {} was already cancelled, ensuring bookings are updated.", id);
+            throw new RuntimeException("Event is already cancelled");
         }
 
         List<Booking> bookings = bookingRepository.findByEvent_Id(id);
