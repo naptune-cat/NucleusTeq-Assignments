@@ -184,7 +184,7 @@ public class BookingService {
             throw new InvalidBookingException("You are not authorized to cancel this booking.");
         }
 
-        if (booking.getBookingStatus() == BookingStatus.CANCELLED) {
+        if (booking.getBookingStatus() == BookingStatus.CANCELLED || booking.getBookingStatus() == BookingStatus.CANCELLED_BY_ORGANIZER) {
             logger.warn("tried to cancel already cancelled booking");
             throw new InvalidBookingException("Booking is already cancelled.");
         }
@@ -250,7 +250,7 @@ public class BookingService {
             throw new InvalidBookingException("You are not the organizer of this event.");
         }
 
-        return bookingRepository.findByEventId(eventId)
+        return bookingRepository.findByEvent_Id(eventId)
                 .stream()
                 .map(bookingMapper::mapToBookingResponse)
                 .collect(Collectors.toList());

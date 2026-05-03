@@ -37,15 +37,17 @@ public class EventService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final EventMapper eventMapper;
+    private final BookingService bookingService;
 
 
     // constructor
     
-    public EventService(EventRepository eventRepository, UserRepository userRepository, BookingRepository bookingRepository, EventMapper eventMapper) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, BookingRepository bookingRepository, EventMapper eventMapper, BookingService bookingService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.eventMapper = eventMapper;
+        this.bookingService = bookingService;
     }
     
 
@@ -158,6 +160,7 @@ public class EventService {
 
     
     // for cancelling an event
+    @org.springframework.transaction.annotation.Transactional
     public String cancelEvent(Long id, String organizerEmail) {
         logger.info("Cancel request for eventId={} by {}", id, organizerEmail);
         Event event = eventRepository.findById(id)
@@ -171,14 +174,28 @@ public class EventService {
             logger.warn("Unauthorized cancel attempt for eventId={} by {}", id, organizerEmail);
             throw new RuntimeException("Unauthorized: You don't own this event");
             }
-        if (event.getStatus() == EventStatus.CANCELLED) {
-            logger.warn("Event already cancelled: {}", id);
-            throw new RuntimeException("Event is already cancelled");
-        }
         
-        event.setStatus(EventStatus.CANCELLED);
-        eventRepository.save(event);
-        logger.info("Event cancelled successfully: eventId={}", id);
+        if (event.getStatus() != EventStatus.CANCELLED) {
+            event.setStatus(EventStatus.CANCELLED);
+            eventRepository.save(event);
+            logger.info("Event status updated to CANCELLED for eventId={}", id);
+        } else {
+            logger.info("Event {} was already cancelled, ensuring bookings are updated.", id);
+        }
+
+        List<Booking> bookings = bookingRepository.findByEvent_Id(id);
+        int updatedCount = 0;
+        for (Booking booking : bookings) {
+            if (booking.getBookingStatus() == BookingStatus.CONFIRMED || booking.getBookingStatus() == BookingStatus.PENDING) {
+                booking.setBookingStatus(BookingStatus.CANCELLED_BY_ORGANIZER);
+                booking.setCancellationTime(LocalDateTime.now());
+                bookingRepository.save(booking);
+                updatedCount++;
+                logger.info("Booking {} updated to CANCELLED_BY_ORGANIZER", booking.getId());
+            }
+        }
+
+        logger.info("Event cancellation processed successfully: eventId={}, updatedBookings={}", id, updatedCount);
         return "Event cancelled successfully";
     }
 
@@ -204,7 +221,7 @@ public class EventService {
                 .count();
         BigDecimal totalEarned = BigDecimal.ZERO;
         for (Event e : allEvents) {
-        List<Booking> bookings = bookingRepository.findByEventId(e.getId());
+        List<Booking> bookings = bookingRepository.findByEvent_Id(e.getId());
             for (Booking b : bookings) {
                 if (b.getBookingStatus() == BookingStatus.CONFIRMED) {
                     totalEarned = totalEarned.add(b.getTotalAmount());

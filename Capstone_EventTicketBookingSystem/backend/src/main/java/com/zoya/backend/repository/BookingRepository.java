@@ -17,7 +17,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserAndBookingStatus(User user, BookingStatus status);
 
     // gets all bookings for a specific event organizer view
-    List<Booking> findByEventId(Long eventId);
+    List<Booking> findByEvent_Id(Long eventId);
 
     // Preventing double booking by checking if user already has active booking for event
     boolean existsByUserAndEventIdAndBookingStatus(User user, Long eventId, BookingStatus status);
