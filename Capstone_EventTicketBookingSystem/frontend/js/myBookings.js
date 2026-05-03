@@ -1,3 +1,4 @@
+// myBookings.js
 const BASE = "http://localhost:8080/api";
 const token = localStorage.getItem("token");
 
@@ -60,9 +61,9 @@ async function loadBookings() {
   try {
     const res = await fetch(`${BASE}/bookings/my`, { headers: hdrs() });
     if (!res.ok) {
-        const errMsg = await handleBackendError(res);
-        toast(errMsg, "error");
-        throw new Error(errMsg);
+      const errMsg = await handleBackendError(res);
+      toast(errMsg, "error");
+      throw new Error(errMsg);
     }
     allBookings = await res.json();
     console.log("loaded bookings:", allBookings.length);
@@ -81,15 +82,26 @@ function updateCounts() {
     (b) => b.bookingStatus === "CONFIRMED",
   ).length;
   document.getElementById("countCancelled").textContent = allBookings.filter(
-    (b) => b.bookingStatus === "CANCELLED",
+    (b) =>
+      b.bookingStatus === "CANCELLED" ||
+      b.bookingStatus === "CANCELLED_BY_ORGANIZER",
   ).length;
 }
 
 function renderBookings() {
   const list = document.getElementById("bookingsList");
   let filtered = allBookings;
-  if (activeTab !== "ALL")
-    filtered = allBookings.filter((b) => b.bookingStatus === activeTab);
+  if (activeTab !== "ALL") {
+    if (activeTab === "CANCELLED") {
+      filtered = allBookings.filter(
+        (b) =>
+          b.bookingStatus === "CANCELLED" ||
+          b.bookingStatus === "CANCELLED_BY_ORGANIZER",
+      );
+    } else {
+      filtered = allBookings.filter((b) => b.bookingStatus === activeTab);
+    }
+  }
 
   if (!filtered.length) {
     console.log("no bookings to show for this tab");
@@ -109,7 +121,7 @@ function renderBookings() {
     const isUpcoming = eventDt > new Date();
     const status = b.bookingStatus;
     const stripeClass =
-      status === "CANCELLED"
+      status === "CANCELLED" || status === "CANCELLED_BY_ORGANIZER"
         ? "cancelled"
         : status === "PENDING"
           ? "pending"
@@ -120,7 +132,9 @@ function renderBookings() {
         ? `<span class="status-badge status-confirmed"><span class="status-dot"></span>Confirmed</span>`
         : status === "CANCELLED"
           ? `<span class="status-badge status-cancelled"><span class="status-dot"></span>Cancelled</span>`
-          : `<span class="status-badge status-pending"><span class="status-dot"></span>Pending</span>`;
+          : status === "CANCELLED_BY_ORGANIZER"
+            ? `<span class="status-badge status-cancelled"><span class="status-dot"></span>Cancelled by Organizer</span>`
+            : `<span class="status-badge status-pending"><span class="status-dot"></span>Pending</span>`;
 
     const canCancel = status === "CONFIRMED" && isUpcoming;
 
@@ -135,7 +149,7 @@ function renderBookings() {
               <div class="ticket-status-row">
                 ${statusBadge}
                 ${isUpcoming && status === "CONFIRMED" ? '<span style="font-size:11px;color:var(--success);">Upcoming ✓</span>' : ""}
-                ${!isUpcoming && status !== "CANCELLED" ? '<span style="font-size:11px;color:var(--muted);">Past event</span>' : ""}
+                ${!isUpcoming && status !== "CANCELLED" && status !== "CANCELLED_BY_ORGANIZER" ? '<span style="font-size:11px;color:var(--muted);">Past event</span>' : ""}
               </div>
               <div class="ticket-event-name">${b.eventName}</div>
               <div class="ticket-meta-grid">
@@ -148,7 +162,7 @@ function renderBookings() {
               <div class="ticket-footer">
                 <div class="ticket-booking-id">Booking #${b.bookingId} · Booked ${bookingDt.toLocaleDateString("en-IN")}</div>
                 ${canCancel ? `<button class="cancel-btn" onclick="cancelBooking(${b.bookingId})">Cancel Booking</button>` : ""}
-                ${status === "CANCELLED" && b.cancellationTime ? `<span style="font-size:11px;color:var(--muted2);">Cancelled on ${new Date(b.cancellationTime).toLocaleDateString("en-IN")}</span>` : ""}
+                ${(status === "CANCELLED" || status === "CANCELLED_BY_ORGANIZER") && b.cancellationTime ? `<span style="font-size:11px;color:var(--muted2);">Cancelled on ${new Date(b.cancellationTime).toLocaleDateString("en-IN")}</span>` : ""}
               </div>
             </div>
             <div class="ticket-right">
@@ -179,7 +193,10 @@ async function cancelBooking(id) {
     });
     if (res.ok) {
       console.log("booking cancelled successfully!");
-      toast("Booking has been cancelled successfully. Refund will be processed soon.", "success");
+      toast(
+        "Booking has been cancelled successfully. Refund will be processed soon.",
+        "success",
+      );
       await loadBookings();
     } else {
       console.log("failed to cancel booking");
@@ -188,7 +205,10 @@ async function cancelBooking(id) {
     }
   } catch (e) {
     console.error("error while cancelling booking:", e);
-    toast(getFriendlyMessage(e.message) || "Server error. Please try again.", "error");
+    toast(
+      getFriendlyMessage(e.message) || "Server error. Please try again.",
+      "error",
+    );
   }
 }
 

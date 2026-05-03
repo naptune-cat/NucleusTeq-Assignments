@@ -156,11 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function cancelEvent(id, status) {
     console.log("organizer requested to cancel event:", id);
-    if (status === "CANCELLED") {
-      console.log("event is already cancelled, ignoring click");
-      toast("Event is already cancelled", "error");
-      return;
-    }
+
 
     if (
       !confirm(

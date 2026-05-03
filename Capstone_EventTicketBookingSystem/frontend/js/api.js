@@ -105,3 +105,6 @@ async function loginUser(userData) {
 
   return response;
 }
+// this makes the methods as globally accessible so that they can be used in other js files
+window.getFriendlyMessage = getFriendlyMessage;
+window.handleBackendError = handleBackendError;

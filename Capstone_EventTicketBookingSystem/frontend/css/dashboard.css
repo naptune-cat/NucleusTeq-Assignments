@@ -222,3 +222,69 @@ button {
     transform: translateX(calc(var(--width) * var(--quantity) * -1));
   }
 }
+.category {
+  height: 40px;
+}
+
+/* for small screen side section  */
+.hamburger {
+  display: none;
+  font-size: 22px;
+  background: none;
+  border: none;
+  color: white;
+}
+@media (max-width: 480px) {
+  .sidebar {
+    width: 220px;
+    background: #140f2d;
+    height: 100vh;
+    padding-top: 20px;
+
+    position: fixed;
+    left: -100%;
+    top: 0;
+    z-index: 1000;
+    transition: 0.3s;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+}
+@media (max-width: 768px) {
+
+  /* navbar */
+  .hamburger {
+    display: block;
+  }
+
+  .navbar {
+    padding: 12px 16px;
+  }
+
+  /* layout */
+  .container {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 16px;
+  }
+
+  /* cards */
+  .cards {
+    flex-direction: column;
+    max-height: none;   /* IMPORTANT FIX */
+  }
+
+  .card {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* form */
+  form {
+    width: 100%;
+  }
+
+}
