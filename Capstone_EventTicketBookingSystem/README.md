@@ -18,20 +18,20 @@ A full-stack web application for managing event bookings, tickets, and payments.
 
 ---
 
-## ✨ Features
+## Features
 
-### 🎯 Organizers
+### Organizers
 - Create, edit (4hr restriction), cancel events  
 - View analytics & dashboard stats  
 - Export attendees (CSV)
 
-### 👥 Customers
+###  Customers
 - Browse events & view details  
 - Two-phase booking (Booking → Payment)  
 - Cancel bookings (3hr restriction)  
 - View booking history  
 
-### 🔒 Security
+###  Security
 - JWT auth (30 min expiry)  
 - Role-based access (CUSTOMER / ORGANIZER)  
 - BCrypt password hashing  
@@ -48,7 +48,7 @@ A full-stack web application for managing event bookings, tickets, and payments.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 event-ticket-booking-system/
@@ -71,7 +71,7 @@ event-ticket-booking-system/
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### Backend
 
@@ -113,7 +113,7 @@ live-server
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 **Users**
 ```sql
@@ -137,7 +137,7 @@ id, booking_id, amount, payment_method
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Auth
 - POST `/api/auth/register`
@@ -156,7 +156,7 @@ id, booking_id, amount, payment_method
 
 ---
 
-## 📄 Frontend Pages
+##  Frontend Pages
 
 - index.html — Events list  
 - login.html / register.html  
@@ -167,7 +167,7 @@ id, booking_id, amount, payment_method
 
 ---
 
-## 🧠 Key Concepts
+## Key Concepts
 
 Two-Phase Booking:
 1. Create booking (PENDING)  
@@ -181,7 +181,7 @@ JWT:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 - 100+ tests (JUnit, Mockito)
 
@@ -191,7 +191,7 @@ mvn test
 
 ---
 
-## 🔐 Security
+## Security
 
 - BCrypt password hashing  
 - JWT authentication  
@@ -200,7 +200,7 @@ mvn test
 
 ---
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 - Full-stack development  
 - REST APIs  
@@ -208,6 +208,3 @@ mvn test
 - Database design  
 - Testing & debugging  
 
----
-
-## 🎉 Thank You!
