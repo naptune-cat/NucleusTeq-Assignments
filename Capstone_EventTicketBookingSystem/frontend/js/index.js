@@ -79,7 +79,7 @@ function categoryImage(cat) {
     art: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=500&q=80",
     food: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80",
     comedy:
-      "https://images.unsplash.com/photo-1527224857830-43a7abe85266?w=500&q=80",
+      "https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y29tZWR5fGVufDB8fDB8fHww",
     dance:
       "https://images.unsplash.com/photo-1537365587684-f490102e1225?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGRhbmNlfGVufDB8fDB8fHww",
     business:
