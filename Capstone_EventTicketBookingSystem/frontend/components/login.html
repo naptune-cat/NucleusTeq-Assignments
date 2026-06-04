@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evently Login</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel">
+        <div class="overlay"></div>
+        <div class="left-content">
+          <h1>Evently.in</h1>
+          <h2>Your next experience awaits</h2>
+          <p>
+            Book tickets for amazing events and create memories at Evently.in
+          </p>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="form-card">
+          <h2>Welcome Back</h2>
+          <p>Login to continue booking events</p>
+
+          <form id="loginForm">
+            <div class="input-group">
+              <input
+                type="text"
+                id="email"
+                placeholder="Enter your email"
+                pattern="[a-zA-Z0-9._%+\-]+@gmail\.com"
+                title="Please enter a valid Google email address (@gmail.com)"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="input-group">
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  id="password"
+                  pattern="^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,12}$"
+                  title="Password must be 8-12 characters long, contain at least 1 uppercase letter and 1 special character"
+                  placeholder="Enter your password"
+                  required
+                  autocomplete="current-password"
+                />
+                <button
+                  type="button"
+                  class="eye-btn"
+                  onclick="togglePassword('password', this)"
+                >
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit">Log In</button>
+          </form>
+
+          <p class="switch-link">
+            Don't have an account?
+            <a href="register.html">Sign Up</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/api.js" defer></script>
+    <script src="../js/login.js" defer></script>
+    <script>
+      function togglePassword(id, btn) {
+        const input = document.getElementById(id);
+        const icon = btn.querySelector("i");
+        if (input.type === "password") {
+          input.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          input.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+      }
+    </script>
+    <div class="toast" id="toast"></div>
+  </body>
+</html>

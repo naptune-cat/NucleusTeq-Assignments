@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evently — My Bookings</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/myBookings.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-logo">Evently <i class="fa-solid fa-ticket"></i></div>
+      <div class="nav-right">
+        <button class="nav-btn" onclick="location.href = 'index.html'">
+          Browse Events
+        </button>
+        <button class="nav-btn" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <div class="page">
+      <div class="page-header">
+        <div class="page-title">My Bookings</div>
+        <div class="page-sub">All your event tickets in one place</div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="setTab('ALL', this)">
+          All <span class="tab-count" id="countAll">0</span>
+        </button>
+        <button class="tab" onclick="setTab('CONFIRMED', this)">
+          Upcoming <span class="tab-count" id="countConfirmed">0</span>
+        </button>
+        <button class="tab" onclick="setTab('CANCELLED', this)">
+          Cancelled <span class="tab-count" id="countCancelled">0</span>
+        </button>
+      </div>
+
+      <div class="bookings-list" id="bookingsList">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/myBookings.js"></script>
+  </body>
+</html>

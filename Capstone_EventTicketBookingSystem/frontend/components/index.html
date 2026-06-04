@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evently — Discover Events</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-logo">Evently <i class="fa-solid fa-ticket"></i></div>
+      <div class="nav-links">
+        <button
+          class="nav-btn ghost"
+          onclick="location.href = 'myBooking.html'"
+        >
+          My Bookings
+        </button>
+        <button class="nav-btn ghost" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <div class="hero">
+      <div class="hero-tag"><i class="fa-solid fa-star"></i> Live Events Near You</div>
+      <h1>Find Your Next<br /><span>Unforgettable</span> Experience</h1>
+      <p>
+        Browse events — music, tech, sports, and more. Book your tickets in
+        seconds.
+      </p>
+      <div class="search-wrap">
+        <input
+          class="search-input"
+          id="searchInput"
+          placeholder="Search events by name or venue..."
+        />
+        <button class="search-btn" onclick="filterEvents()">Search</button>
+      </div>
+      <div class="filters">
+        <button class="chip active" onclick="setFilter('ALL', this)">
+          All Events
+        </button>
+        <button class="chip" onclick="setFilter('Technology', this)">
+          <i class="fa-solid fa-laptop-code"></i> Technology
+        </button>
+        <button class="chip" onclick="setFilter('Music', this)">
+          <i class="fa-solid fa-music"></i> Music
+        </button>
+        <button class="chip" onclick="setFilter('Sports', this)">
+          <i class="fa-solid fa-futbol"></i> Sports
+        </button>
+        <button class="chip" onclick="setFilter('Art', this)"><i class="fa-solid fa-palette"></i> Art</button>
+        <button class="chip" onclick="setFilter('Food', this)"><i class="fa-solid fa-pizza-slice"></i> Food</button>
+      </div>
+    </div>
+
+    <div class="events-section">
+      <div class="events-header">
+        <div class="events-title">Upcoming Events</div>
+        <div class="events-count" id="eventsCount"></div>
+      </div>
+      <div class="events-grid" id="eventsGrid">
+        <div style="grid-column: 1/-1" class="state-box">
+          <div class="spinner"></div>
+          <p>Loading events...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Organizer Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <button class="hamburger" onclick="toggleMenu()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <h2>Evently <i class="fa-solid fa-ticket"></i></h2>
+      <button onclick="logout()">Logout</button>
+    </nav>
+    <div class="overlay-bg" id="overlayBg" onclick="toggleMenu()"></div>
+    <div id="welcome"></div>
+    <!-- Main Layout -->
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <ul>
+          <li onclick="showSection('dashboard')">
+            <i class="fa-solid fa-house"></i> Dashboard
+          </li>
+          <li onclick="showSection('events')">
+            <i class="fa-solid fa-ticket"></i> My Events
+          </li>
+          <li onclick="showSection('create')">
+            <i class="fa-solid fa-plus"></i> Create Event
+          </li>
+        </ul>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Dashboard -->
+        <div id="dashboard" class="section">
+          <h2>Dashboard</h2>
+          <div id="slider-container">
+            <div
+              class="slider"
+              style="--width: 260px; --height: 130px; --quantity: 4"
+            >
+              <div class="list">
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #1a1333, #2a1f55);
+                    "
+                  >
+                    <p>Hello there!</p>
+                    <p>Welcome, Organizer</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #140f2d, #1e1460);
+                    "
+                  >
+                    <p>Enjoying Evently?</p>
+                    <p>We hope so!</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #0f0c29, #2a1f55);
+                    "
+                  >
+                    <p>Any issues?</p>
+                    <p>support@evently.in</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #1a1333, #3b1f6b);
+                    "
+                  >
+                    <p>Best experience</p>
+                    <p>with Evently.in</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #1a1333, #2a1f55);
+                    "
+                  >
+                    <p>Hello there!</p>
+                    <p>Welcome, Organizer</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #140f2d, #1e1460);
+                    "
+                  >
+                    <p>Enjoying Evently?</p>
+                    <p>We hope so!</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #0f0c29, #2a1f55);
+                    "
+                  >
+                    <p>Any issues?</p>
+                    <p>support@evently.in</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <div
+                    class="card"
+                    style="
+                      background: linear-gradient(135deg, #1a1333, #3b1f6b);
+                    "
+                  >
+                    <p>Best experience</p>
+                    <p>with Evently.in</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cards">
+            <div class="card">Total: <span id="total"></span></div>
+            <div class="card">Active: <span id="active"></span></div>
+            <div class="card">Past: <span id="past"></span></div>
+            <div class="card">Cancelled: <span id="cancelled"></span></div>
+            <div class="card">Total Earned: <span id="totalEarned"></span></div>
+          </div>
+        </div>
+
+        <!-- Events -->
+        <div id="events" class="section hidden">
+          <h2>My Events</h2>
+          <div id="eventList"></div>
+        </div>
+
+        <!-- Create Event -->
+        <div id="create" class="section hidden">
+          <h2>Create Event</h2>
+          <div id="form-div">
+            <form id="eventForm">
+              <input type="text" placeholder="Event Name" id="name" required />
+              <input type="text" placeholder="Venue" id="venue" required />
+              <input type="datetime-local" id="date" required />
+              <input
+                type="number"
+                placeholder="Seats"
+                id="seats"
+                min="1"
+                required
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                id="price"
+                min="50"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                id="description"
+                required
+              />
+              <select id="category" required>
+                <option value="music">Music</option>
+                <option value="sports">Sports</option>
+                <option value="art">Art</option>
+                <option value="food">Food</option>
+                <option value="comedy">Comedy</option>
+                <option value="dance">Dance</option>
+                <option value="business">Business</option>
+                <option value="health">Health</option>
+                <option value="gaming">Gaming</option>
+                <option value="technology">Technology</option>
+              </select>
+              <button type="submit">Create</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="../js/dashboard.js"></script>
+  </body>
+</html>

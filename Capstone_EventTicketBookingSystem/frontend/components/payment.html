@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evently — Payment</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/payment.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-logo">Evently <i class="fa-solid fa-ticket"></i></div>
+      <button class="back-btn" onclick="history.back()">← Back</button>
+    </nav>
+
+    <div class="page" id="pageContent">
+      <div style="grid-column: 1/-1"><div class="spinner-sm"></div></div>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="overlay-card" id="overlayCard">
+        <div class="proc-ring"></div>
+        <div class="proc-title">Processing Payment</div>
+        <div class="proc-sub">Please wait, do not close this page...</div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <template id="tpl-pay-card">
+      <div class="pay-card">
+        <div class="pay-title">Complete Payment</div>
+        <div class="pay-sub">Choose your preferred payment method</div>
+        <div class="method-label">Payment Method</div>
+        <div class="methods-grid">
+          <button class="method-btn selected" data-method="UPI">
+            <i class="fa-brands fa-paypal"></i>UPI
+          </button>
+          <button class="method-btn" data-method="NET_BANKING">
+            <i class="fa-solid fa-building-columns"></i> Net Banking
+          </button>
+          <button class="method-btn" data-method="CREDIT_CARD">
+            <i class="fa-regular fa-credit-card"></i> Credit Card
+          </button>
+          <button class="method-btn" data-method="DEBIT_CARD">
+            <i class="fa-regular fa-credit-card"></i> Debit Card
+          </button>
+        </div>
+        <div class="divider"></div>
+        <p class="mock-note">
+          This is a <strong>mock payment</strong> — no real transaction will
+          occur. Clicking Pay will simulate a successful payment confirmation.
+        </p>
+      </div>
+    </template>
+
+    <template id="tpl-summary-card">
+      <div class="summary-card">
+        <div class="summary-title">Order Summary</div>
+        <div class="summary-event">
+          <div class="summary-event-emoji" data-slot="emoji"></div>
+          <div class="summary-event-name" data-slot="name"></div>
+          <div class="summary-event-meta" data-slot="meta"></div>
+        </div>
+        <div class="summary-row">
+          <span>Ticket Price</span>
+          <span data-slot="price"></span>
+        </div>
+        <div class="summary-row">
+          <span>Quantity</span>
+          <span data-slot="qty"></span>
+        </div>
+        <div class="summary-row">
+          <span>Convenience Fee</span>
+          <span class="fee-free">FREE</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-total">
+          <span class="summary-total-label">Total</span>
+          <span class="summary-total-val" data-slot="total"></span>
+        </div>
+        <button class="pay-btn" id="payBtn">
+          Pay <span data-slot="pay-total"></span>
+        </button>
+        <div class="secure-note">256-bit encrypted · Powered by Evently</div>
+      </div>
+    </template>
+
+    <template id="tpl-success">
+      <div class="success-ring">✓</div>
+      <div class="success-title">Payment Successful!</div>
+      <div class="success-sub">
+        Your booking is confirmed. Enjoy
+        <strong data-slot="event-name"></strong>!
+      </div>
+      <div class="txn-id" data-slot="txn-id"></div>
+      <button class="goto-btn" id="viewBookingsBtn">View My Bookings →</button>
+    </template>
+    <script src="../js/payment.js"></script>
+  </body>
+</html>
