@@ -142,7 +142,7 @@ registerForm.addEventListener("submit", async function (e) {
     if (response.ok) {
       const message = await response.text();
       console.log("registration successful!", message);
-      toast(getFriendlyMessage(message) || "Account created successfully! 🎉", "success");
+      toast(`<i class="fa-solid fa-person-circle-check"></i> ${getFriendlyMessage(message) || "Account created successfully!"}`, "success");
 
       registerForm.reset();
       console.log("sending user to login page now");
@@ -151,7 +151,7 @@ registerForm.addEventListener("submit", async function (e) {
       }, 1500);
     } else {
       const errorMessage = await handleBackendError(response);
-      toast(errorMessage, "error");
+      toast(`<i class="fa-solid fa-triangle-exclamation"></i> ${errorMessage}`, "error");
     }
   } catch (error) {
     console.error("something went wrong during registration:", error);

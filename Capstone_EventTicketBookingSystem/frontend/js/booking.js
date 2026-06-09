@@ -1,4 +1,5 @@
-const BASE = "http://localhost:8080/api";
+const BASE = "http://localhost:8082/api";
+if (!checkSession()) return;
 const token = localStorage.getItem("token");
 const eventId = localStorage.getItem("pendingEventId");
 const qty = parseInt(localStorage.getItem("pendingQty") || "1");
@@ -110,6 +111,7 @@ async function loadPage() {
 
 async function processPayment() {
   console.log("user clicked pay button, starting payment process...");
+  if (!checkSession()) return;
   document.getElementById("payBtn").disabled = true;
   document.getElementById("overlay").classList.add("show");
   try {

@@ -2,8 +2,6 @@ package com.zoya.backend.controller;
 
 import com.zoya.backend.dto.*;
 import com.zoya.backend.service.BookingService;
-import com.zoya.backend.service.ExportService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +18,8 @@ public class BookingController {
     private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
 
     private final BookingService bookingService;
-    private final ExportService exportService;
-
-    public BookingController(BookingService bookingService, ExportService exportService) {
+    public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
-        this.exportService = exportService;
     }
 
     // Customer creates a booking which is by default PENDING

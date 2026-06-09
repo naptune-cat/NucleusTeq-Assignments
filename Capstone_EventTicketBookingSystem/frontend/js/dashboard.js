@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("trying to download attendees list for event:", eventId);
     try {
       const res = await fetch(
-        `http://localhost:8080/api/export/event/${eventId}/attendees`,
+        `http://localhost:8082/api/export/event/${eventId}/attendees`,
         {
           headers: getHeaders(),
         },
@@ -156,7 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function cancelEvent(id, status) {
     console.log("organizer requested to cancel event:", id);
-
 
     if (
       !confirm(
