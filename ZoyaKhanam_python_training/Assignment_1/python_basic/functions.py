@@ -21,15 +21,18 @@ def check_palindrome() -> None:
     - madam
     - 121
     """
-    user_input = input("Enter the input to check palindrome")
+    user_input = input("Enter the input to check palindrome ")
 
+    # converting str to lowercase
+    if type(user_input)== str:
+        user_input = user_input.lower()
     # [::-1] creates reverse copy of the provided input 
     reversed_value = user_input[::-1]
 
     if user_input == reversed_value:
         print(f"{user_input} is a palindrome {type(user_input)}.")
     else:
-        print(f"{user_input} is a palindrome.")
+        print(f"{user_input} is not a palindrome.")
 
 
 # Question 19
