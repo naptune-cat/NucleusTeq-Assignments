@@ -22,9 +22,9 @@ async function loadEvents() {
   try {
     const res = await fetch(`${BASE}/events`);
     if (!res.ok) {
-        const errMsg = await handleBackendError(res);
-        toast(errMsg, "error");
-        return;
+      const errMsg = await handleBackendError(res);
+      toast(errMsg, "error");
+      return;
     }
     allEvents = await res.json();
     console.log("successfully loaded events:", allEvents.length);
@@ -111,11 +111,9 @@ function renderEvents(events) {
     let seatClass = "seats-ok",
       seatLabel = available + " seats left";
     if (available === 0) {
-      seatClass = "seats-full",
-      seatLabel = "Sold Out";
+      ((seatClass = "seats-full"), (seatLabel = "Sold Out"));
     } else if (pct < 0.2) {
-      seatClass = "seats-low",
-      seatLabel = "Only " + available + " left!";
+      ((seatClass = "seats-low"), (seatLabel = "Only " + available + " left!"));
     }
     const card = document.createElement("div");
     card.className = "event-card";
@@ -145,7 +143,7 @@ function renderEvents(events) {
   });
 }
 
-function goToEvent(id) {
+window.goToEvent = function (id) {
   console.log("user wants to view event details for id:", id);
   // making sure they are logged in before booking
   if (!localStorage.getItem("token")) {
@@ -155,8 +153,6 @@ function goToEvent(id) {
     return;
   }
   location.href = "event-detail.html?id=" + id;
-}
-
-
+};
 
 loadEvents();

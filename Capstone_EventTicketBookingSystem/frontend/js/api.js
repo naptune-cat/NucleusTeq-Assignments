@@ -8,7 +8,7 @@ const errorMessageMap = {
     "We couldn't find an account with that email. Maybe sign up?",
   "Email already exists":
     "This email is already registered. Try logging in instead!",
-  Unauthorized: "Your session has expired. Please log in again to continue.",
+  "Unauthorized": "Your session has expired. Please log in again to continue.",
   "Invalid email format": "Please enter a valid email address.",
   "Bad credentials": "Invalid email or password. Please check and try again.",
 
@@ -64,6 +64,36 @@ function getFriendlyMessage(msg) {
   return msg; // Returning original if no better version found
 }
 
+// for handling session expiration and other auth related errors globally across the app
+function checkSession() {
+  const token = localStorage.getItem("token");
+
+  if (!token) return true; // no token → already logged out
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    const currentTime = Math.floor(Date.now() / 1000);
+
+    if (payload.exp <= currentTime) {
+      localStorage.clear();
+
+      toast("Your session has expired. Please login again.", "error");
+
+      setTimeout(() => {
+        location.href = "login.html";
+      }, 1800);
+
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    localStorage.clear();
+    return false;
+  }
+}
+
 async function handleBackendError(response) {
   try {
     const contentType = response.headers.get("content-type");
@@ -108,3 +138,4 @@ async function loginUser(userData) {
 // this makes the methods as globally accessible so that they can be used in other js files
 window.getFriendlyMessage = getFriendlyMessage;
 window.handleBackendError = handleBackendError;
+window.checkSession = checkSession;
