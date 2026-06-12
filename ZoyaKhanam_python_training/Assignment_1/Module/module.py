@@ -6,7 +6,7 @@ Modules
 import math
 import random
 
-from custom_math import cube, square
+from Module.custom_math import cube, square
 
 
 # Question 22
