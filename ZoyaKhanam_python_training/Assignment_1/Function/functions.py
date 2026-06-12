@@ -8,6 +8,8 @@ def calculate_square(number: float) -> float:
     """
     Calculate the square of a number.
     """
+    print("-"*30)
+    print("Calculate the square of a number.")
     return number**2
 
 
@@ -21,11 +23,14 @@ def check_palindrome() -> None:
     - madam
     - 121
     """
-    user_input = input("Enter the input to check palindrome ")
+
+    print("-"*30)
+    print("Check palindrome.")
+    user_input = input("Enter the input to check palindrome (number or string both accepted) ")
 
     # converting str to lowercase
-    if type(user_input)== str:
-        user_input = user_input.lower()
+    user_input = user_input.lower()
+    
     # [::-1] creates reverse copy of the provided input 
     reversed_value = user_input[::-1]
 
@@ -40,7 +45,8 @@ def find_maximum_number():
     """
     Return the maximum number from a list.
     """
-
+    print("-"*30)
+    print("Return the maximum number from a list.")
     numbers = [12, 45, 7, 89, 34, 56]
 
     maximum_number = max(numbers)
@@ -54,6 +60,8 @@ def greet(name="Guest") -> None:
     """
     Demonstrating the use of default parameters.
     """
+    print("-"*30)
+    print("Demonstrating the use of default parameters.")
     print(f"Hello {name}! \nWelcome to foodie cart.")
 
 
@@ -61,7 +69,7 @@ if __name__ == "__main__":
     calculate_square(5.0)
     check_palindrome()
     find_maximum_number()
-    # this will use default parameter as no arguments are passed
+    # this will use default parameter as no argument is passed
     greet()
     # here we are passing "Shanaya" as argument
     greet("Shanaya")

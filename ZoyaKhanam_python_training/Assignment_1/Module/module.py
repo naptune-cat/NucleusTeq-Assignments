@@ -14,7 +14,8 @@ def math_operations():
     """
     Demonstrate the use of the math module.
     """
-
+    print("-"*30)
+    print("Demonstrating use of math module-")
     number = int(input("Enter a number: "))
 
     print(f"Square Root: {math.sqrt(number)}")
@@ -27,7 +28,8 @@ def generate_random_numbers():
     """
     Generate random numbers using the random module.
     """
-
+    print("-"*30)
+    print("Random number generater")
     print("Random Integer:", random.randint(1, 100))
     print("Random Float:", random.random())
 
@@ -37,7 +39,8 @@ def use_custom_module():
     """
     Import and use functions from a custom module.
     """
-
+    print("-"*30)
+    print("Import and use funcions from a custom module")
     number = int(input("Enter a number: "))
 
     print(f"Square: {square(number)}")

@@ -10,7 +10,8 @@ def display_variable_types()-> None:
     Create variables of different data types
     and display their types.
     """
-
+    print("-"*30)
+    print("Create variables of different data types\nand display their types.")
     age = 23
     height = 5.4
     name = "Zoya"
@@ -27,7 +28,8 @@ def swap_numbers()-> None:
     """
     Swap two numbers using Python
     """
-
+    print("-"*30)
+    print("Swap two numbers")
     first_number = int(input("Enter first number: "))
     second_number = int(input("Enter second number: "))
 
@@ -44,7 +46,8 @@ def arithmetic_operations()-> None:
     Perform basic arithmetic operations
     on two user-provided numbers.
     """
-
+    print("-"*30)
+    print("Perform basic arithmetic operations\non two user-provided numbers.")
     first_number = float(input("Enter first number: "))
     second_number = float(input("Enter second number: "))
 

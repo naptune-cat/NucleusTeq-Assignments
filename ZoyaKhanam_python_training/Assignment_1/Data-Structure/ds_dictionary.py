@@ -8,7 +8,7 @@ def student_dictionary():
     """
     Create a student dictionary and access values.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Create a student dictionary and access values.")
     student = {
         "name": "Priyanka",
@@ -26,7 +26,7 @@ def character_frequency():
     """
     Count frequency of characters in a string.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Count frequency of characters in a string.")
     text = input("Enter a string: ")
 
@@ -48,7 +48,7 @@ def merge_dictionaries():
     """
     Merge two dictionaries.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Merge two dictionaries.")
     student = {
         "name": "Shirley",

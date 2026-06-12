@@ -21,7 +21,7 @@ class Student:
         self.course = course
 
     def display_details(self):
-        print("------------------------------------------")
+        print("-"*30)
         print("Student Details")
         print(f"Name: {self.name}")
         print(f"Age: {self.age}")
@@ -41,7 +41,7 @@ class Car:
         self.model = model
 
     def display_details(self):
-        print("------------------------------------------")
+        print("-"*30)
         print("Car Details")
         print(f"Brand: {self.brand}")
         print(f"Model: {self.model}")
@@ -71,7 +71,7 @@ class Employee(Person):
         self.employee_id = employee_id
 
     def display_details(self):
-        print("------------------------------------------")
+        print("-"*30)
         print("Employee Details")
         print(f"Name: {self.name}")
         print(f"Employee ID: {self.employee_id}")
@@ -130,19 +130,27 @@ class Cat:
 
 if __name__ == "__main__":
 
+    print("-"*30)
+    print("Student class with attributes and display method.")
     student = Student("Soumya", 21, "Computer Science")
     student.display_details()
 
+    print("-"*30)
+    print("Car class demonstrating constructor usage.")
     car = Car("Toyota", "Camry Hybrid")
     car.display_details()
 
+    print("-"*30)
+    print("Demonstrating Inheritance in classes.")
     employee = Employee("Zoya", "EMP101")
     employee.display_details()
 
+    print("-"*30)
+    print("Demonstrating Encapsulation using private variables.")
     bank = Bank(1000)
     bank.deposit(500)
 
-    print("------------------------------------------")
+    print("-"*30)
     print("Balance:", bank.get_balance())
 
     # Both Dog and Cat implement a method named sound().
@@ -151,6 +159,7 @@ if __name__ == "__main__":
     dog = Dog()
     cat = Cat()
 
-    print("------------------------------------------")
+    print("Demonstrating polymophism.")
+    print("-"*30)
     dog.sound()
     cat.sound()

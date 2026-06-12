@@ -8,7 +8,8 @@ def set_operations():
     """
     Perform union, intersection and difference on sets.
     """
-
+    print("-"*30)
+    print("Perform union, intersection and difference on sets.")
     set_one = {1, 2, 3, 4, 5}
     set_two = {4, 5, 6, 7, 8}
 
@@ -22,7 +23,8 @@ def remove_duplicates():
     """
     Remove duplicates from a list using a set.
     """
-
+    print("-"*30)
+    print("Remove duplicates from a list using a set.")
     numbers = [1, 2, 2, 3, 4, 4, 5, 6, 6]
 
     unique_numbers = list(set(numbers))

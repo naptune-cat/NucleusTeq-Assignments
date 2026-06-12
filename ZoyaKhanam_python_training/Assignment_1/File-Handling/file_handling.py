@@ -8,12 +8,12 @@ def write_name_to_file():
     """
     Create a file and write a name into it.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Create a file and write a name into it.")
 
     # "w" mode creates the file if it does not exist.
     # If the file already exists, its contents are overwritten.
-    with open("student.txt", "w") as file:
+    with open("Assignment_1/File-Handling/student.txt", "w") as file:
         file.write("Zoya Khanam")
 
     print("Name written successfully.")
@@ -24,11 +24,11 @@ def count_file_statistics():
     """
     Read a file and count words, lines and characters.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Read a file and count words, lines and characters.")
 
     # r is read-only mode
-    with open("student.txt", "r") as file:
+    with open("Assignment_1/File-Handling/student.txt", "r") as file:
         content = file.read()
 
     # split() separates the text into words spliting using whitespace.
@@ -39,7 +39,7 @@ def count_file_statistics():
     character_count = len(content)
 
     # readlines() returns all lines as a list.
-    with open("student.txt", "r") as file:
+    with open("Assignment_1/File-Handling/student.txt", "r") as file:
         line_count = len(file.readlines())
 
     print(f"Words: {word_count}")
@@ -52,12 +52,12 @@ def append_data_to_file():
     """
     Append data to an existing file.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Append data to an existing file.")
 
     # "a" mode appends data to the end of the file
     # without removing existing content.
-    with open("student.txt", "a") as file:
+    with open("Assignment_1/File-Handling/student.txt", "a") as file:
         file.write("\nPython Training")
 
     print("Data appended successfully.")
@@ -68,15 +68,15 @@ def copy_file_content():
     """
     Copy content from one file to another.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Copy content from one file to another.")
 
     # Read content from the source file.
-    with open("student.txt", "r") as source_file:
+    with open("Assignment_1/File-Handling/student.txt", "r") as source_file:
         content = source_file.read()
 
     # Write the content into a new file.
-    with open("copied_student.txt", "w") as destination_file:
+    with open("Assignment_1/File-Handling/copied_student.txt", "w") as destination_file:
         destination_file.write(content)
 
     print("File copied successfully.")
@@ -87,7 +87,7 @@ def search_word_in_file():
     """
     Search a word in a file.
     """
-    print("------------------------------------------")
+    print("-"*30)
     print("Search a word in a file.")
 
     search_word = input("Enter word to search: ")

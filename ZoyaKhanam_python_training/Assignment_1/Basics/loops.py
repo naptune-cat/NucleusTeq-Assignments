@@ -9,18 +9,19 @@ def print_numbers():
     """
     Print numbers from 1 to 100 using a loop.
     """
-
+    print("-"*30)
+    print("printing numbers from 1 to 100 using a loop.")
     for number in range(1, 101):
         print(number)
 
 
 # Question 13
-def multiplication_table():
+def multiplication_table(number: int):
     """
     Display the multiplication table of a given number.
     """
-
-    number = int(input("Enter a number: "))
+    print("-"*30)
+    print("displaying multiplication table of a given number.")
 
     for multiplier in range(1, 11):
         print(f"{number} x {multiplier} = {number * multiplier}")
@@ -31,7 +32,8 @@ def factorial():
     """
     Calculate the factorial of a number using a loop.
     """
-
+    print("-"*30)
+    print("Calculate the factorial of a number using a loop.")
     number = int(input("Enter a number: "))
 
     if number < 0:
@@ -51,7 +53,8 @@ def reverse_number():
     """
     Reverse a number using a loop.
     """
-
+    print("-"*30)
+    print("reverse a numbere.")
     number = int(input("Enter a number: "))
 
     reversed_number = 0
@@ -69,7 +72,8 @@ def is_prime():
     """
     Check whether a number is prime.
     """
-
+    print("-"*30)
+    print("Checking whether number is prime or not.")
     number = int(input("Enter a number: "))
 
     if number <= 1:
@@ -86,7 +90,8 @@ def is_prime():
 
 if __name__ == "__main__":
     print_numbers()
-    multiplication_table()
+    number = int(input("Enter a number to get multiplication table: "))
+    multiplication_table(number)
     factorial()
     reverse_number()
     is_prime()

@@ -10,7 +10,8 @@ def list_operations():
     Create a list of numbers and perform
     sum, maximum, sorting, and duplicate removal.
     """
-
+    print("-"*30)
+    print("Create a list of numbers and perform\nsum, maximum, sorting, and duplicate removal.")
     numbers = [10, 5, 20, 15, 5, 25, 30, 20, 40, 10]
 
     print("Original List:", numbers)
@@ -27,7 +28,8 @@ def count_even_odd():
     """
     Count even and odd numbers in a list.
     """
-
+    print("-"*30)
+    print("Count even and odd numbers in a list.")
     numbers = [10, 5, 20, 15, 5, 25, 30, 20, 40, 10]
 
     even_count = 0
@@ -48,7 +50,8 @@ def reverse_list():
     """
     Reverse a list without using reverse().
     """
-
+    print("-"*30)
+    print("Reverse a list without using reverse().")
     numbers = [10, 5, 20, 15, 5, 25, 30, 20, 40, 10]
 
     reversed_list = numbers[::-1]

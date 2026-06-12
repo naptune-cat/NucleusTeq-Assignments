@@ -11,17 +11,25 @@ import sys
 # def function_name() -> return_type:
 
 def welcome_message()-> None:
+    print("-"*30)
     print("Welcome to Python Training")
 
 # Question 2
-""" Write a program to check your Python version."""
+
 
 def check_python_version()-> None:
+    """ Write a program to check your Python version."""
+    print("-"*30)
     print("Python version:", sys.version)
 
 # Question 3
-""" Take user input (name and age) and print a formatted message."""
+
 def user_info()-> None:
+    """ 
+    Take user input (name and age) and print a formatted message.
+    """
+    print("-"*30)
+    print("Take user input (name and age) and print a formatted message.")
     name = input("Enter your name: ")
     age = input("Enter your age: ")
     print(f"Hello {name}, you are {age} years old.")

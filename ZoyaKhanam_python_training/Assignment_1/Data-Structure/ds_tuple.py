@@ -8,7 +8,8 @@ def tuple_operations():
     """
     Create a tuple and access its elements.
     """
-
+    print("-"*30)
+    print("Creating a tuple and access its elements.")
     fruits = ("Apple", "Banana", "Mango", "Orange")
 
     print("First Element:", fruits[0])
@@ -21,7 +22,8 @@ def modify_tuple():
     """
     Convert a tuple into a list and modify it.
     """
-
+    print("-"*30)
+    print("Converting a tuple into a list and modifying it.")
     fruits = ("Apple", "Banana", "Mango")
 
     fruit_list = list(fruits)
