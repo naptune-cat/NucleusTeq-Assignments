@@ -91,10 +91,10 @@ def search_word_in_file():
     print("Search a word in a file.")
 
     search_word = input("Enter word to search: ")
-    # making sure the word is found irrrespective of the case that's why converting to lower case
-    search_word.lower()
+    # making sure the word is found irrespective of the case that's why converting to lower case
+    search_word = search_word.lower()
 
-    with open("student.txt", "r") as file:
+    with open("Assignment_1/File-Handling/student.txt", "r") as file:
         content = file.read().lower()
 
 
