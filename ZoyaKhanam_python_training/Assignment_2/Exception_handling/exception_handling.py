@@ -33,7 +33,8 @@ def handle_zero_division() -> None:
         result = numerator / denominator
 
         print(f"Result: {result}")
-
+    except ValueError:
+        print("Invalid input. Required float")
     except ZeroDivisionError:
         print("Cannot divide by zero.")
 
@@ -107,6 +108,7 @@ def validate_positive_number(number: int) -> None:
     """
     Raise ValueError if number is negative.
     """
+    
     if number < 0:
         raise ValueError(
             "Negative numbers are not allowed."
@@ -155,22 +157,33 @@ def handle_file_not_found() -> None:
 
 
 if __name__ == "__main__":
+# Q.1
     handle_value_error()
+# Q.2
     handle_zero_division()
+# Q.3
     read_number_from_file()
+# Q.4
     handle_multiple_exceptions()
+# Q.5
     catch_all_exceptions()
 
+# Q.6
+    number = int(input("Enter a number: "))
     try:
-        validate_positive_number(-5)
+        
+        validate_positive_number(number)
+
     except ValueError as error:
         print(error)
-
+#  Q.7
     age= input(int("Enter your age "))
     try:
         validate_age(age)
+    except ValueError:
+        print("Please enter a valid age")
     except AgeException as error:
         print(error)
-
+# Q.8
     handle_file_not_found()
 
