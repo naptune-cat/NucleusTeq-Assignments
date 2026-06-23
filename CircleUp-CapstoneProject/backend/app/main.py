@@ -1,14 +1,36 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from sqlalchemy import text
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.database import engine
+from app.core.database import Base, engine
+from app.core.logger import setup_logging
+import app.models  # this one line loads ALL models via __init__.py
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_logging()
+    Base.metadata.create_all(bind=engine)
+    yield
 
 
-@app.get("/")
-def home():
-    with engine.connect() as connection:
-        connection.execute(text("SELECT 1"))
+app = FastAPI(
+    title="CircleUp API",
+    description="Discover and organize social activities",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
-    return {"message": "Database Connected Successfully"}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/", tags=["Health"])
+def health_check():
+    return {"status": "ok", "app": "CircleUp"}
