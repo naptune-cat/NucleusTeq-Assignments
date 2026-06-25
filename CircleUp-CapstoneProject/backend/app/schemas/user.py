@@ -18,9 +18,18 @@ class UserCreate(UserBase):
     @classmethod
     def password_must_be_strong(cls, v: str) -> str:
         if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters")
-        return v
+            raise ValueError("Password must be at least 8 characters long")
 
+        if not any(char.isupper() for char in v):
+            raise ValueError("Password must contain at least one uppercase letter")
+
+        if not any(char.isdigit() for char in v):
+            raise ValueError("Password must contain at least one number")
+
+        if not any(not char.isalnum() for char in v):
+            raise ValueError("Password must contain at least one special character")
+
+        return v
 
 # --- Update profile request (all fields are optional) ---
 class UserUpdate(BaseModel):
