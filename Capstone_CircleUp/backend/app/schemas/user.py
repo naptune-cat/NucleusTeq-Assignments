@@ -8,10 +8,10 @@ GenderType = Literal["male", "female", "other", "prefer_not_to_say"]
 class UserBase(BaseModel):
     name: str
     email: EmailStr
-    phone_number: str | None = None
+    phone_number: str 
     city: str | None = None
     bio: str | None = None
-    gender: GenderType | None = None  
+    gender: GenderType 
 
 
 # --- Register request body ---
@@ -44,7 +44,7 @@ class UserUpdate(BaseModel):
 # --- Response ---
 class UserOut(UserBase):
     id: int
-    model_config = {"from_attributes": True}
+    model_config = {"from_attributes": True} # lets pydantic read SQLAlchemy objects
 
 
 # --- Contact info — only visible after participation approved ---
