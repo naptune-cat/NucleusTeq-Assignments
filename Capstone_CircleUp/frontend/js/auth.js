@@ -85,14 +85,10 @@ export async function handleLogin() {
     showMsg("login-success", "Logged in! Redirecting...", "success");
 
     setTimeout(() => {
-      window.location.href = "../components/dashboard.html";
+      window.location.href = "../component/profile.html";
     }, 1200);
   } catch (e) {
-    showMsg(
-      "login-error",
-      "Could not reach the server. Is it running?",
-      "error",
-    );
+    showMsg("login-error", "Could not reach the server.", "error");
   } finally {
     setLoading("login-btn", false, "Log in");
   }
@@ -213,7 +209,11 @@ export async function handleRegister() {
       switchTab("login");
     }, 1500);
   } catch (e) {
-    showMsg("reg-error", "Could not reach the server. Try after sometime ", "error");
+    showMsg(
+      "reg-error",
+      "Could not reach the server. Try after sometime ",
+      "error",
+    );
   } finally {
     setLoading("register-btn", false, "Create account");
   }
