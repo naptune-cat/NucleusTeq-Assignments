@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -8,6 +9,7 @@ from app.core.logger import logger
 from app.repositories.activity_repository import (
     get_activity_by_id as repo_get_activity,
     get_all_activities as repo_get_all_activities,
+    browse_activities as repo_browse_activities,
     create_activity as repo_create_activity,
     update_activity as repo_update_activity,
     delete_activity as repo_delete_activity,
@@ -22,6 +24,7 @@ def create_activity(db: Session, data: ActivityCreate, current_user: User) -> Ac
         location=data.location,
         max_participants=data.max_participants,
         activity_date=data.activity_date,
+        gender_filter=data.gender_filter,
         creator_id=current_user.id,
         status=ActivityStatus.open,
     )
@@ -38,12 +41,29 @@ def get_all_activities(db: Session) -> list[Activity]:
     return repo_get_all_activities(db)
 
 
+def browse_activities(
+    db: Session,
+    current_user: User,
+    category: str | None = None,
+    location: str | None = None,
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
+) -> list[Activity]:
+    return repo_browse_activities(
+        db,
+        category=category,
+        location=location,
+        date_from=date_from,
+        date_to=date_to,
+        current_user_gender=current_user.gender,
+    )
+
+
 def update_activity(
     db: Session, activity_id: int, data: ActivityUpdate, current_user: User
 ) -> Activity:
     activity = repo_get_activity(db, activity_id)
 
-    # checking to make sure only creator can edit
     if activity.creator_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -68,14 +88,12 @@ def update_activity(
 def delete_activity(db: Session, activity_id: int, current_user: User) -> None:
     activity = repo_get_activity(db, activity_id)
 
-    # only creator can delete the activity
     if activity.creator_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not the creator of this activity",
         )
 
-    # marking as cancelled instead of actually deleting
     activity.status = ActivityStatus.cancelled
     repo_delete_activity(db, activity)
     logger.info(f"Activity {activity_id} cancelled by user {current_user.id}")
