@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CircleUp — Browse Activities</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/browse.css" />
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav class="nav">
+      <a class="logo" href="./index.html">
+        <div class="logo-mark">
+          <i class="ti ti-circles-relation" aria-hidden="true"></i>
+        </div>
+        CircleUp
+      </a>
+      <div class="nav-right">
+        <a href="./profile.html" class="nav-link">
+          <i class="ti ti-user"></i> Profile
+        </a>
+        <button class="btn-ghost" onclick="logout()">Log out</button>
+      </div>
+    </nav>
+
+    <!-- HEADER -->
+    <section class="browse-header">
+      <h1>Find your next hangout</h1>
+      <p>Discover activities happening around you</p>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="filters-section">
+      <div class="filters-container">
+        <div class="filter-group">
+          <label for="filter-category">Category</label>
+          <select id="filter-category" onchange="applyFilters()">
+            <option value="">All categories</option>
+            <option value="Sports">Sports</option>
+            <option value="Art">Art</option>
+            <option value="Wellness">Wellness</option>
+            <option value="Food">Food</option>
+            <option value="Outdoors">Outdoors</option>
+            <option value="Learning">Learning</option>
+            <option value="Social">Social</option>
+            <option value="Music">Music</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-location">Location</label>
+          <input
+            type="text"
+            id="filter-location"
+            placeholder="City or area"
+            onchange="applyFilters()"
+          />
+        </div>
+        <div class="filter-group">
+          <label for="filter-girls-only">Activity type</label>
+          <select id="filter-girls-only" onchange="applyFilters()">
+            <option value="">All activities</option>
+            <option value="all">Open to everyone</option>
+            <option value="female_only">Girls only</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-date">From date</label>
+          <input type="date" id="filter-date" onchange="applyFilters()" />
+        </div>
+
+        <div class="filter-group">
+          <label for="sort-by">Sort by</label>
+          <select id="sort-by" onchange="applyFilters()">
+            <option value="date">Nearest date</option>
+            <option value="popular">Most spots available</option>
+          </select>
+        </div>
+
+        <button class="btn-reset" onclick="resetFilters()">
+          <i class="ti ti-refresh"></i> Reset
+        </button>
+      </div>
+    </section>
+
+    <!-- ACTIVITIES GRID -->
+    <section class="activities-section">
+      <div id="loading" class="loading">
+        <i class="ti ti-loader"></i> Loading activities...
+      </div>
+      <div id="empty-state" class="empty-state" style="display: none">
+        <div class="plant-emoji">🌱</div>
+        <h2>No activities found</h2>
+        <p>Try adjusting your filters or check back soon!</p>
+      </div>
+      <div id="activities-grid" class="activities-grid"></div>
+    </section>
+
+    <footer class="footer">
+      CircleUp &copy; 2026 — find your people, find your vibe.
+    </footer>
+
+    <script type="module" src="../js/browse.js"></script>
+  </body>
+</html>
