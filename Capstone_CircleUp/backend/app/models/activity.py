@@ -4,7 +4,7 @@ import enum
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import BigInteger, DateTime, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import BigInteger, DateTime, Enum, ForeignKey, Integer, String, Text, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -33,7 +33,12 @@ class Activity(Base):
     status:           Mapped[ActivityStatus] = mapped_column(
         Enum(ActivityStatus), default=ActivityStatus.open, server_default="open"
     )
-    creator_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"), index=True)
+    gender_filter:    Mapped[str]            = mapped_column(String(50), default="all", server_default="all")
+    creator_id:       Mapped[int]            = mapped_column(BigInteger, ForeignKey("users.id"), index=True)
+
+    __table_args__ = (
+        CheckConstraint("gender_filter IN ('all', 'female_only')", name="ck_gender_filter"),
+    )
 
     creator:                Mapped[User]                      = relationship("User", back_populates="created_activities")
     participation_requests: Mapped[list[ParticipationRequest]] = relationship("ParticipationRequest", back_populates="activity")
