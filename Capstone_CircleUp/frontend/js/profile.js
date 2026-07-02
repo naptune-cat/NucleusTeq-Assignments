@@ -27,6 +27,24 @@ function showMsg(id, msg, type) {
   }, 5000);
 }
 
+// ── Inline field validation helpers ──────────────────────
+function setFieldError(fieldId, errorMsg) {
+  const field = document.getElementById(fieldId);
+  const errorEl = document.getElementById(`${fieldId}-error`);
+  if (!field || !errorEl) return;
+  if (errorMsg) {
+    field.closest(".field").classList.add("error");
+    errorEl.textContent = errorMsg;
+  } else {
+    field.closest(".field").classList.remove("error");
+    errorEl.textContent = "";
+  }
+}
+
+function clearFieldError(fieldId) {
+  setFieldError(fieldId, "");
+}
+
 function setLoading(btnId, loading, defaultText) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
@@ -245,14 +263,39 @@ export async function saveProfile() {
 
   const name = document.getElementById("edit-name")?.value.trim();
   const phone = document.getElementById("edit-phone")?.value.trim();
-  const city = document.getElementById("edit-city")?.value.trim();
+  const city = document.getElementById("edit-city")?.value;
   const bio = document.getElementById("edit-bio")?.value.trim();
   const gender = document.getElementById("edit-gender")?.value;
 
+  let hasError = false;
+
+  // Validate name
   if (!name) {
-    showMsg("edit-error", "Name cannot be empty.", "error");
-    return;
+    setFieldError("edit-name", "Name is required");
+    hasError = true;
+  } else if (name.length < 2) {
+    setFieldError("edit-name", "Name must be at least 2 characters long");
+    hasError = true;
+  } else if (!/^[A-Za-z ]+$/.test(name)) {
+    setFieldError("edit-name", "Name can only contain letters and spaces");
+    hasError = true;
+  } else {
+    clearFieldError("edit-name");
   }
+
+  // Validate phone (if provided)
+  const phoneRegex = /^[6-9]\d{9}$/;
+  if (phone && !phoneRegex.test(phone)) {
+    setFieldError("edit-phone", "Enter a valid 10-digit Indian mobile number");
+    hasError = true;
+  } else {
+    clearFieldError("edit-phone");
+  }
+
+  clearFieldError("edit-city");
+  clearFieldError("edit-bio");
+
+  if (hasError) return;
 
   setLoading("save-btn", true, "Save changes");
 
@@ -291,3 +334,16 @@ export async function saveProfile() {
     setLoading("save-btn", false, "Save changes");
   }
 }
+
+// ── INIT ─────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  // Clear inline errors when the user edits a field in the profile form
+  const editFields = ["edit-name", "edit-phone", "edit-city", "edit-bio", "edit-gender"];
+  editFields.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", () => clearFieldError(id));
+      el.addEventListener("change", () => clearFieldError(id));
+    }
+  });
+});

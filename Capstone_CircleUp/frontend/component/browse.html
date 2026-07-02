@@ -53,13 +53,21 @@
         </div>
 
         <div class="filter-group">
-          <label for="filter-location">Location</label>
-          <input
-            type="text"
-            id="filter-location"
-            placeholder="City or area"
-            onchange="applyFilters()"
-          />
+          <label for="filter-location">City</label>
+          <select id="filter-location" onchange="applyFilters()">
+            <option value="">All cities</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Indore">Indore</option>
+            <option value="Bhopal">Bhopal</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Jabalpur">Jabalpur</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Pune">Pune</option>
+            <option value="Goa">Goa</option>
+            <option value="Hyderabad">Hyderabad</option>
+          </select>
         </div>
         <div class="filter-group">
           <label for="filter-girls-only">Activity type</label>

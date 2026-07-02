@@ -209,6 +209,7 @@ function resetFilters() {
   document.getElementById("filter-category").value = "";
   document.getElementById("filter-location").value = "";
   document.getElementById("filter-date").value = "";
+  document.getElementById("filter-girls-only").value = "";
   document.getElementById("sort-by").value = "date";
   applyFilters();
 }
