@@ -72,18 +72,32 @@
           <div class="field">
             <label for="edit-name">Full name</label>
             <input type="text" id="edit-name" placeholder="Your name" />
+            <div class="field-error" id="edit-name-error"></div>
           </div>
           <div class="field">
             <label for="edit-phone">Phone</label>
             <input type="tel" id="edit-phone" placeholder="+91 98765 43210" />
+            <div class="field-error" id="edit-phone-error"></div>
           </div>
         </div>
         <div class="two-col">
           <div class="field">
-            <label for="edit-city"
-              >City <span class="opt-label">(optional)</span></label
-            >
-            <input type="text" id="edit-city" placeholder="Ujjain" />
+            <label for="edit-city">City <span class="opt-label">(optional)</span></label>
+            <select id="edit-city">
+              <option value="">Select a city</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Indore">Indore</option>
+              <option value="Bhopal">Bhopal</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Jabalpur">Jabalpur</option>
+              <option value="Kolkata">Kolkata</option>
+              <option value="Chennai">Chennai</option>
+              <option value="Pune">Pune</option>
+              <option value="Goa">Goa</option>
+              <option value="Hyderabad">Hyderabad</option>
+            </select>
+            <div class="field-error" id="edit-city-error"></div>
           </div>
           <div class="field">
             <label for="edit-gender">Gender</label>
@@ -93,17 +107,17 @@
               <option value="other">Other</option>
               <option value="prefer_not_to_say">Prefer not to say</option>
             </select>
+            <div class="field-error" id="edit-gender-error"></div>
           </div>
         </div>
         <div class="field">
-          <label for="edit-bio"
-            >Bio <span class="opt-label">(optional)</span></label
-          >
+          <label for="edit-bio">Bio <span class="opt-label">(optional)</span></label>
           <textarea
             id="edit-bio"
             rows="2"
             placeholder="Coffee lover, weekend hiker..."
           ></textarea>
+          <div class="field-error" id="edit-bio-error"></div>
         </div>
         <div class="form-btns">
           <button class="btn-save" id="save-btn" onclick="saveProfile()">
