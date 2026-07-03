@@ -5,7 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.database import Base, engine
 from app.core.logger import setup_logging
-import app.models  # this one line loads ALL models via __init__.py
+from app.routers import auth
+
 
 
 @asynccontextmanager
@@ -29,6 +30,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 
 
 @app.get("/", tags=["Health"])
