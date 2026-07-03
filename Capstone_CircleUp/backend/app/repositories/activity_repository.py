@@ -1,19 +1,34 @@
 from datetime import datetime
-
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from fastapi import HTTPException, status
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
-
 from app.models.activity import Activity, ActivityStatus
 
 
-def get_activity_by_id(db: Session, activity_id: int) -> Activity | None:
-    return db.query(Activity).filter(Activity.id == activity_id).first()
+def get_activity_by_id(db: Session, activity_id: int) -> Activity:
+    activity = db.query(Activity).filter(Activity.id == activity_id).first()
+    if not activity:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Activity not found",
+        )
+    return activity
 
 
 def get_all_activities(db: Session) -> list[Activity]:
+<<<<<<< Updated upstream
     return db.query(Activity).filter(
         Activity.status != ActivityStatus.cancelled
     ).order_by(Activity.activity_date).all()
+=======
+    activities = db.query(Activity).order_by(Activity.activity_date).all()
+    for a in activities:
+        a.participants_count = db.query(ParticipationRequest).filter(
+            ParticipationRequest.activity_id == a.id,
+            ParticipationRequest.status == RequestStatus.approved,
+        ).count()
+    return activities
+>>>>>>> Stashed changes
 
 
 def browse_activities(
@@ -22,6 +37,7 @@ def browse_activities(
     location: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
+    gender_filter: str | None = None,
     current_user_gender: str | None = None,
 ) -> list[Activity]:
     query = db.query(Activity).filter(Activity.status != ActivityStatus.cancelled)
@@ -39,7 +55,11 @@ def browse_activities(
         query = query.filter(Activity.activity_date <= date_to)
 
     # female_only activities only visible to females
-    if current_user_gender != "female":
+    if current_user_gender == "female":
+        # females see both "all" and "female_only"
+        pass
+    else:
+        # males/others see only "all" activities
         query = query.filter(Activity.gender_filter == "all")
 
     return query.order_by(Activity.activity_date).all()
@@ -51,10 +71,7 @@ def create_activity(db: Session, activity: Activity) -> Activity:
         db.commit()
         db.refresh(activity)
         return activity
-    except IntegrityError as e:
-        db.rollback()
-        raise e
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.rollback()
         raise e
 
@@ -64,10 +81,7 @@ def update_activity(db: Session, activity: Activity) -> Activity:
         db.commit()
         db.refresh(activity)
         return activity
-    except IntegrityError as e:
-        db.rollback()
-        raise e
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.rollback()
         raise e
 
@@ -75,9 +89,6 @@ def update_activity(db: Session, activity: Activity) -> Activity:
 def delete_activity(db: Session, activity: Activity) -> None:
     try:
         db.commit()
-    except IntegrityError as e:
-        db.rollback()
-        raise e
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.rollback()
         raise e

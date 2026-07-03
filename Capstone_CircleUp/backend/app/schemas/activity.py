@@ -1,12 +1,13 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, field_validator
 
 from app.models.activity import ActivityStatus
 
+GenderFilter = Literal["all", "female_only"]
 
-# --- Base ---
-# contains all the common fields used by multiple schemas
+
 class ActivityBase(BaseModel):
     title: str
     description: str
@@ -14,9 +15,9 @@ class ActivityBase(BaseModel):
     location: str
     max_participants: int
     activity_date: datetime
+    gender_filter: GenderFilter = "all"
 
 
-# --- Create request ---
 class ActivityCreate(ActivityBase):
 
     @field_validator("max_participants")
@@ -34,7 +35,6 @@ class ActivityCreate(ActivityBase):
         return v
 
 
-# --- Edit request (all optional — user sends what he wants to change) ---
 class ActivityUpdate(BaseModel):
     title: str | None = None
     description: str | None = None
@@ -42,6 +42,7 @@ class ActivityUpdate(BaseModel):
     location: str | None = None
     max_participants: int | None = None
     activity_date: datetime | None = None
+    gender_filter: GenderFilter | None = None
 
     @field_validator("max_participants")
     @classmethod
@@ -51,10 +52,14 @@ class ActivityUpdate(BaseModel):
         return v
 
 
-# --- Response ---
 class ActivityOut(ActivityBase):
     id: int
     status: ActivityStatus
     creator_id: int
+<<<<<<< Updated upstream
+=======
+    creator_name: str | None = None
+    participants_count: int = 0
+>>>>>>> Stashed changes
 
     model_config = {"from_attributes": True}

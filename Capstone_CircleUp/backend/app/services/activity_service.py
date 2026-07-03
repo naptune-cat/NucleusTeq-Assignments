@@ -34,13 +34,7 @@ def create_activity(db: Session, data: ActivityCreate, current_user: User) -> Ac
 
 
 def get_activity_by_id(db: Session, activity_id: int) -> Activity:
-    activity = repo_get_activity(db, activity_id)
-    if not activity:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Activity not found",
-        )
-    return activity
+    return repo_get_activity(db, activity_id)
 
 
 def get_all_activities(db: Session) -> list[Activity]:
@@ -69,13 +63,7 @@ def update_activity(
     db: Session, activity_id: int, data: ActivityUpdate, current_user: User
 ) -> Activity:
     activity = repo_get_activity(db, activity_id)
-    if not activity:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Activity not found",
-        )
 
-    # checking to make sure only creator can edit
     if activity.creator_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -98,21 +86,23 @@ def update_activity(
 
 
 def delete_activity(db: Session, activity_id: int, current_user: User) -> None:
-    activity = repo_get_activity(db, activity_id)
-    if not activity:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Activity not found",
-        )
+    from app.models.participation import ParticipationRequest, RequestStatus
 
-    # only creator can delete the activity
+    activity = repo_get_activity(db, activity_id)
+
     if activity.creator_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not the creator of this activity",
         )
 
-    # marking as cancelled instead of actually deleting
+    # Reject all participation requests in DB
+    requests = db.query(ParticipationRequest).filter(
+        ParticipationRequest.activity_id == activity_id
+    ).all()
+    for req in requests:
+        req.status = RequestStatus.rejected
+
     activity.status = ActivityStatus.cancelled
     repo_delete_activity(db, activity)
     logger.info(f"Activity {activity_id} cancelled by user {current_user.id}")
