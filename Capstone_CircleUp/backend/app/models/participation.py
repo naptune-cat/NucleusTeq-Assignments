@@ -38,3 +38,19 @@ class ParticipationRequest(Base):
     __table_args__ = (
         UniqueConstraint("requester_id", "activity_id", name="uq_user_activity_request"),
     )
+
+    @property
+    def requester_name(self) -> str | None:
+        return self.requester.name if self.requester else None
+
+    @property
+    def activity_title(self) -> str | None:
+        return self.activity.title if self.activity else None
+
+    @property
+    def activity_date(self) -> datetime | None:
+        return self.activity.activity_date if self.activity else None
+
+    @property
+    def activity_status(self) -> str | None:
+        return self.activity.status.value if self.activity else None
