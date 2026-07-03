@@ -5,7 +5,6 @@ from pydantic import BaseModel, EmailStr, field_validator
 
 GenderType = Literal["male", "female", "other", "prefer_not_to_say"]
 
-
 class UserBase(BaseModel):
     name: str
     email: EmailStr
@@ -30,17 +29,17 @@ class UserCreate(UserBase):
             raise ValueError("Name can only contain letters and spaces")
         return v
 
-@field_validator("email")
-@classmethod
-def email_must_be_valid(cls, v: str) -> str:
-    v = v.strip().lower()
-    if len(v) > 100:
-        raise ValueError("Email must be at most 100 characters long")
-    allowed_domains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"]
-    domain = v.split("@")[-1] if "@" in v else ""
-    if domain not in allowed_domains:
-        raise ValueError("Email must be from Gmail, Yahoo, Outlook, or Hotmail")
-    return v
+    @field_validator("email")
+    @classmethod
+    def email_must_be_valid(cls, v: str) -> str:
+        v = v.strip().lower()
+        if len(v) > 100:
+            raise ValueError("Email must be at most 100 characters long")
+        allowed_domains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"]
+        domain = v.split("@")[-1] if "@" in v else ""
+        if domain not in allowed_domains:
+            raise ValueError("Email must be from Gmail, Yahoo, Outlook, or Hotmail")
+        return v
 
     @field_validator("phone_number")
     @classmethod
