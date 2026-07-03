@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CircleUp — Manage Requests</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/approve-reject.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="logo" href="./browse.html">
+        <div class="logo-mark">
+          <i class="ti ti-circles-relation" aria-hidden="true"></i>
+        </div>
+        CircleUp
+      </a>
+      <div class="nav-right">
+        <a href="./browse.html" class="nav-link">
+          <i class="ti ti-compass"></i> Browse
+        </a>
+        <a href="./profile.html" class="nav-link">
+          <i class="ti ti-user"></i> Profile
+        </a>
+        <button class="btn-ghost" onclick="logout()">Log out</button>
+      </div>
+    </nav>
+
+    <div class="page-header">
+      <h1>Manage your activities</h1>
+      <p>Review and respond to join requests</p>
+    </div>
+
+    <div class="manage-body">
+
+      <!-- LEFT: My activities -->
+      <div class="activities-panel">
+        <h2 class="panel-title">My activities</h2>
+        <div id="my-activities-loading" class="panel-loading">
+          <i class="ti ti-loader"></i> Loading...
+        </div>
+        <div id="my-activities-list"></div>
+        <div id="my-activities-empty" class="panel-empty" style="display:none">
+          <span>🌱</span>
+          <p>You haven't hosted any activities yet.</p>
+          <a href="./browse.html" class="btn-primary" style="display:inline-block;margin-top:0.5rem;padding:8px 18px;border-radius:10px;text-decoration:none;font-size:14px;">Browse activities</a>
+        </div>
+      </div>
+
+      <!-- RIGHT: Requests for selected activity -->
+      <div class="requests-panel">
+        <h2 class="panel-title" id="requests-panel-title">Select an activity</h2>
+        <div id="requests-placeholder" class="requests-placeholder">
+          <span>👈</span>
+          <p>Pick one of your activities to see join requests</p>
+        </div>
+        <div id="requests-loading" class="panel-loading" style="display:none">
+          <i class="ti ti-loader"></i> Loading requests...
+        </div>
+        <div id="requests-list"></div>
+        <div id="requests-empty" class="panel-empty" style="display:none">
+          <span>✉️</span>
+          <p>No requests yet for this activity.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      CircleUp &copy; 2026 — find your people, find your vibe.
+    </footer>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <script type="module" src="../js/approve-reject.js"></script>
+  </body>
+</html>
