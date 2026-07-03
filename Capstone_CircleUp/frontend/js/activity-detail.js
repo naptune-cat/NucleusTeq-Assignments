@@ -2,7 +2,6 @@ const API = "http://localhost:8000";
 
 let currentUser = null;
 let activity = null;
-let existingRequest = null; // tracks if user already has a request for this activity
 
 function checkAuth() {
   const token = localStorage.getItem("token");
@@ -24,21 +23,14 @@ async function loadCurrentUser() {
   const token = checkAuth();
   if (!token) return null;
   try {
-    const res = await fetch(`${API}/users/me`, { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetch(`${API}/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (res.ok) return await res.json();
-  } catch (e) { console.error("Failed to load user:", e); }
+  } catch (e) {
+    console.error("Failed to load user:", e);
+  }
   return null;
-}
-
-async function loadExistingRequest(activityId) {
-  const token = checkAuth();
-  if (!token) return null;
-  try {
-    const res = await fetch(`${API}/participation/mine`, { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) return null;
-    const requests = await res.json();
-    return requests.find(r => r.activity_id === parseInt(activityId)) || null;
-  } catch (e) { return null; }
 }
 
 async function loadActivity(activityId) {
@@ -140,34 +132,23 @@ function renderActivity(activity, user) {
     document.getElementById("capacity-fill").style.width = `${percent}%`;
   }, 300);
 
-  // Determine join button state
+  // Action area
   const actionArea = document.getElementById("action-area");
   if (activity.status === "cancelled") {
-    actionArea.innerHTML = `<button class="join-btn" style="background:#fef2f2;color:#b91c1c;border:1.5px solid #fecaca;cursor:not-allowed;" disabled><i class="ti ti-ban"></i> Activity Cancelled</button>`;
+    actionArea.innerHTML = `<div class="cancelled-notice">❌ This activity has been cancelled</div>`;
   } else if (activity.status === "completed") {
-    actionArea.innerHTML = `<button class="join-btn" style="background:#f3f4f6;color:#4b5563;border:1.5px solid #d1d5db;cursor:not-allowed;" disabled><i class="ti ti-calendar-off"></i> Activity Completed</button>`;
+    actionArea.innerHTML = `<div class="completed-notice">✅ This activity has already taken place</div>`;
   } else if (isOwner) {
     actionArea.innerHTML = `
-      <button class="join-btn requested" disabled style="margin-bottom:10px;">
-        <i class="ti ti-crown"></i> Your Activity
-      </button>
-      <button class="join-btn" onclick="window.location.href='./profile.html'" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+      <div class="own-activity-notice">✅ You are hosting this activity</div>
+      <a href="./approve-reject.html" class="join-btn" style="margin-top:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
         <i class="ti ti-users"></i> Manage requests
-      </button>
+      </a>
     `;
   } else if (activity.status === "full") {
-    actionArea.innerHTML = `<button class="join-btn" style="background:#FFF0D0;color:#905010;border:none;cursor:not-allowed;" disabled><i class="ti ti-ban"></i> Activity Full</button>`;
+    actionArea.innerHTML = `<div class="full-notice">😔 This activity is full</div>`;
   } else if (isFemaleOnly && !isFemale) {
-    actionArea.innerHTML = `<button class="join-btn" style="background:#FFE0EE;color:#A02060;border:none;cursor:not-allowed;" disabled><i class="ti ti-lock"></i> Girls Only</button>`;
-  } else if (existingRequest) {
-    const reqStatus = existingRequest.status;
-    if (reqStatus === "pending") {
-      actionArea.innerHTML = `<button class="join-btn requested" disabled><i class="ti ti-check"></i> Already Applied</button>`;
-    } else if (reqStatus === "approved") {
-      actionArea.innerHTML = `<button class="join-btn" style="background:var(--green-light);color:var(--green-dark);border:1.5px solid var(--green);cursor:default;"><i class="ti ti-check"></i> Request Approved</button>`;
-    } else if (reqStatus === "rejected") {
-      actionArea.innerHTML = `<button class="join-btn" style="background:#fef2f2;color:#b91c1c;border:1.5px solid #fecaca;cursor:not-allowed;"><i class="ti ti-x"></i> Not Accepted</button>`;
-    }
+    actionArea.innerHTML = `<div class="girls-only-notice">👧 This activity is for female participants only</div>`;
   } else {
     actionArea.innerHTML = `
       ${isFemaleOnly ? '<div class="girls-only-notice" style="margin-bottom:12px">👧 Girls only hangout</div>' : ""}
@@ -177,10 +158,10 @@ function renderActivity(activity, user) {
     `;
   }
 
-  // Host — show name if available
+  // Host
   document.getElementById("host-avatar").textContent = "👤";
   document.getElementById("host-name").textContent =
-    activity.creator_name ? activity.creator_name : `Host #${activity.creator_id}`;
+    `Host #${activity.creator_id}`;
 
   // Show content
   document.getElementById("loading").style.display = "none";
@@ -273,12 +254,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("not-found").style.display = "block";
     return;
   }
-  // Load all three in parallel for speed
-  [currentUser, activity, existingRequest] = await Promise.all([
-    loadCurrentUser(),
-    loadActivity(activityId),
-    loadExistingRequest(activityId),
-  ]);
+  currentUser = await loadCurrentUser();
+  activity = await loadActivity(activityId);
   if (!activity) {
     document.getElementById("loading").style.display = "none";
     document.getElementById("not-found").style.display = "block";

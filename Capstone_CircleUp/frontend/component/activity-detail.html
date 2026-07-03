@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CircleUp — Activity</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/activity-detail.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="logo" href="./browse.html">
+        <div class="logo-mark">
+          <i class="ti ti-circles-relation" aria-hidden="true"></i>
+        </div>
+        CircleUp
+      </a>
+      <div class="nav-right">
+        <a href="./browse.html" class="nav-link">
+          <i class="ti ti-arrow-left"></i> Back to browse
+        </a>
+        <button class="btn-ghost" onclick="logout()">Log out</button>
+      </div>
+    </nav>
+
+    <div id="loading" class="detail-loading">
+      <i class="ti ti-loader"></i> Loading activity...
+    </div>
+
+    <div id="detail-content" style="display: none">
+      <div class="detail-hero" id="detail-hero">
+        <div class="detail-hero-inner">
+          <div class="detail-badges" id="detail-badges"></div>
+          <h1 class="detail-title" id="detail-title"></h1>
+          <div class="detail-meta-row" id="detail-meta-row"></div>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="detail-left">
+          <div class="detail-card">
+            <h2 class="detail-section-title">About this activity</h2>
+            <p class="detail-desc" id="detail-desc"></p>
+          </div>
+          <div class="detail-card">
+            <h2 class="detail-section-title">Details</h2>
+            <div class="detail-info-list" id="detail-info-list"></div>
+          </div>
+        </div>
+
+        <div class="detail-right">
+          <div class="detail-card detail-action-card">
+            <div class="capacity-section">
+              <div class="capacity-top">
+                <span class="capacity-label">Spots available</span>
+                <span class="capacity-count" id="capacity-count"></span>
+              </div>
+              <div class="capacity-bar">
+                <div class="capacity-fill" id="capacity-fill"></div>
+              </div>
+            </div>
+            <div id="action-area"></div>
+          </div>
+
+          <div class="detail-card host-card" id="host-card">
+            <h2 class="detail-section-title">Hosted by</h2>
+            <div class="host-info">
+              <div class="host-avatar" id="host-avatar"></div>
+              <span class="host-name" id="host-name"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="not-found" class="not-found" style="display: none">
+      <div class="plant-emoji">🌱</div>
+      <h2>Activity not found</h2>
+      <p>It may have been cancelled or removed.</p>
+      <a href="./browse.html" class="btn-primary" style="display:inline-block;margin-top:1rem;text-decoration:none;padding:10px 24px;border-radius:10px;">
+        Back to browse
+      </a>
+    </div>
+
+    <footer class="footer">
+      CircleUp &copy; 2026 — find your people, find your vibe.
+    </footer>
+
+    <script type="module" src="../js/activity-detail.js"></script>
+  </body>
+</html>
