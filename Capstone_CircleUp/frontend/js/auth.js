@@ -208,10 +208,10 @@ export async function handleLogin(event) {
     }
 
     localStorage.setItem("token", data.access_token);
-    showToast("Logged in! Redirecting...", "success");
+    showToast("Logged in! Welcome back ", "success");
 
     setTimeout(() => {
-      window.location.href = "../component/profile.html";
+      window.location.href = "../component/browse.html";
     }, 1200);
   } catch (e) {
     showToast("Could not reach the server.", "error");
