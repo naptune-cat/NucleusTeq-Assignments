@@ -3,6 +3,8 @@ from fastapi import HTTPException, status
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from app.models.activity import Activity, ActivityStatus
+from app.models.participation import ParticipationRequest
+from app.models.participation import RequestStatus
 
 
 def get_activity_by_id(db: Session, activity_id: int) -> Activity:
@@ -16,11 +18,6 @@ def get_activity_by_id(db: Session, activity_id: int) -> Activity:
 
 
 def get_all_activities(db: Session) -> list[Activity]:
-<<<<<<< Updated upstream
-    return db.query(Activity).filter(
-        Activity.status != ActivityStatus.cancelled
-    ).order_by(Activity.activity_date).all()
-=======
     activities = db.query(Activity).order_by(Activity.activity_date).all()
     for a in activities:
         a.participants_count = db.query(ParticipationRequest).filter(
@@ -28,7 +25,6 @@ def get_all_activities(db: Session) -> list[Activity]:
             ParticipationRequest.status == RequestStatus.approved,
         ).count()
     return activities
->>>>>>> Stashed changes
 
 
 def browse_activities(
