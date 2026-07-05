@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from app.models.participation import RequestStatus
+from app.enums.participation import RequestStatus  
 
 
 # Response schema for all participation requests
