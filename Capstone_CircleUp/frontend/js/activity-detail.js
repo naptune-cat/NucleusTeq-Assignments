@@ -47,7 +47,7 @@ async function loadActivity(activityId) {
   return null;
 }
 
-function renderActivity(activity, user) {
+function renderActivity(activity, user, userRequest) {
   const isOwner = user && user.id === activity.creator_id;
   const isFemaleOnly = activity.gender_filter === "female_only";
   const isFemale = user && user.gender === "female";
@@ -141,10 +141,39 @@ function renderActivity(activity, user) {
   } else if (isOwner) {
     actionArea.innerHTML = `
       <div class="own-activity-notice">✅ You are hosting this activity</div>
-      <a href="./approve-reject.html" class="join-btn" style="margin-top:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <a href="./approve-reject.html?id=${activity.id}" class="join-btn" style="margin-top:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
         <i class="ti ti-users"></i> Manage requests
       </a>
+      <a href="./edit-activity.html?id=${activity.id}" class="join-btn" style="margin-top:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--sky-dark);color:var(--white);">
+        <i class="ti ti-edit"></i> Edit activity
+      </a>
     `;
+  } else if (userRequest) {
+    if (userRequest.status === "pending") {
+      actionArea.innerHTML = `
+        <button class="join-btn" style="background:var(--peach);color:var(--peach-dark);border:1px solid var(--peach-dark);cursor:default;" disabled>
+          <i class="ti ti-check"></i> Already Requested
+        </button>
+        <button class="join-btn btn-cancel" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;margin-top:10px;" onclick="cancelRequestDetail(${userRequest.id})">
+          <i class="ti ti-x"></i> Cancel Request
+        </button>
+      `;
+    } else if (userRequest.status === "rejected") {
+      actionArea.innerHTML = `
+        <button class="join-btn" style="background:#FEF2F2;color:#B91C1C;border:1px solid #FECACA;cursor:default;" disabled>
+          <i class="ti ti-x"></i> Rejected
+        </button>
+      `;
+    } else if (userRequest.status === "approved") {
+      actionArea.innerHTML = `
+        <button class="join-btn" style="background:var(--green-light);color:var(--green-dark);border:1.5px solid var(--green);cursor:default;" disabled>
+          <i class="ti ti-check"></i> Approved Request
+        </button>
+        <button class="join-btn btn-cancel" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;margin-top:10px;" onclick="cancelRequestDetail(${userRequest.id})">
+          <i class="ti ti-x"></i> Leave Activity
+        </button>
+      `;
+    }
   } else if (activity.status === "full") {
     actionArea.innerHTML = `<div class="full-notice">😔 This activity is full</div>`;
   } else if (isFemaleOnly && !isFemale) {
@@ -261,8 +290,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("not-found").style.display = "block";
     return;
   }
-  renderActivity(activity, currentUser);
+
+  let userRequest = null;
+  if (currentUser) {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/participation/mine`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const requests = await res.json();
+        userRequest = requests.find(r => r.activity_id === activity.id);
+      }
+    } catch (e) {
+      console.error("Failed to load user participation requests:", e);
+    }
+  }
+
+  renderActivity(activity, currentUser, userRequest);
 });
+
+async function cancelRequestDetail(requestId) {
+  if (!confirm("Are you sure you want to cancel/leave this activity request?")) return;
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${API}/participation/${requestId}/cancel`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const d = await res.json();
+    if (!res.ok) {
+      showToast(d.detail || "Could not cancel request", "error");
+      return;
+    }
+    showToast("Request cancelled.", "info");
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  } catch (e) {
+    showToast("Server error", "error");
+  }
+}
 
 window.logout = logout;
 window.requestToJoin = requestToJoin;
+window.cancelRequestDetail = cancelRequestDetail;

@@ -291,6 +291,12 @@ function renderActivitiesPage() {
         </button>
       ` : "";
 
+      const editBtn = (!isCancelled && !isCompleted) ? `
+        <button class="btn-manage" onclick="window.location.href='./edit-activity.html?id=${a.id}'" style="margin-top:8px;width:100%;justify-content:center;background:var(--sky-light);color:var(--sky-dark);border-color:var(--sky);">
+          <i class="ti ti-edit"></i> Edit Event
+        </button>
+      ` : "";
+
       const manageBtn = `
         <button class="btn-manage" ${isCancelled ? "disabled style='opacity:0.6;cursor:not-allowed;'" : ""} onclick="window.switchSection('manage-requests');window.selectManageActivity(${a.id})">
           <i class="ti ti-users"></i> Manage
@@ -317,6 +323,7 @@ function renderActivitiesPage() {
       <div class="activity-card-actions">
         <span class="status-pill ${statusClass(resolvedStatus)}">${formatStatus(resolvedStatus)}</span>
         ${manageBtn}
+        ${editBtn}
         ${cancelBtn}
       </div>
     </div>`;
@@ -610,13 +617,13 @@ async function loadManageRequests(activityId) {
       document.getElementById("manage-requests-empty").style.display = "block";
       return;
     }
-    renderManageRequests(requests);
+    await renderManageRequests(requests);
   } catch (e) {
     showToast("Could not load requests", "error");
   }
 }
 
-function renderManageRequests(requests) {
+async function renderManageRequests(requests) {
   const list = document.getElementById("manage-requests-list");
   const pending = requests.filter((r) => r.status === "pending");
   const approved = requests.filter((r) => r.status === "approved");
@@ -628,8 +635,40 @@ function renderManageRequests(requests) {
     html += pending.map(renderRequestCard).join("");
   }
   if (approved.length > 0) {
-    html += `<div class="requests-section-label">✅ Approved (${approved.length})</div>`;
-    html += approved.map(renderRequestCard).join("");
+    html += `<div class="requests-section-label">✅ Approved Participants (${approved.length})</div>`;
+    const token = getToken();
+    const approvedWithContacts = await Promise.all(
+      approved.map(async (r) => {
+        try {
+          const res = await fetch(`${API}/participation/${r.id}/contact`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const contact = await res.json();
+            return { ...r, contact };
+          }
+        } catch (e) {
+          console.error(`Failed to load contact for request ${r.id}:`, e);
+        }
+        return { ...r, contact: { name: r.requester_name || `User #${r.requester_id}`, phone_number: "N/A" } };
+      })
+    );
+
+    html += `<div class="approved-participants-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">`;
+    approvedWithContacts.forEach(p => {
+      html += `
+        <div class="participant-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--green-light); border: 1px solid var(--green); border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">👤</span>
+            <span style="font-weight: 700; color: var(--text);">${p.contact.name}</span>
+          </div>
+          <div style="font-weight: 700; color: var(--green-dark);">
+            📞 ${p.contact.phone_number}
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
   }
   if (rejected.length > 0) {
     html += `<div class="requests-section-label">❌ Rejected (${rejected.length})</div>`;

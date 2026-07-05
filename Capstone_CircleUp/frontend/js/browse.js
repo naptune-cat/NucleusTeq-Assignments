@@ -5,6 +5,7 @@ let filteredActivities = [];
 let currentUserGender = null;
 let currentUserId = null;
 let myAppliedActivityIds = new Set(); // tracks activity IDs the current user has already applied to
+let myRejectedActivityIds = new Set(); // tracks activity IDs where the user's request was rejected
 let browsePage = 1;
 const BROWSE_PER_PAGE = 6; // after 6 activities we will see pagination
 
@@ -43,6 +44,10 @@ async function loadUserData() {
       const myRequests = await reqRes.json();
       // Track every activity the user has requested (regardless of status)
       myAppliedActivityIds = new Set(myRequests.map(r => r.activity_id));
+      // Track activities where the user's request was specifically rejected
+      myRejectedActivityIds = new Set(
+        myRequests.filter(r => r.status === "rejected").map(r => r.activity_id)
+      );
     }
   } catch (e) {
     console.error("Failed to load user data:", e);
@@ -79,8 +84,26 @@ function applyFilters() {
   const dateFrom = document.getElementById("filter-date").value;
   const sortBy = document.getElementById("sort-by").value;
   const girlsOnly = document.getElementById("filter-girls-only").value;
+  const searchEl = document.getElementById("filter-search");
+  const search = searchEl ? searchEl.value.trim().toLowerCase() : "";
 
   let filtered = allActivities;
+
+  // Keyword search across title and description
+  if (search) {
+    filtered = filtered.filter(a =>
+      a.title.toLowerCase().includes(search) ||
+      (a.description || "").toLowerCase().includes(search)
+    );
+  }
+
+  // Keyword search across title and description
+  if (search) {
+    filtered = filtered.filter(a =>
+      a.title.toLowerCase().includes(search) ||
+      (a.description || "").toLowerCase().includes(search)
+    );
+  }
 
   if (category) {
     filtered = filtered.filter(a => a.category.toLowerCase() === category.toLowerCase());
@@ -91,8 +114,12 @@ function applyFilters() {
   }
 
   if (dateFrom) {
-    const fromDate = new Date(dateFrom);
-    filtered = filtered.filter(a => new Date(a.activity_date) >= fromDate);
+    const parts = dateFrom.split('-');
+    const fromDate = new Date(parts[0], parts[1] - 1, parts[2]); // local midnight
+    filtered = filtered.filter(a => {
+      const actDate = new Date(a.activity_date);
+      return actDate >= fromDate;
+    });
   }
 
   if (girlsOnly === "female_only") {
@@ -178,14 +205,19 @@ function createActivityCard(activity) {
   const spotsLeft = Math.max(0, activity.max_participants - (activity.participants_count || 0));
   const capacityPercent = ((activity.max_participants - spotsLeft) / activity.max_participants) * 100;
 
-  // Check if user is owner or already applied
+  // Check if user is owner, rejected, or already applied
   const isOwner = currentUserId === activity.creator_id;
+  const isRejected = myRejectedActivityIds.has(activity.id);
   const hasApplied = myAppliedActivityIds.has(activity.id);
 
   let joinBtn = "";
   if (isOwner) {
     joinBtn = `<button class="btn-request btn-already-applied" disabled>
                  <i class="ti ti-crown"></i> Your Activity
+               </button>`;
+  } else if (isRejected) {
+    joinBtn = `<button class="btn-request btn-rejected" disabled>
+                 <i class="ti ti-x"></i> Rejected
                </button>`;
   } else if (hasApplied) {
     joinBtn = `<button class="btn-request btn-already-applied" disabled>
@@ -268,6 +300,8 @@ function resetFilters() {
   document.getElementById("filter-date").value = "";
   document.getElementById("filter-girls-only").value = "";
   document.getElementById("sort-by").value = "date";
+  const searchEl = document.getElementById("filter-search");
+  if (searchEl) searchEl.value = "";
   applyFilters();
 }
 

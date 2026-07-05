@@ -152,14 +152,14 @@ async function loadRequests(activityId) {
       return;
     }
 
-    renderRequests(requests);
+    await renderRequests(requests);
   } catch (e) {
     showToast("Could not load requests", "error");
   }
 }
 
 // ── RENDER REQUESTS ──
-function renderRequests(requests) {
+async function renderRequests(requests) {
   const list = document.getElementById("requests-list");
 
   const pending = requests.filter((r) => r.status === "pending");
@@ -174,8 +174,40 @@ function renderRequests(requests) {
   }
 
   if (approved.length > 0) {
-    html += `<div class="requests-section-label">✅ Approved (${approved.length})</div>`;
-    html += approved.map((r) => renderRequestCard(r)).join("");
+    html += `<div class="requests-section-label">✅ Approved Participants (${approved.length})</div>`;
+    const token = checkAuth();
+    const approvedWithContacts = await Promise.all(
+      approved.map(async (r) => {
+        try {
+          const res = await fetch(`${API}/participation/${r.id}/contact`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const contact = await res.json();
+            return { ...r, contact };
+          }
+        } catch (e) {
+          console.error(`Failed to load contact for request ${r.id}:`, e);
+        }
+        return { ...r, contact: { name: r.requester_name || `User #${r.requester_id}`, phone_number: "N/A" } };
+      })
+    );
+
+    html += `<div class="approved-participants-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">`;
+    approvedWithContacts.forEach(p => {
+      html += `
+        <div class="participant-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--green-light); border: 1px solid var(--green); border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">👤</span>
+            <span style="font-weight: 700; color: var(--text);">${p.contact.name}</span>
+          </div>
+          <div style="font-weight: 700; color: var(--green-dark);">
+            📞 ${p.contact.phone_number}
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
   }
 
   if (rejected.length > 0) {
@@ -300,8 +332,15 @@ async function revealContact(requestId) {
 }
 
 // ── INIT ──
-document.addEventListener("DOMContentLoaded", () => {
-  if (checkAuth()) loadMyActivities();
+document.addEventListener("DOMContentLoaded", async () => {
+  if (checkAuth()) {
+    await loadMyActivities();
+    const params = new URLSearchParams(window.location.search);
+    const actId = params.get("id");
+    if (actId) {
+      selectActivity(parseInt(actId));
+    }
+  }
 });
 
 window.selectActivity = selectActivity;
