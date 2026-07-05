@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import enum
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -9,16 +8,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.core.database import Base
+from app.enums.participation import RequestStatus 
 
 if TYPE_CHECKING:
     from app.models.user import User
     from app.models.activity import Activity
-
-
-class RequestStatus(str, enum.Enum):
-    pending  = "pending"
-    approved = "approved"
-    rejected = "rejected"
 
 
 class ParticipationRequest(Base):

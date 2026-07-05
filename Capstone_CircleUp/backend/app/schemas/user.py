@@ -85,6 +85,7 @@ class UserCreate(UserBase):
         return v
 
 
+# --- Update profile request (keeping all fields optional) ---
 class UserUpdate(BaseModel):
     name: str | None = None
     phone_number: str | None = None

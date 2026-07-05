@@ -7,6 +7,7 @@ from app.models.user import User
 from app.schemas.participation import ContactOut, ParticipationRequestOut
 from app.services.participation_service import (
     approve_request,
+    cancel_request,
     get_activity_requests,
     get_contact,
     get_my_requests,
@@ -79,3 +80,13 @@ def contact(
 ):
     user = get_contact(db, request_id, current_user)
     return ContactOut(name=user.name, phone_number=user.phone_number)
+
+
+# Cancel a participation request
+@router.post("/{request_id}/cancel")
+def cancel(
+    request_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return cancel_request(db, request_id, current_user)

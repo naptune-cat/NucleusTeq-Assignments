@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import enum
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -8,16 +7,11 @@ from sqlalchemy import BigInteger, DateTime, Enum, ForeignKey, Integer, String, 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+from app.enums.activity import ActivityStatus  
 
 if TYPE_CHECKING:
     from app.models.user import User
     from app.models.participation import ParticipationRequest
-
-
-class ActivityStatus(str, enum.Enum):
-    open      = "open"
-    full      = "full"
-    cancelled = "cancelled"
 
 
 class Activity(Base):

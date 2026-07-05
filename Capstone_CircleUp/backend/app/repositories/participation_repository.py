@@ -1,6 +1,8 @@
+# pyright: ignore [missing-import]
 from sqlalchemy.orm import Session
 
-from app.models.participation import ParticipationRequest, RequestStatus
+from app.enums.participation import RequestStatus 
+from app.models.participation import ParticipationRequest
 
 
 # Get a participation request by its ID
@@ -8,7 +10,7 @@ def get_request_by_id(db: Session, request_id: int) -> ParticipationRequest | No
     return db.query(ParticipationRequest).filter(ParticipationRequest.id == request_id).first()
 
 
-# Check if the user has already requested to join the activity
+# Checking if the user has already requested to join the activity
 def get_existing_request(db: Session, activity_id: int, requester_id: int) -> ParticipationRequest | None:
     return db.query(ParticipationRequest).filter(
         ParticipationRequest.activity_id == activity_id,
@@ -67,6 +69,15 @@ def update_request_status(
         db.refresh(req)
         return req
     except Exception as e:
-        # Rolling back changes if an error occurs
+        # Rolling back changes if any error occurs
+        db.rollback()
+        raise e
+
+
+def delete_request(db: Session, req: ParticipationRequest) -> None:
+    try:
+        db.delete(req)
+        db.commit()
+    except Exception as e:
         db.rollback()
         raise e
