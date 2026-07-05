@@ -220,33 +220,545 @@ async function loadMyActivities(token) {
 
     document.getElementById("stat-hosted").textContent = mine.length;
 
-    container.innerHTML = mine
-      .map((a) => {
-        const style = categoryStyle(a.category);
-        const icon = categoryIcon(a.category);
-        return `
-        <div class="activity-card">
-          <div class="activity-icon" style="background:${style.bg}">
-            <i class="ti ${icon}" style="color:${style.color};font-size:20px" aria-hidden="true"></i>
-          </div>
-          <div class="activity-info">
-            <div class="activity-title">${a.title}</div>
-            <div class="activity-meta">
-              <i class="ti ti-map-pin" aria-hidden="true"></i> ${a.location}
-              &nbsp;·&nbsp;
-              <i class="ti ti-calendar" aria-hidden="true"></i> ${formatDate(a.activity_date)}
-            </div>
-          </div>
-          <span class="status-pill ${statusClass(a.status)}">${formatStatus(a.status)}</span>
-        </div>`;
-      })
-      .join("");
+  const cardsHtml = pageItems
+    .map((a) => {
+      const style = categoryStyle(a.category);
+      const icon = categoryIcon(a.category);
+      const resolvedStatus = resolveStatus(a);
+      const spotsLeft = Math.max(
+        0,
+        a.max_participants - (a.participants_count || 0),
+      );
+      const percent =
+        ((a.max_participants - spotsLeft) / a.max_participants) * 100;
+
+      const isCancelled = resolvedStatus === "cancelled";
+      const isCompleted = resolvedStatus === "completed";
+
+      const cancelBtn = (!isCancelled && !isCompleted) ? `
+        <button class="btn-cancel-request" onclick="cancelHostedActivity(${a.id})" style="margin-top:8px;width:100%;justify-content:center;">
+          <i class="ti ti-x"></i> Cancel Event
+        </button>
+      ` : "";
+
+      const editBtn = (!isCancelled && !isCompleted) ? `
+        <button class="btn-manage" onclick="window.location.href='./edit-activity.html?id=${a.id}'" style="margin-top:8px;width:100%;justify-content:center;background:var(--sky-light);color:var(--sky-dark);border-color:var(--sky);">
+          <i class="ti ti-edit"></i> Edit Event
+        </button>
+      ` : "";
+
+      const manageBtn = `
+        <button class="btn-manage" ${isCancelled ? "disabled style='opacity:0.6;cursor:not-allowed;'" : ""} onclick="window.switchSection('manage-requests');window.selectManageActivity(${a.id})">
+          <i class="ti ti-users"></i> Manage
+        </button>
+      `;
+
+      return `
+    <div class="activity-card">
+      <div class="activity-icon" style="background:${style.bg}">
+        <i class="ti ${icon}" style="color:${style.color};font-size:20px"></i>
+      </div>
+      <div class="activity-info">
+        <div class="activity-title">${a.title}</div>
+        <div class="activity-meta">
+          <i class="ti ti-map-pin"></i> ${a.location}
+          &nbsp;·&nbsp;
+          <i class="ti ti-calendar"></i> ${formatDate(a.activity_date)}
+        </div>
+        <div class="capacity-mini">
+          <div class="capacity-mini-bar"><div class="capacity-mini-fill" style="width:${percent}%"></div></div>
+          <span class="capacity-mini-text">${spotsLeft} spots left</span>
+        </div>
+      </div>
+      <div class="activity-card-actions">
+        <span class="status-pill ${statusClass(resolvedStatus)}">${formatStatus(resolvedStatus)}</span>
+        ${manageBtn}
+        ${editBtn}
+        ${cancelBtn}
+      </div>
+    </div>`;
+    })
+    .join("");
+
+  const paginationHtml = buildPagination(
+    activitiesPage,
+    totalPages,
+    "changeActivitiesPage",
+  );
+  container.innerHTML = cardsHtml + paginationHtml;
+}
+
+window.changeActivitiesPage = function (page) {
+  const totalPages = Math.ceil(myActivities.length / ITEMS_PER_PAGE);
+  if (page < 1 || page > totalPages) return;
+  activitiesPage = page;
+  renderActivitiesPage();
+};
+
+window.cancelHostedActivity = async function (activityId) {
+  if (!confirm("Are you sure you want to cancel this activity?")) {
+    return;
+  }
+  
+  const token = getToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API}/activities/${activityId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      showToast("Could not cancel activity", "error");
+      return;
+    }
+
+    showToast("Activity cancelled successfully", "success");
+    await loadMyActivities(token);
+    await loadManageActivities(token);
   } catch (e) {
-    console.error("Failed to load activities:", e);
+    showToast("Could not cancel activity", "error");
+  }
+};
+
+// ── MY APPLICATIONS (requests I sent) ────────────────────
+async function loadMyRequests(token) {
+  try {
+    const res = await fetch(`${API}/participation/mine`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+    myRequests = await res.json();
+    setText("stat-applied", myRequests.length);
+    const pendingCount = myRequests.filter(
+      (r) => r.status === "pending",
+    ).length;
+    setText(
+      "badge-my-applications",
+      myRequests.length > 0 ? myRequests.length : "",
+    );
+    applicationsPage = 1;
+    renderApplicationsPage();
+  } catch (e) {
+    console.error("Failed to load requests:", e);
   }
 }
 
-// ── Toggle edit panel ─────────────────────────────────────
+function renderApplicationsPage() {
+  const container = document.getElementById("my-requests-list");
+  if (!container) return;
+
+  if (myRequests.length === 0) {
+    container.innerHTML = `<div class="empty-state"><i class="ti ti-send"></i><p>No applications yet — <a href="browse.html">browse activities!</a></p></div>`;
+    return;
+  }
+
+  const totalPages = Math.ceil(myRequests.length / ITEMS_PER_PAGE);
+  const start = (applicationsPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = myRequests.slice(start, start + ITEMS_PER_PAGE);
+
+  const statusColors = {
+    pending: {
+      bg: "var(--peach)",
+      color: "var(--peach-dark)",
+      icon: "⏳",
+      pill: "status-full",
+    },
+    approved: {
+      bg: "var(--green-light)",
+      color: "var(--green-dark)",
+      icon: "✅",
+      pill: "status-open",
+    },
+    rejected: {
+      bg: "#F0EBE1",
+      color: "var(--text-muted)",
+      icon: "❌",
+      pill: "status-cancelled",
+    },
+  };
+
+  const cardsHtml = pageItems
+    .map((req) => {
+      const s = statusColors[req.status] || statusColors.pending;
+      const cancelBtn =
+        req.status === "pending"
+          ? `<button class="btn-cancel-request" onclick="cancelRequest(${req.id})"><i class="ti ti-x"></i> Cancel</button>`
+          : "";
+      const activityTitle =
+        req.activity_title || `Activity #${req.activity_id}`;
+      const activityDate = req.activity_date
+        ? formatDate(req.activity_date)
+        : "";
+      const autoStatus =
+        req.activity_date &&
+        new Date(req.activity_date) < new Date() &&
+        req.status === "approved"
+          ? "Completed"
+          : null;
+
+      return `
+    <div class="request-row" onclick="window.location.href='activity-detail.html?id=${req.activity_id}'" style="cursor:pointer">
+      <div class="request-status-icon" style="background:${s.bg};color:${s.color}">${s.icon}</div>
+      <div class="request-info">
+        <div class="request-activity-name">${activityTitle}</div>
+        <div class="request-date">Applied: ${formatDate(req.requested_at)}${activityDate ? ` &nbsp;·&nbsp; Activity: ${activityDate}` : ""}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="status-pill ${s.pill}">${autoStatus || req.status}</span>
+        ${cancelBtn}
+      </div>
+    </div>`;
+    })
+    .join("");
+
+  const paginationHtml = buildPagination(
+    applicationsPage,
+    totalPages,
+    "changeApplicationsPage",
+  );
+  container.innerHTML = cardsHtml + paginationHtml;
+}
+
+window.changeApplicationsPage = function (page) {
+  const totalPages = Math.ceil(myRequests.length / ITEMS_PER_PAGE);
+  if (page < 1 || page > totalPages) return;
+  applicationsPage = page;
+  renderApplicationsPage();
+};
+
+window.cancelRequest = async function (requestId) {
+  if (!confirm("Cancel this join request?")) return;
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/participation/${requestId}/cancel`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const d = await res.json();
+      showToast(d.detail || "Could not cancel request", "error");
+      return;
+    }
+    showToast("Request cancelled.", "info");
+    myRequests = myRequests.filter((r) => r.id !== requestId);
+    setText("stat-applied", myRequests.length);
+    setText(
+      "badge-my-applications",
+      myRequests.length > 0 ? myRequests.length : "",
+    );
+    renderApplicationsPage();
+  } catch (e) {
+    showToast("Could not reach the server.", "error");
+  }
+};
+
+// ── MANAGE REQUESTS (Approve/Reject) ─────────────────────
+async function loadManageActivities(token) {
+  try {
+    const [actRes, meRes] = await Promise.all([
+      fetch(`${API}/activities`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      fetch(`${API}/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
+    const all = await actRes.json();
+    const me = await meRes.json();
+    manageActivities = all.filter((a) => a.creator_id === me.id);
+
+    document.getElementById("manage-activities-loading").style.display = "none";
+
+    if (manageActivities.length === 0) {
+      document.getElementById("manage-activities-empty").style.display =
+        "block";
+      return;
+    }
+    renderManageActivitiesList();
+
+    // auto-select if navigated here with an activity id
+    const params = new URLSearchParams(window.location.search);
+    const actId = parseInt(params.get("activity"));
+    if (actId) {
+      selectManageActivity(actId);
+    }
+  } catch (e) {
+    console.error("Failed to load manage activities:", e);
+  }
+}
+
+function renderManageActivitiesList() {
+  const list = document.getElementById("manage-activities-list");
+  list.innerHTML = manageActivities
+    .map(
+      (a) => `
+    <div class="activity-item" id="manage-item-${a.id}" onclick="selectManageActivity(${a.id})">
+      <div class="activity-item-title">${a.title}</div>
+      <div class="activity-item-meta">
+        <i class="ti ti-map-pin" style="font-size:12px"></i> ${a.location}
+        <span class="pending-count" id="pending-count-${a.id}">…</span>
+      </div>
+    </div>`,
+    )
+    .join("");
+
+  manageActivities.forEach((a) => loadPendingCount(a.id));
+}
+
+async function loadPendingCount(activityId) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/participation/activity/${activityId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+    const requests = await res.json();
+    const pending = requests.filter((r) => r.status === "pending").length;
+    const el = document.getElementById(`pending-count-${activityId}`);
+    if (el) el.textContent = pending > 0 ? `${pending} pending` : "0 pending";
+    // Update manage badge
+    const totalPending = manageActivities.reduce((sum, a) => {
+      const countEl = document.getElementById(`pending-count-${a.id}`);
+      const txt = countEl?.textContent || "";
+      return sum + (parseInt(txt) || 0);
+    }, 0);
+    setText("badge-manage-requests", totalPending > 0 ? totalPending : "");
+  } catch (e) {}
+}
+
+window.selectManageActivity = async function (activityId) {
+  selectedManageActivityId = activityId;
+  document
+    .querySelectorAll(".activity-item")
+    .forEach((el) => el.classList.remove("selected"));
+  document
+    .getElementById(`manage-item-${activityId}`)
+    ?.classList.add("selected");
+
+  const activity = manageActivities.find((a) => a.id === activityId);
+  setText("manage-requests-title", activity ? activity.title : "Requests");
+
+  document.getElementById("manage-requests-placeholder").style.display = "none";
+  document.getElementById("manage-requests-loading").style.display = "block";
+  document.getElementById("manage-requests-list").innerHTML = "";
+  document.getElementById("manage-requests-empty").style.display = "none";
+
+  await loadManageRequests(activityId);
+};
+
+async function loadManageRequests(activityId) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/participation/activity/${activityId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    document.getElementById("manage-requests-loading").style.display = "none";
+    if (!res.ok) {
+      showToast("Failed to load requests", "error");
+      return;
+    }
+    const requests = await res.json();
+    if (requests.length === 0) {
+      document.getElementById("manage-requests-empty").style.display = "block";
+      return;
+    }
+    await renderManageRequests(requests);
+  } catch (e) {
+    showToast("Could not load requests", "error");
+  }
+}
+
+async function renderManageRequests(requests) {
+  const list = document.getElementById("manage-requests-list");
+  const pending = requests.filter((r) => r.status === "pending");
+  const approved = requests.filter((r) => r.status === "approved");
+  const rejected = requests.filter((r) => r.status === "rejected");
+
+  let html = "";
+  if (pending.length > 0) {
+    html += `<div class="requests-section-label">⏳ Pending (${pending.length})</div>`;
+    html += pending.map(renderRequestCard).join("");
+  }
+  if (approved.length > 0) {
+    html += `<div class="requests-section-label">✅ Approved Participants (${approved.length})</div>`;
+    const token = getToken();
+    const approvedWithContacts = await Promise.all(
+      approved.map(async (r) => {
+        try {
+          const res = await fetch(`${API}/participation/${r.id}/contact`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const contact = await res.json();
+            return { ...r, contact };
+          }
+        } catch (e) {
+          console.error(`Failed to load contact for request ${r.id}:`, e);
+        }
+        return { ...r, contact: { name: r.requester_name || `User #${r.requester_id}`, phone_number: "N/A" } };
+      })
+    );
+
+    html += `<div class="approved-participants-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">`;
+    approvedWithContacts.forEach(p => {
+      html += `
+        <div class="participant-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--green-light); border: 1px solid var(--green); border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">👤</span>
+            <span style="font-weight: 700; color: var(--text);">${p.contact.name}</span>
+          </div>
+          <div style="font-weight: 700; color: var(--green-dark);">
+            📞 ${p.contact.phone_number}
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+  if (rejected.length > 0) {
+    html += `<div class="requests-section-label">❌ Rejected (${rejected.length})</div>`;
+    html += rejected.map(renderRequestCard).join("");
+  }
+  list.innerHTML = html;
+}
+
+function renderRequestCard(req) {
+  const date = new Date(req.requested_at).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const statusChip = `<span class="status-chip ${req.status}">${req.status}</span>`;
+  const displayName = req.requester_name || `User #${req.requester_id}`;
+  const actions =
+    req.status === "pending"
+      ? `
+    <div class="request-actions">
+      <button class="btn-approve" onclick="handleApprove(${req.id})"><i class="ti ti-check"></i> Approve</button>
+      <button class="btn-reject" onclick="handleReject(${req.id})"><i class="ti ti-x"></i> Reject</button>
+    </div>`
+      : "";
+  // Name is always visible; phone is only revealed after approval
+  const contactSection =
+    req.status === "approved"
+      ? `
+    <div class="contact-reveal" id="contact-${req.id}">
+      <i class="ti ti-phone"></i>
+      <div>
+        <div class="contact-reveal-text">${displayName} — phone hidden</div>
+        <div class="contact-reveal-sub">Tap Reveal to see their phone number</div>
+      </div>
+      <button class="btn-reveal" onclick="revealContact(${req.id})">Reveal Phone</button>
+    </div>`
+      : "";
+
+  return `
+  <div class="request-card ${req.status}" id="request-card-${req.id}">
+    <div class="request-card-top">
+      <div class="requester-info">
+        <div class="requester-avatar">👤</div>
+        <div>
+          <div class="requester-name">${displayName}</div>
+          <div class="requester-date">Requested: ${date}</div>
+        </div>
+      </div>
+      ${statusChip}
+    </div>
+    ${actions}
+    ${contactSection}
+  </div>`;
+}
+
+window.handleApprove = async function (requestId) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/participation/${requestId}/approve`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const d = await res.json();
+      showToast(d.detail || "Could not approve", "error");
+      return;
+    }
+    showToast("Request approved! 🎉", "success");
+    await loadManageRequests(selectedManageActivityId);
+    loadPendingCount(selectedManageActivityId);
+  } catch (e) {
+    showToast("Could not approve request", "error");
+  }
+};
+
+window.handleReject = async function (requestId) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/participation/${requestId}/reject`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const d = await res.json();
+      showToast(d.detail || "Could not reject", "error");
+      return;
+    }
+    showToast("Request rejected.", "info");
+    await loadManageRequests(selectedManageActivityId);
+    loadPendingCount(selectedManageActivityId);
+  } catch (e) {
+    showToast("Could not reject request", "error");
+  }
+};
+
+window.revealContact = async function (requestId) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`${API}/participation/${requestId}/contact`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      showToast("Could not load contact", "error");
+      return;
+    }
+    const contact = await res.json();
+    const el = document.getElementById(`contact-${requestId}`);
+    if (el)
+      el.innerHTML = `
+      <i class="ti ti-phone" style="color:var(--green-dark)"></i>
+      <div>
+        <div class="contact-reveal-text">${contact.name}</div>
+        <div class="contact-reveal-sub" style="color:var(--green-dark);font-weight:700">📞 ${contact.phone_number}</div>
+      </div>
+    `;
+  } catch (e) {
+    showToast("Could not load contact", "error");
+  }
+};
+
+// ── PAGINATION BUILDER ────────────────────────────────────
+function buildPagination(current, total, callbackName) {
+  if (total <= 1) return "";
+  return `
+  <div class="pagination">
+    <button class="page-btn" onclick="${callbackName}(${current - 1})" ${current === 1 ? "disabled" : ""}>
+      <i class="ti ti-chevron-left"></i>
+    </button>
+    <span class="page-info">${current} / ${total}</span>
+    <button class="page-btn" onclick="${callbackName}(${current + 1})" ${current === total ? "disabled" : ""}>
+      <i class="ti ti-chevron-right"></i>
+    </button>
+  </div>`;
+}
+
+// ── TOGGLE EDIT ───────────────────────────────────────────
 export function toggleEdit() {
   const panel = document.getElementById("edit-panel");
   if (!panel) return;

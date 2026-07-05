@@ -20,18 +20,39 @@
 }
 
 .filters-section {
-  padding: 2rem;
+  padding: 1.5rem 2rem;
   background: var(--wheat-dark);
   border-bottom: 1px solid var(--border);
+  overflow: hidden; /* prevent child overflow on narrow screens */
 }
 
 .filters-container {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
   align-items: flex-end;
+  width: 100%; /* ensure it never exceeds parent */
+}
+
+.filters-header-mobile {
+  display: none;
+}
+
+.btn-mobile-filter {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  margin-bottom: 12px;
 }
 
 .filter-group {
@@ -64,25 +85,32 @@
   box-shadow: 0 0 0 3px rgba(59, 122, 87, 0.1);
 }
 
+/* ── RESET BUTTON — looks intentionally different from filter controls ── */
 .btn-reset {
-  padding: 10px 16px;
-  background: var(--white);
-  border: 1px solid var(--border);
+  align-self: flex-end;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1.5px dashed #c0392b;
   border-radius: var(--radius);
-  color: var(--text-sub);
+  color: #c0392b;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   font-family: 'Nunito', sans-serif;
-  transition: all 0.15s;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: all 0.18s;
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .btn-reset:hover {
-  border-color: var(--green-dark);
-  color: var(--green-dark);
+  background: #fdf0ef;
+  border-color: #e74c3c;
+  color: #e74c3c;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.15);
 }
 
 .activities-section {
@@ -326,15 +354,185 @@
 }
 
 @media (max-width: 768px) {
+  .filters-section {
+    padding: 1.25rem 1rem; /* side padding prevents right-edge cutoff */
+  }
   .filters-container {
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
-
+  .search-bar-wrap {
+    margin-bottom: 12px;
+  }
   .activities-grid {
     grid-template-columns: 1fr;
   }
-
   .browse-header h1 {
     font-size: 24px;
   }
 }
+
+/* ── PAGINATION (browse) ── */
+#browse-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.page-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text-sub);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: all 0.15s;
+}
+.page-btn:hover:not(:disabled) { border-color: var(--green-dark); color: var(--green-dark); }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-info { font-size: 14px; font-weight: 600; color: var(--text-sub); }
+
+.page-num-btn {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text-sub);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.15s;
+}
+.page-num-btn:hover { border-color: var(--green-dark); color: var(--green-dark); }
+.page-num-btn.active {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  color: #fff;
+}
+
+/* ── ALREADY APPLIED BUTTON ── */
+.btn-already-applied {
+  background: var(--green-light) !important;
+  color: var(--green-dark) !important;
+  border-color: var(--green) !important;
+  cursor: not-allowed !important;
+  opacity: 0.9;
+}
+
+/* ── REJECTED BUTTON ── */
+.btn-rejected {
+  background: #fdf0ef !important;
+  color: #c0392b !important;
+  border: 1.5px solid #e74c3c !important;
+  cursor: not-allowed !important;
+  opacity: 1;
+  font-weight: 700 !important;
+}
+
+/* ── SEARCH BAR ── */
+.search-bar-wrap {
+  max-width: 1200px;
+  margin: 0 auto 16px;
+}
+
+.search-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 17px;
+  color: var(--text-sub);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 11px 14px 11px 42px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'Nunito', sans-serif;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--green-dark);
+  box-shadow: 0 0 0 3px rgba(59, 122, 87, 0.1);
+}
+
+/* ── RESPONSIVE IMPROVEMENTS (mobile ≤640px) ── */
+@media (max-width: 640px) {
+  .activities-grid {
+    grid-template-columns: 1fr;
+  }
+  .filters-header-mobile {
+    display: flex;
+  }
+  .btn-mobile-filter {
+    display: flex;
+    width: 100%; /* full-width toggle button on mobile */
+    justify-content: center;
+  }
+  .filters-section {
+    padding: 1rem; /* 16px on all sides including right */
+  }
+  .filters-container {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .filters-container.show {
+    display: grid;
+  }
+  .filter-group {
+    min-width: unset;
+  }
+  .filter-group input,
+  .filter-group select {
+    font-size: 14px; /* slightly smaller on mobile */
+    padding: 8px 10px;
+  }
+  .btn-reset {
+    grid-column: span 2;
+    justify-content: center;
+    width: 100%;
+  }
+  .search-bar-wrap {
+    margin-bottom: 10px;
+  }
+  .search-input {
+    font-size: 14px;
+  }
+  .browse-header { padding: 1.5rem 1rem; }
+  .browse-header h1 { font-size: 22px; }
+  .browse-header p { font-size: 14px; }
+  .activities-section { padding: 1rem; }
+  .activity-action { flex-direction: column; }
+  .btn-view, .btn-request { flex: unset; width: 100%; }
+  .pagination { gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .page-num-btn { min-width: 30px; height: 30px; font-size: 13px; }
+}
+
