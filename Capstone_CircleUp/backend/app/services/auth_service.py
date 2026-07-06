@@ -44,4 +44,4 @@ def login_user(db: Session, email: str, password: str) -> str:
     # sub = subject — it is a JWT claim, we store user id as string
     token = create_access_token({"sub": str(user.id)})
     logger.info(f"User logged in: {user.email}")
-    return token
+    return token
