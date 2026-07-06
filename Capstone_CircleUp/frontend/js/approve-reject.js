@@ -169,12 +169,12 @@ async function renderRequests(requests) {
   let html = "";
 
   if (pending.length > 0) {
-    html += `<div class="requests-section-label">⏳ Pending (${pending.length})</div>`;
+    html += `<div class="requests-section-label"><i class="ti ti-clock"></i> Pending (${pending.length})</div>`;
     html += pending.map((r) => renderRequestCard(r)).join("");
   }
 
   if (approved.length > 0) {
-    html += `<div class="requests-section-label">✅ Approved Participants (${approved.length})</div>`;
+    html += `<div class="requests-section-label"><i class="ti ti-circle-check"></i> Approved Participants (${approved.length})</div>`;
     const token = checkAuth();
     const approvedWithContacts = await Promise.all(
       approved.map(async (r) => {
@@ -198,11 +198,11 @@ async function renderRequests(requests) {
       html += `
         <div class="participant-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--green-light); border: 1px solid var(--green); border-radius: 10px;">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 18px;">👤</span>
+            <i class="ti ti-user" style="font-size: 18px;"></i>
             <span style="font-weight: 700; color: var(--text);">${p.contact.name}</span>
           </div>
-          <div style="font-weight: 700; color: var(--green-dark);">
-            📞 ${p.contact.phone_number}
+          <div style="font-weight: 700; color: var(--green-dark); display: flex; align-items: center; gap: 4px;">
+            <i class="ti ti-phone"></i> ${p.contact.phone_number}
           </div>
         </div>
       `;
@@ -211,7 +211,7 @@ async function renderRequests(requests) {
   }
 
   if (rejected.length > 0) {
-    html += `<div class="requests-section-label">❌ Rejected (${rejected.length})</div>`;
+    html += `<div class="requests-section-label"><i class="ti ti-circle-x"></i> Rejected (${rejected.length})</div>`;
     html += rejected.map((r) => renderRequestCard(r)).join("");
   }
 
@@ -243,7 +243,7 @@ function renderRequestCard(req) {
   <div class="request-card ${req.status}" id="request-card-${req.id}">
     <div class="request-card-top">
       <div class="requester-info">
-        <div class="requester-avatar">👤</div>
+        <div class="requester-avatar"><i class="ti ti-user" style="font-size: 18px;"></i></div>
         <div>
           <div class="requester-name">${displayName}</div>
           <div class="requester-date">Requested: ${date}</div>
@@ -322,7 +322,7 @@ async function revealContact(requestId) {
         <i class="ti ti-phone" style="color:var(--green-dark)"></i>
         <div>
           <div class="contact-reveal-text">${contact.name}</div>
-          <div class="contact-reveal-sub" style="color:var(--green-dark);font-weight:700">📞 ${contact.phone_number}</div>
+          <div class="contact-reveal-sub" style="color:var(--green-dark);font-weight:700;display:flex;align-items:center;gap:4px;"><i class="ti ti-phone"></i> ${contact.phone_number}</div>
         </div>
       `;
     }

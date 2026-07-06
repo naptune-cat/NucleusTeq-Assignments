@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CircleUp — Create Activity</title>
+    <title>CircleUp — Edit Activity</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
@@ -115,14 +115,14 @@
           <label for="gender-filter">Who can join?</label>
           <select id="gender-filter">
             <option value="all">Everyone</option>
-            <option value="female_only">Girls only<i class="ti ti-gender-female"></ti></option>
+            <option value="female_only">Girls only</option>
           </select>
           <div class="field-error" id="gender-filter-error"></div>
         </div>
 
         <div class="form-btns">
-          <button class="submit-btn" id="create-btn" onclick="createActivity()">
-            Create activity
+          <button class="submit-btn" id="save-btn" onclick="saveActivity()">
+            Save changes
           </button>
           <button class="btn-cancel-form" onclick="window.history.back()">
             Cancel

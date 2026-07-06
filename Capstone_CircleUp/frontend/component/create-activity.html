@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CircleUp — Create Activity</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/create-activity.css" />
   </head>
@@ -33,13 +36,22 @@
       <div class="form-card" id="create-form">
         <div class="field">
           <label for="title">Activity title</label>
-          <input type="text" id="title" placeholder="Sunday morning yoga, pottery workshop..." maxlength="200" />
+          <input
+            type="text"
+            id="title"
+            placeholder="Sunday morning yoga, pottery workshop..."
+            maxlength="200"
+          />
           <div class="field-error" id="title-error"></div>
         </div>
 
         <div class="field">
           <label for="description">Description</label>
-          <textarea id="description" rows="3" placeholder="Tell people what to expect, what to bring, what the vibe is..."></textarea>
+          <textarea
+            id="description"
+            rows="3"
+            placeholder="Tell people what to expect, what to bring, what the vibe is..."
+          ></textarea>
           <div class="field-error" id="description-error"></div>
         </div>
 
@@ -48,14 +60,14 @@
             <label for="category">Category</label>
             <select id="category">
               <option value="">Select category</option>
-              <option value="Sports">🏃 Sports</option>
-              <option value="Art">🎨 Art</option>
-              <option value="Wellness">🧘 Wellness</option>
-              <option value="Food">🍳 Food</option>
-              <option value="Outdoors">🚴 Outdoors</option>
-              <option value="Learning">📚 Learning</option>
-              <option value="Social">🎉 Social</option>
-              <option value="Music">🎵 Music</option>
+              <option value="Sports">Sports</option>
+              <option value="Art">Art</option>
+              <option value="Wellness">Wellness</option>
+              <option value="Food">Food</option>
+              <option value="Outdoors">Outdoors</option>
+              <option value="Learning">Learning</option>
+              <option value="Social">Social</option>
+              <option value="Music">Music</option>
             </select>
             <div class="field-error" id="category-error"></div>
           </div>
@@ -88,7 +100,13 @@
           </div>
           <div class="field">
             <label for="max-participants">Max participants</label>
-            <input type="number" id="max-participants" placeholder="10" min="1" max="1000" />
+            <input
+              type="number"
+              id="max-participants"
+              placeholder="10"
+              min="1"
+              max="1000"
+            />
             <div class="field-error" id="max-participants-error"></div>
           </div>
         </div>
@@ -97,7 +115,7 @@
           <label for="gender-filter">Who can join?</label>
           <select id="gender-filter">
             <option value="all">Everyone</option>
-            <option value="female_only">Girls only 👧</option>
+            <option value="female_only">Girls only</option>
           </select>
           <div class="field-error" id="gender-filter-error"></div>
         </div>
@@ -106,12 +124,16 @@
           <button class="submit-btn" id="create-btn" onclick="createActivity()">
             <i class="ti ti-sparkles"></i> Create activity
           </button>
-          <button class="btn-cancel-form" onclick="window.history.back()">Cancel</button>
+          <button class="btn-cancel-form" onclick="window.history.back()">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
 
-    <footer class="footer">CircleUp &copy; 2026 — find your people, find your vibe.</footer>
+    <footer class="footer">
+      CircleUp &copy; 2026 — find your people, find your vibe.
+    </footer>
 
     <script type="module" src="../js/create-activity.js"></script>
   </body>

@@ -455,6 +455,35 @@
 }
 .btn-manage:hover { background: var(--green); }
 
+/* ── APPLICATION FILTER TABS ── */
+.app-filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.app-filter-tab {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.app-filter-tab:hover {
+  border-color: var(--green-dark);
+  color: var(--green-dark);
+}
+.app-filter-tab.active {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  color: #fff;
+  font-weight: 600;
+}
+
 /* ── REQUEST ROWS (My Applications) ── */
 .request-row {
   display: flex;
@@ -483,6 +512,15 @@
 .request-info { flex: 1; }
 .request-activity-name { font-size: 14px; font-weight: 700; color: var(--text); }
 .request-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.request-host-contact {
+  font-size: 12px;
+  color: var(--green-dark);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
 
 .btn-cancel-request {
   display: flex;
