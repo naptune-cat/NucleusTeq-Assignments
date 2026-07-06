@@ -48,3 +48,11 @@ class ParticipationRequest(Base):
     @property
     def activity_status(self) -> str | None:
         return self.activity.status.value if self.activity else None
+
+    @property
+    def host_name(self) -> str | None:
+        return self.activity.creator.name if self.activity and self.activity.creator else None
+
+    @property
+    def host_phone(self) -> str | None:
+        return self.activity.creator.phone_number if self.activity and self.activity.creator else None
