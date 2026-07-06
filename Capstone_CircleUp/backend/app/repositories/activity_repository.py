@@ -20,6 +20,9 @@ def get_all_activities(db: Session) -> list[Activity]:
     activities = db.query(Activity).filter(
         Activity.status != ActivityStatus.cancelled
     ).order_by(Activity.activity_date).all()
+    return db.query(Activity).filter(
+        Activity.status != ActivityStatus.cancelled
+    ).order_by(Activity.activity_date).all()
     for a in activities:
         a.participants_count = db.query(ParticipationRequest).filter(
             ParticipationRequest.activity_id == a.id,
