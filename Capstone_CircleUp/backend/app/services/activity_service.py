@@ -86,6 +86,8 @@ def update_activity(
 
 
 def delete_activity(db: Session, activity_id: int, current_user: User) -> None:
+    from app.models.participation import ParticipationRequest, RequestStatus
+
     activity = repo_get_activity(db, activity_id)
 
     if activity.creator_id != current_user.id:
@@ -93,6 +95,13 @@ def delete_activity(db: Session, activity_id: int, current_user: User) -> None:
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not the creator of this activity",
         )
+
+    # Reject all participation requests in DB
+    requests = db.query(ParticipationRequest).filter(
+        ParticipationRequest.activity_id == activity_id
+    ).all()
+    for req in requests:
+        req.status = RequestStatus.rejected
 
     activity.status = ActivityStatus.cancelled
     repo_delete_activity(db, activity)
