@@ -5,14 +5,11 @@ from app.core.security import hash_password, verify_password, create_access_toke
 from app.core.logger import logger
 from app.models.user import User
 from app.schemas.user import UserCreate
-
-
-def get_user_by_email(db: Session, email: str) -> User | None:
-    return db.query(User).filter(User.email == email).first()
-
-
-def get_user_by_id(db: Session, user_id: int) -> User | None:
-    return db.query(User).filter(User.id == user_id).first()
+from app.repositories.user_repository import (
+    get_user_by_email,
+    get_user_by_id,
+    create_user,
+)
 
 
 def register_user(db: Session, data: UserCreate) -> User:
@@ -32,11 +29,9 @@ def register_user(db: Session, data: UserCreate) -> User:
         bio=data.bio,
         gender=data.gender,
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)  # populates user.id from DB
-    logger.info(f"New user registered: {user.email}")
-    return user
+    created_user = create_user(db, user)
+    logger.info(f"New user registered: {created_user.email}")
+    return created_user
 
 
 def login_user(db: Session, email: str, password: str) -> str:
