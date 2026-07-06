@@ -1,0 +1,239 @@
+/* specific css for index.html file */
+.hero {
+padding: 4rem 2rem 3rem;
+text-align: center;
+border-bottom: 1px solid var(--border);
+}
+
+.hero h1 {
+font-size: 36px;
+font-weight: 600;
+color: var(--text);
+line-height: 1.2;
+margin-bottom: 1rem;
+max-width: 540px;
+margin-left: auto;
+margin-right: auto;
+}
+.hero h1 span {
+color: var(--green-dark);
+}
+.hero > p {
+font-size: 16px;
+color: var(--text-sub);
+max-width: 420px;
+margin: 0 auto 2rem;
+}
+.hero-btns {
+display: flex;
+gap: 12px;
+justify-content: center;
+flex-wrap: wrap;
+}
+.hero-note {
+font-size: 13px;
+color: var(--text-muted);
+margin-top: 1.2rem;
+}
+
+.features-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 16px;
+max-width: 900px;
+margin: 0 auto;
+}
+.feat-card {
+background: var(--white);
+border: 1px solid var(--border);
+border-radius: 14px;
+padding: 1.4rem;
+position: relative;
+transition: border-color 0.15s;
+}
+.feat-card:hover {
+border-color: var(--green);
+}
+.feat-icon {
+width: 44px;
+height: 44px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 1rem;
+}
+.feat-icon i {
+font-size: 22px;
+}
+.feat-card h3 {
+font-size: 15px;
+font-weight: 600;
+color: var(--text);
+margin-bottom: 0.4rem;
+}
+.feat-card p {
+font-size: 13px;
+color: var(--text-sub);
+line-height: 1.55;
+}
+.feat-tag {
+position: absolute;
+top: 14px;
+right: 14px;
+font-size: 11px;
+padding: 3px 9px;
+border-radius: 20px;
+font-weight: 600;
+}
+
+.how-section {
+padding: 3rem 2rem;
+background: var(--wheat-dark);
+border-top: 1px solid var(--border);
+border-bottom: 1px solid var(--border);
+}
+.steps {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+gap: 20px;
+max-width: 760px;
+margin: 0 auto;
+}
+.step {
+text-align: center;
+padding: 1.2rem;
+}
+.step-num {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background: var(--green-dark);
+color: var(--white);
+font-size: 16px;
+font-weight: 600;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 0.8rem;
+}
+.step h3 {
+font-size: 14px;
+font-weight: 600;
+color: var(--text);
+margin-bottom: 0.3rem;
+}
+.step p {
+font-size: 13px;
+color: var(--text-sub);
+}
+
+.cta-strip {
+background: var(--green-dark);
+margin: 2.5rem 2rem;
+border-radius: 18px;
+padding: 2.5rem 2rem;
+text-align: center;
+color: var(--white);
+}
+.cta-strip h2 {
+font-size: 24px;
+font-weight: 600;
+margin-bottom: 0.5rem;
+}
+.cta-strip p {
+font-size: 14px;
+opacity: 0.85;
+margin-bottom: 1.6rem;
+max-width: 380px;
+margin-left: auto;
+margin-right: auto;
+}
+.btn-cta {
+background: var(--white);
+color: var(--green-dark);
+border: none;
+border-radius: var(--radius);
+padding: 12px 30px;
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+transition: opacity 0.15s;
+}
+.btn-cta:hover {
+opacity: 0.9;
+}
+
+.auth-section {
+padding: 3rem 2rem 4rem;
+background: var(--wheat-dark);
+border-top: 1px solid var(--border);
+}
+.auth-card {
+background: var(--white);
+border: 1px solid var(--border);
+border-radius: 16px;
+max-width: 440px;
+margin: 0 auto;
+overflow: hidden;
+}
+.auth-tabs {
+display: flex;
+border-bottom: 1px solid var(--border);
+}
+.auth-tab {
+flex: 1;
+padding: 14px;
+text-align: center;
+font-size: 14px;
+font-weight: 500;
+cursor: pointer;
+border: none;
+background: none;
+color: var(--text-muted);
+transition: all 0.15s;
+}
+.auth-tab.active {
+color: var(--green-dark);
+border-bottom: 2px solid var(--green-dark);
+background: var(--white);
+}
+.auth-body {
+padding: 1.6rem;
+}
+.switch-txt {
+text-align: center;
+font-size: 13px;
+color: var(--text-sub);
+margin-top: 1rem;
+}
+.switch-txt a {
+color: var(--green-dark);
+cursor: pointer;
+text-decoration: none;
+}
+.switch-txt a:hover {
+text-decoration: underline;
+}
+.panel {
+display: none;
+}
+.panel.active {
+display: block;
+}
+
+@media (max-width: 600px) {
+.hero {
+    padding: 2.5rem 1rem 2rem;
+}
+.hero h1 {
+    font-size: 26px;
+}
+.how-section {
+    padding: 2rem 1rem;
+}
+.cta-strip {
+    margin: 1.5rem 1rem;
+    padding: 2rem 1.2rem;
+}
+}

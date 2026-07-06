@@ -19,10 +19,10 @@ class User(Base):
     name:            Mapped[str]        = mapped_column(String(100))
     email:           Mapped[str]        = mapped_column(String(255), unique=True, index=True)
     hashed_password: Mapped[str]
-    phone_number:    Mapped[str | None] = mapped_column(String(20))
+    phone_number:    Mapped[str] = mapped_column(String(20))
     city:            Mapped[str | None] = mapped_column(String(100))
     bio:             Mapped[str | None] = mapped_column(Text)
-    gender:          Mapped[str | None] = mapped_column(String(20))  
+    gender:          Mapped[str] = mapped_column(String(20))  
 
     __table_args__ = (
         CheckConstraint(

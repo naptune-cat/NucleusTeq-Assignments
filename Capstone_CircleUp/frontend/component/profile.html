@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CircleUp — My Profile</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/profile.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="logo" href="index.html">
+        <div class="logo-mark">
+          <i class="ti ti-circles-relation" aria-hidden="true"></i>
+        </div>
+        CircleUp
+      </a>
+      <div class="nav-right">
+        <button class="btn-nav" onclick="window.location.href = 'browse.html'">
+          <i class="ti ti-compass" aria-hidden="true"></i> Browse
+        </button>
+        <button class="btn-danger" onclick="logout()">
+          <i class="ti ti-logout" aria-hidden="true"></i> Log out
+        </button>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- PROFILE HERO -->
+      <div class="profile-hero">
+        <div class="avatar" id="avatar-initials">--</div>
+        <div class="profile-info">
+          <div class="profile-name" id="display-name">Loading...</div>
+          <div class="profile-meta">
+            <span class="meta-pill pill-lavender">
+              <i class="ti ti-user" aria-hidden="true"></i>
+              <span id="display-gender">—</span>
+            </span>
+            <span class="meta-pill pill-sky">
+              <i class="ti ti-map-pin" aria-hidden="true"></i>
+              <span id="display-city">—</span>
+            </span>
+            <span class="meta-pill pill-peach">
+              <i class="ti ti-phone" aria-hidden="true"></i>
+              <span id="display-phone">—</span>
+            </span>
+          </div>
+          <div class="profile-bio" id="display-bio"></div>
+        </div>
+        <button class="edit-btn" onclick="toggleEdit()">
+          <i class="ti ti-edit" aria-hidden="true"></i> Edit profile
+        </button>
+      </div>
+
+      <!-- EDIT PANEL -->
+      <div class="edit-panel" id="edit-panel">
+        <div class="edit-panel-title">
+          <i
+            class="ti ti-edit"
+            style="color: var(--green-dark)"
+            aria-hidden="true"
+          ></i>
+          Edit your profile
+        </div>
+        <div class="msg error" id="edit-error"></div>
+        <div class="msg success" id="edit-success"></div>
+        <div class="two-col">
+          <div class="field">
+            <label for="edit-name">Full name</label>
+            <input type="text" id="edit-name" placeholder="Your name" />
+          </div>
+          <div class="field">
+            <label for="edit-phone">Phone</label>
+            <input type="tel" id="edit-phone" placeholder="+91 98765 43210" />
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="edit-city"
+              >City <span class="opt-label">(optional)</span></label
+            >
+            <input type="text" id="edit-city" placeholder="Ujjain" />
+          </div>
+          <div class="field">
+            <label for="edit-gender">Gender</label>
+            <select id="edit-gender">
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="edit-bio"
+            >Bio <span class="opt-label">(optional)</span></label
+          >
+          <textarea
+            id="edit-bio"
+            rows="2"
+            placeholder="Coffee lover, weekend hiker..."
+          ></textarea>
+        </div>
+        <div class="form-btns">
+          <button class="btn-save" id="save-btn" onclick="saveProfile()">
+            Save changes
+          </button>
+          <button class="btn-cancel-form" onclick="toggleEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- INFO CARDS -->
+      <div class="info-grid">
+        <div class="card">
+          <div class="card-title">About you</div>
+          <div class="info-row">
+            <div class="info-icon" style="background: var(--green-light)">
+              <i
+                class="ti ti-mail"
+                style="color: var(--green-dark)"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div>
+              <div class="info-label">Email</div>
+              <div class="info-val" id="display-email">—</div>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" style="background: var(--sky)">
+              <i
+                class="ti ti-map-pin"
+                style="color: var(--sky-dark)"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div>
+              <div class="info-label">City</div>
+              <div class="info-val" id="display-city-2">—</div>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" style="background: var(--lavender)">
+              <i
+                class="ti ti-user"
+                style="color: var(--lavender-dark)"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div>
+              <div class="info-label">Gender</div>
+              <div class="info-val" id="display-gender-2">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Your stats</div>
+          <div class="info-row">
+            <div class="info-icon" style="background: var(--peach)">
+              <i
+                class="ti ti-calendar-event"
+                style="color: var(--peach-dark)"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div>
+              <div class="info-label">Activities hosted</div>
+              <div class="info-val" id="stat-hosted">—</div>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" style="background: var(--green-light)">
+              <i
+                class="ti ti-star"
+                style="color: var(--green-dark)"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <div>
+              <div class="info-label">Member since</div>
+              <div class="info-val" id="stat-joined">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY ACTIVITIES -->
+      <div class="section-title">
+        <i
+          class="ti ti-layout-list"
+          style="color: var(--green-dark)"
+          aria-hidden="true"
+        ></i>
+        My activities
+      </div>
+      <div id="activities-list">
+        <div
+          style="text-align: center; padding: 2rem; color: var(--text-muted)"
+        >
+          <i
+            class="ti ti-loader"
+            style="font-size: 24px"
+            aria-hidden="true"
+          ></i>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../js/profile.js"></script>
+    <script type="module">
+      import {
+        loadProfile,
+        toggleEdit,
+        saveProfile,
+        logout,
+      } from "../js/profile.js";
+      window.toggleEdit = toggleEdit;
+      window.saveProfile = saveProfile;
+      window.logout = logout;
+      loadProfile();
+    </script>
+  </body>
+</html>
