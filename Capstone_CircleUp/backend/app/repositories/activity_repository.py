@@ -16,9 +16,13 @@ def get_activity_by_id(db: Session, activity_id: int) -> Activity:
 
 
 def get_all_activities(db: Session) -> list[Activity]:
-    return db.query(Activity).filter(
-        Activity.status != ActivityStatus.cancelled
-    ).order_by(Activity.activity_date).all()
+    activities = db.query(Activity).order_by(Activity.activity_date).all()
+    for a in activities:
+        a.participants_count = db.query(ParticipationRequest).filter(
+            ParticipationRequest.activity_id == a.id,
+            ParticipationRequest.status == RequestStatus.approved,
+        ).count()
+    return activities
 
 
 def browse_activities(
