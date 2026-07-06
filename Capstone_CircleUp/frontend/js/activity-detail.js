@@ -55,7 +55,7 @@ function renderActivity(activity, user, userRequest) {
   // Badges
   document.getElementById("detail-badges").innerHTML = `
     <span class="detail-badge category">${activity.category}</span>
-    ${isFemaleOnly ? '<span class="detail-badge girls-only">👧 Girls only</span>' : ""}
+    ${isFemaleOnly ? '<span class="detail-badge girls-only"><i class="ti ti-gender-female"></i> Girls only</span>' : ""}
     <span class="detail-badge status-${activity.status}">${activity.status}</span>
   `;
 
@@ -135,12 +135,12 @@ function renderActivity(activity, user, userRequest) {
   // Action area
   const actionArea = document.getElementById("action-area");
   if (activity.status === "cancelled") {
-    actionArea.innerHTML = `<div class="cancelled-notice">❌ This activity has been cancelled</div>`;
+    actionArea.innerHTML = `<div class="cancelled-notice"><i class="ti ti-circle-x"></i> This activity has been cancelled</div>`;
   } else if (activity.status === "completed") {
-    actionArea.innerHTML = `<div class="completed-notice">✅ This activity has already taken place</div>`;
+    actionArea.innerHTML = `<div class="completed-notice"><i class="ti ti-circle-check"></i> This activity has already taken place</div>`;
   } else if (isOwner) {
     actionArea.innerHTML = `
-      <div class="own-activity-notice">✅ You are hosting this activity</div>
+      <div class="own-activity-notice"><i class="ti ti-circle-check"></i> You are hosting this activity</div>
       <a href="./approve-reject.html?id=${activity.id}" class="join-btn" style="margin-top:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
         <i class="ti ti-users"></i> Manage requests
       </a>
@@ -175,12 +175,12 @@ function renderActivity(activity, user, userRequest) {
       `;
     }
   } else if (activity.status === "full") {
-    actionArea.innerHTML = `<div class="full-notice">😔 This activity is full</div>`;
+    actionArea.innerHTML = `<div class="full-notice"><i class="ti ti-ban"></i> This activity is full</div>`;
   } else if (isFemaleOnly && !isFemale) {
-    actionArea.innerHTML = `<div class="girls-only-notice">👧 This activity is for female participants only</div>`;
+    actionArea.innerHTML = `<div class="girls-only-notice"><i class="ti ti-gender-female"></i> This activity is for female participants only</div>`;
   } else {
     actionArea.innerHTML = `
-      ${isFemaleOnly ? '<div class="girls-only-notice" style="margin-bottom:12px">👧 Girls only hangout</div>' : ""}
+      ${isFemaleOnly ? '<div class="girls-only-notice" style="margin-bottom:12px"><i class="ti ti-gender-female"></i> Girls only hangout</div>' : ""}
       <button class="join-btn" id="join-btn" onclick="requestToJoin(${activity.id})">
         <i class="ti ti-heart"></i> Request to join
       </button>
@@ -188,9 +188,9 @@ function renderActivity(activity, user, userRequest) {
   }
 
   // Host
-  document.getElementById("host-avatar").textContent = "👤";
+  document.getElementById("host-avatar").innerHTML = `<i class="ti ti-user" style="font-size:16px;"></i>`;
   document.getElementById("host-name").textContent =
-    `Host #${activity.creator_id}`;
+    activity.creator_name || `Host #${activity.creator_id}`;
 
   // Show content
   document.getElementById("loading").style.display = "none";
