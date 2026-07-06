@@ -42,3 +42,7 @@ class Activity(Base):
 
     creator:                Mapped[User]                      = relationship("User", back_populates="created_activities")
     participation_requests: Mapped[list[ParticipationRequest]] = relationship("ParticipationRequest", back_populates="activity")
+
+    @property
+    def creator_name(self) -> str | None:
+        return self.creator.name if self.creator else None
