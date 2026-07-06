@@ -150,6 +150,7 @@ class ActivityOut(ActivityBase):
     id: int
     status: ActivityStatus
     creator_id: int
+    creator_name: str | None = None
     participants_count: int = 0
 
     model_config = {"from_attributes": True}
