@@ -44,3 +44,7 @@
 - A `User` has many `Activities` (1:N)
 - A `User` has many `Participations` (1:N)
 - An `Activity` has many `Participations` (1:N)
+
+## ER Diagram
+
+<img width="1078" height="545" alt="Screenshot 2026-07-09 201819" src="https://github.com/user-attachments/assets/a3990f2a-02ff-47c3-adf6-e8285682122d" />
