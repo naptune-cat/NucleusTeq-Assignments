@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/profile.css" />
+      <script src="../js/fetch-interceptor.js"></script>
   </head>
   <body>
     <nav class="nav">
@@ -249,8 +250,7 @@
             <button class="app-filter-tab active" data-filter="all" onclick="setAppFilter('all')">All</button>
             <button class="app-filter-tab" data-filter="approved" onclick="setAppFilter('approved')"><i class="ti ti-check"></i> Approved</button>
             <button class="app-filter-tab" data-filter="rejected" onclick="setAppFilter('rejected')"><i class="ti ti-x"></i> Rejected</button>
-            <button class="app-filter-tab" data-filter="pending" onclick="setAppFilter('pending')"><i class="ti ti-clock"></i> Pending</button>
-            <button class="app-filter-tab" data-filter="cancelled" onclick="setAppFilter('cancelled')"><i class="ti ti-x"></i> Cancelled</button>
+            <button class="app-filter-tab" data-filter="pending" onclick="setAppFilter('pending')"><i class="ti ti-clock"></i> Pending</button>           
           </div>
 
           <div id="my-requests-list">
