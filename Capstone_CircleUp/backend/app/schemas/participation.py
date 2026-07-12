@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from app.models.participation import RequestStatus
 
 
+# Response schema for all participation requests
 class ParticipationRequestOut(BaseModel):
     id: int
     activity_id: int
@@ -16,6 +17,8 @@ class ParticipationRequestOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+# Response schema containing the requester's contact details
+# Returned only when the participation request has been approved
 class ContactOut(BaseModel):
     name: str
     phone_number: str
@@ -24,6 +27,8 @@ class ContactOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+# Response schema for a participation request along with
+# the requester's contact information (if available)
 class ParticipationRequestWithContact(BaseModel):
     id: int
     activity_id: int
@@ -31,7 +36,8 @@ class ParticipationRequestWithContact(BaseModel):
     status: RequestStatus
     requested_at: datetime
 
-    # Contact details are included only after approval
+    # Contact details are included only after approval,
+    # otherwise this field will be None
     contact: ContactOut | None = None
 
     # Allows Pydantic to read values from SQLAlchemy objects
