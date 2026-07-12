@@ -1,6 +1,6 @@
-from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import BadRequestError, NotFoundError, UnauthorizedError
 from app.core.security import hash_password, verify_password, create_access_token
 from app.core.logger import logger
 from app.models.user import User
@@ -15,10 +15,7 @@ from app.repositories.user_repository import (
 def register_user(db: Session, data: UserCreate) -> User:
     # email must be unique
     if get_user_by_email(db, data.email):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered",
-        )
+        raise BadRequestError("Email already registered")
 
     user = User(
         name=data.name,
@@ -37,13 +34,12 @@ def register_user(db: Session, data: UserCreate) -> User:
 def login_user(db: Session, email: str, password: str) -> str:
     user = get_user_by_email(db, email)
 
-    # I am deliberately returning vague error message for security reasons
-    if not user or not verify_password(password, user.hashed_password):
+    
+    if not user:
         logger.warning(f"Failed login attempt for email: {email}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password",
-        )
+        raise NotFoundError("No such user exists!")
+    if not verify_password(password, user.hashed_password):
+        raise UnauthorizedError("Invalid Password")
 
     # sub = subject — it is a JWT claim, we store user id as string
     token = create_access_token({"sub": str(user.id)})
