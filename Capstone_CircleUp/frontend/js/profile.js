@@ -25,7 +25,28 @@ export function logout() {
   window.location.href = "../component/index.html";
 }
 
-// ── Helpers ───────────────────────────────────────────────
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg, type = "success") {
+  let container = document.getElementById("toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toast-container";
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement("div");
+  const icons = { success: "✓", error: "✕", info: "i" };
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<div class="toast-icon">${icons[type]}</div><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transition = "opacity 0.3s";
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
+// ── HELPERS ───────────────────────────────────────────────
 function showMsg(id, msg, type) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -37,7 +58,6 @@ function showMsg(id, msg, type) {
   }, 5000);
 }
 
-// ── Inline field validation helpers ──────────────────────
 function setFieldError(fieldId, errorMsg) {
   const field = document.getElementById(fieldId);
   const errorEl = document.getElementById(`${fieldId}-error`);
@@ -55,13 +75,6 @@ function clearFieldError(fieldId) {
   setFieldError(fieldId, "");
 }
 
-function setLoading(btnId, loading, defaultText) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  btn.disabled = loading;
-  btn.textContent = loading ? defaultText + "..." : defaultText;
-}
-
 function getInitials(name) {
   return name
     .split(" ")
@@ -72,18 +85,18 @@ function getInitials(name) {
 }
 
 function formatGender(g) {
-  const map = {
-    male: "Male",
-    female: "Female",
-    other: "Other",
-    prefer_not_to_say: "Prefer not to say",
-  };
-  return map[g] || g;
+  return (
+    {
+      male: "Male",
+      female: "Female",
+      other: "Other",
+      prefer_not_to_say: "Prefer not to say",
+    }[g] || g
+  );
 }
 
 function formatDate(iso) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("en-IN", {
+  return new Date(iso).toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -91,17 +104,25 @@ function formatDate(iso) {
 }
 
 function formatStatus(status) {
-  const map = { open: "Open", full: "Full", cancelled: "Cancelled" };
-  return map[status] || status;
+  return (
+    {
+      open: "Open",
+      full: "Full",
+      cancelled: "Cancelled",
+      completed: "Completed",
+    }[status] || status
+  );
 }
 
 function statusClass(status) {
-  const map = {
-    open: "status-open",
-    full: "status-full",
-    cancelled: "status-cancelled",
-  };
-  return map[status] || "";
+  return (
+    {
+      open: "status-open",
+      full: "status-full",
+      cancelled: "status-cancelled",
+      completed: "status-completed",
+    }[status] || ""
+  );
 }
 
 function categoryIcon(category) {
@@ -130,11 +151,41 @@ function categoryStyle(category) {
     { bg: "var(--lavender)", color: "var(--lavender-dark)" },
     { bg: "var(--sky)", color: "var(--sky-dark)" },
   ];
-  const idx = (category || "").length % styles.length;
-  return styles[idx];
+  return styles[(category || "").length % styles.length];
 }
 
-// ── Load profile ──────────────────────────────────────────
+// Auto-expire: if activity_date is past, treat status as "completed" unless already cancelled
+function resolveStatus(activity) {
+  if (activity.status === "cancelled") return "cancelled";
+  if (new Date(activity.activity_date) < new Date()) return "completed";
+  return activity.status;
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
+}
+
+// ── SIDEBAR SECTION SWITCHING ─────────────────────────────
+export function switchSection(name) {
+  document
+    .querySelectorAll(".profile-section")
+    .forEach((s) => s.classList.remove("active"));
+  document
+    .querySelectorAll(".sidebar-link")
+    .forEach((l) => l.classList.remove("active"));
+
+  const section = document.getElementById(`section-${name}`);
+  const link = document.getElementById(`nav-${name}`);
+  if (section) section.classList.add("active");
+  if (link) link.classList.add("active");
+}
+
+// ── LOAD PROFILE ──────────────────────────────────────────
 export async function loadProfile() {
   const token = getToken();
   if (!token) return;
@@ -143,27 +194,25 @@ export async function loadProfile() {
     const res = await fetch(`${API}/users/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
     if (res.status === 401) {
       logout();
       return;
     }
-
     const user = await res.json();
     renderProfile(user);
     loadMyActivities(token);
+    loadMyRequests(token);
+    loadManageActivities(token);
   } catch (e) {
     console.error("Failed to load profile:", e);
   }
 }
 
 function renderProfile(user) {
-  // avatar initials
   const initials = getInitials(user.name);
-  const avatarEl = document.getElementById("avatar-initials");
-  if (avatarEl) avatarEl.textContent = initials;
-
-  // header
+  ["avatar-initials", "sidebar-avatar"].forEach((id) => setText(id, initials));
+  setText("sidebar-name", user.name);
+  setText("sidebar-email", user.email);
   setText("display-name", user.name);
   setText(
     "display-bio",
@@ -175,32 +224,15 @@ function renderProfile(user) {
   setText("display-phone", user.phone_number || "—");
   setText("display-gender", formatGender(user.gender));
   setText("display-gender-2", formatGender(user.gender));
-
-  // pre-fill edit form
   setVal("edit-name", user.name);
   setVal("edit-phone", user.phone_number || "");
   setVal("edit-city", user.city || "");
   setVal("edit-bio", user.bio || "");
   setVal("edit-gender", user.gender || "");
-
-  // member since
-  if (user.id) {
-    const memberEl = document.getElementById("stat-joined");
-    if (memberEl) memberEl.textContent = "Jun 2026";
-  }
+  setText("stat-joined", "Jun 2026");
 }
 
-function setText(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
-
-function setVal(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.value = val;
-}
-
-// ── Load my activities ────────────────────────────────────
+// ── MY ACTIVITIES (hosted) ────────────────────────────────
 async function loadMyActivities(token) {
   try {
     const actRes = await fetch(`${API}/activities/mine`, {
@@ -223,14 +255,23 @@ function renderActivitiesPage() {
   const container = document.getElementById("activities-list");
   if (!container) return;
 
-    if (mine.length === 0) {
-      container.innerHTML = `
-        <div style="text-align:center;padding:2rem;color:var(--text-muted)">
-          <i class="ti ti-calendar-off" style="font-size:32px;margin-bottom:0.5rem;display:block" aria-hidden="true"></i>
-          No activities yet — <a href="dashboard.html" style="color:var(--green-dark);font-weight:600">create one!</a>
-        </div>`;
-      return;
-    }
+  if (myActivities.length === 0) {
+    container.innerHTML = `<div class="empty-state"><i class="ti ti-calendar-off"></i><p>No activities yet — <a href="create-activity.html">create one!</a></p></div>`;
+    return;
+  }
+
+  // Filter activities based on activeActivityFilter
+  const filteredActivities = myActivities.filter((a) => {
+    const rs = resolveStatus(a);
+    if (activeActivityFilter === "all") return true;
+    return rs === activeActivityFilter;
+  });
+
+  if (filteredActivities.length === 0) {
+    const filterLabel = activeActivityFilter === "all" ? "any" : activeActivityFilter;
+    container.innerHTML = `<div class="empty-state"><i class="ti ti-filter-off"></i><p>No ${filterLabel} activities found.</p></div>`;
+    return;
+  }
 
   // Filter activities based on activeActivityFilter
   const filteredActivities = myActivities.filter((a) => {
@@ -826,30 +867,26 @@ export function toggleEdit() {
   const panel = document.getElementById("edit-panel");
   if (!panel) return;
   panel.classList.toggle("open");
-  if (panel.classList.contains("open")) {
+  if (panel.classList.contains("open"))
     panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
 }
 
-// ── Save profile ──────────────────────────────────────────
+// ── SAVE PROFILE ──────────────────────────────────────────
 export async function saveProfile() {
   const token = getToken();
   if (!token) return;
-
   const name = document.getElementById("edit-name")?.value.trim();
   const phone = document.getElementById("edit-phone")?.value.trim();
   const city = document.getElementById("edit-city")?.value;
   const bio = document.getElementById("edit-bio")?.value.trim();
   const gender = document.getElementById("edit-gender")?.value;
-
   let hasError = false;
 
-  // Validate name
   if (!name) {
     setFieldError("edit-name", "Name is required");
     hasError = true;
   } else if (name.length < 2) {
-    setFieldError("edit-name", "Name must be at least 2 characters long");
+    setFieldError("edit-name", "Name must be at least 2 characters");
     hasError = true;
   } else if (!/^[A-Za-z ]+$/.test(name)) {
     setFieldError("edit-name", "Name can only contain letters and spaces");
@@ -858,7 +895,6 @@ export async function saveProfile() {
     clearFieldError("edit-name");
   }
 
-  // Validate phone (if provided)
   const phoneRegex = /^[6-9]\d{9}$/;
   if (phone && !phoneRegex.test(phone)) {
     setFieldError("edit-phone", "Enter a valid 10-digit Indian mobile number");
@@ -869,10 +905,11 @@ export async function saveProfile() {
 
   clearFieldError("edit-city");
   clearFieldError("edit-bio");
-
   if (hasError) return;
 
-  setLoading("save-btn", true, "Save changes");
+  const btn = document.getElementById("save-btn");
+  btn.disabled = true;
+  btn.textContent = "Saving...";
 
   const body = {};
   if (name) body.name = name;
@@ -890,15 +927,12 @@ export async function saveProfile() {
       },
       body: JSON.stringify(body),
     });
-
     const data = await res.json();
-
     if (!res.ok) {
       showMsg("edit-error", data.detail || "Update failed.", "error");
       return;
     }
-
-    showMsg("edit-success", "Profile updated!", "success");
+    showMsg("edit-success", "Profile updated! ✓", "success");
     renderProfile(data);
     setTimeout(() => {
       document.getElementById("edit-panel")?.classList.remove("open");
@@ -906,21 +940,22 @@ export async function saveProfile() {
   } catch (e) {
     showMsg("edit-error", "Could not reach the server.", "error");
   } finally {
-    setLoading("save-btn", false, "Save changes");
+    btn.disabled = false;
+    btn.textContent = "Save changes";
   }
 }
 
-// ── INIT ─────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  // Clear inline errors when the user edits a field in the profile form
-  const editFields = ["edit-name", "edit-phone", "edit-city", "edit-bio", "edit-gender"];
-  editFields.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("input", () => clearFieldError(id));
-      el.addEventListener("change", () => clearFieldError(id));
-    }
-  });
+  ["edit-name", "edit-phone", "edit-city", "edit-bio", "edit-gender"].forEach(
+    (id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", () => clearFieldError(id));
+        el.addEventListener("change", () => clearFieldError(id));
+      }
+    },
+  );
 });
 
 window.selectManageActivity = window.selectManageActivity;
