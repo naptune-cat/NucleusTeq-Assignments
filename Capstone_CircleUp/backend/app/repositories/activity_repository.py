@@ -74,6 +74,7 @@ def browse_activities(
     location: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
+    gender_filter: str | None = None,
     current_user_gender: str | None = None,
 ) -> list[Activity]:
     """
