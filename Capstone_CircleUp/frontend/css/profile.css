@@ -455,6 +455,35 @@
 }
 .btn-manage:hover { background: var(--green); }
 
+/* ── APPLICATION FILTER TABS ── */
+.app-filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.app-filter-tab {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.app-filter-tab:hover {
+  border-color: var(--green-dark);
+  color: var(--green-dark);
+}
+.app-filter-tab.active {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  color: #fff;
+  font-weight: 600;
+}
+
 /* ── REQUEST ROWS (My Applications) ── */
 .request-row {
   display: flex;
@@ -483,6 +512,15 @@
 .request-info { flex: 1; }
 .request-activity-name { font-size: 14px; font-weight: 700; color: var(--text); }
 .request-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.request-host-contact {
+  font-size: 12px;
+  color: var(--green-dark);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
 
 .btn-cancel-request {
   display: flex;
@@ -679,22 +717,102 @@
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .profile-layout { flex-direction: column; }
+
   .profile-sidebar {
-    width: 100%; position: static; height: auto;
-    min-height: unset; border-right: none;
+    width: 100%;
+    position: static;
+    height: auto;
+    min-height: unset;
+    border-right: none;
     border-bottom: 1px solid var(--border);
   }
-  .sidebar-nav { flex-direction: row; flex-wrap: wrap; padding: 0.6rem; }
-  .sidebar-link { width: auto; flex: none; font-size: 13px; padding: 8px 10px; }
-  .sidebar-identity { padding: 1rem; }
+
+  /* Keep avatar/name block centred at tablet width */
+  .sidebar-identity {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  /* Horizontal scrollable nav row */
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.6rem;
+    gap: 4px;
+  }
+
+  .sidebar-link {
+    width: auto;
+    flex: none;
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
   .sidebar-footer { display: none; }
   .manage-layout { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 640px) {
+  /* ── Nav buttons shrink on mobile ── */
+  .btn-nav,
+  .btn-danger {
+    font-size: 13px;
+    padding: 6px 10px;
+    gap: 4px;
+  }
+
+  /* ── Main content padding ── */
   .profile-main { padding: 1rem 1rem 3rem; }
-  .profile-hero { flex-direction: column; align-items: flex-start; }
+
+  /* ── Profile Hero: stack and centre everything ── */
+  .profile-hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Centre the pills row */
+  .profile-meta {
+    justify-content: center;
+  }
+
+  /* Edit profile button: full width, centred */
+  .edit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Info grid: single column ── */
   .info-grid { grid-template-columns: 1fr; }
+
+  /* ── Edit form: single column ── */
   .two-col { grid-template-columns: 1fr; }
+
+  /* ── Manage layout: single column ── */
   .manage-layout { grid-template-columns: 1fr; }
+
+  /* ── Section header row: stack on mobile ── */
+  .section-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* ── Activity cards: stack actions below info ── */
+  .activity-card {
+    flex-wrap: wrap;
+  }
+  .activity-card-actions {
+    align-items: stretch;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
 }

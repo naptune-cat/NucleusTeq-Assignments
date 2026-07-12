@@ -45,37 +45,38 @@
         </div>
         <div id="my-activities-list"></div>
         <div id="my-activities-empty" class="panel-empty" style="display:none">
-          <span>🌱</span>
-          <p>You haven't hosted any activities yet.</p>
-          <a href="./browse.html" class="btn-primary" style="display:inline-block;margin-top:0.5rem;padding:8px 18px;border-radius:10px;text-decoration:none;font-size:14px;">Browse activities</a>
-        </div>
+        <i class="ti ti-plant" style="font-size:28px;color:var(--text-muted)"></i>
+        <p>You haven't hosted any activities yet.</p>
+        <a href="./browse.html" class="btn-primary" style="display:inline-block;margin-top:0.5rem;padding:8px 18px;border-radius:10px;text-decoration:none;font-size:14px;">Browse activities</a>
       </div>
+    </div>
 
-      <!-- RIGHT: Requests for selected activity -->
-      <div class="requests-panel">
-        <h2 class="panel-title" id="requests-panel-title">Select an activity</h2>
-        <div id="requests-placeholder" class="requests-placeholder">
-          <span>👈</span>
-          <p>Pick one of your activities to see join requests</p>
-        </div>
-        <div id="requests-loading" class="panel-loading" style="display:none">
-          <i class="ti ti-loader"></i> Loading requests...
-        </div>
-        <div id="requests-list"></div>
-        <div id="requests-empty" class="panel-empty" style="display:none">
-          <span>✉️</span>
-          <p>No requests yet for this activity.</p>
-        </div>
+    <!-- RIGHT: Requests for selected activity -->
+    <div class="requests-panel">
+      <h2 class="panel-title" id="requests-panel-title">Select an activity</h2>
+      <div id="requests-placeholder" class="requests-placeholder">
+        <i class="ti ti-arrow-left" style="font-size:28px;color:var(--text-muted);display:block;margin-bottom:0.5rem"></i>
+        <p>Pick one of your activities to see join requests</p>
+      </div>
+      <div id="requests-loading" class="panel-loading" style="display:none">
+        <i class="ti ti-loader"></i> Loading requests...
+      </div>
+      <div id="requests-list"></div>
+      <div id="requests-empty" class="panel-empty" style="display:none">
+        <i class="ti ti-mail" style="font-size:28px;color:var(--text-muted);display:block;margin-bottom:0.5rem"></i>
+        <p>No requests yet for this activity.</p>
       </div>
 
     </div>
 
-    <footer class="footer">
-      CircleUp &copy; 2026 — find your people, find your vibe.
-    </footer>
+  </div>
 
-    <div id="toast-container" class="toast-container"></div>
+  <footer class="footer">
+    CircleUp &copy; 2026 — find your people, find your vibe.
+  </footer>
 
-    <script type="module" src="../js/approve-reject.js"></script>
+  <div id="toast-container" class="toast-container"></div>
+
+  <script type="module" src="../js/approve-reject.js?v=2"></script>
   </body>
 </html>

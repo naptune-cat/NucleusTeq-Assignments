@@ -36,6 +36,20 @@
 
     <!-- FILTERS -->
     <section class="filters-section">
+      <!-- Search bar -->
+      <div class="search-bar-wrap">
+        <div class="search-input-group">
+          <i class="ti ti-search search-icon"></i>
+          <input
+            type="text"
+            id="filter-search"
+            class="search-input"
+            placeholder="Search activities by name or description…"
+            oninput="applyFilters()"
+          />
+        </div>
+      </div>
+
       <div class="filters-header-mobile">
         <button class="btn-mobile-filter" onclick="document.getElementById('filters-container').classList.toggle('show')">
           <i class="ti ti-filter"></i> Filters
@@ -96,8 +110,9 @@
           </select>
         </div>
 
-        <button class="btn-reset" onclick="resetFilters()">
-          <i class="ti ti-refresh"></i> Reset
+        <!-- Distinctive small reset button -->
+        <button class="btn-reset" onclick="resetFilters()" title="Reset all filters">
+          <i class="ti ti-x"></i> Clear
         </button>
       </div>
     </section>

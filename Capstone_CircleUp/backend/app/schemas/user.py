@@ -8,10 +8,10 @@ GenderType = Literal["male", "female", "other", "prefer_not_to_say"]
 class UserBase(BaseModel):
     name: str
     email: EmailStr
-    phone_number: str 
+    phone_number: str
     city: str | None = None
     bio: str | None = None
-    gender: GenderType 
+    gender: GenderType
 
 
 class UserCreate(UserBase):
