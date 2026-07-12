@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CircleUp — Create Activity</title>
+    <title>CircleUp — Edit Activity</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
@@ -29,11 +29,11 @@
 
     <div class="form-page">
       <div class="form-header">
-        <h1>Create an activity</h1>
-        <p>Plan something fun and invite people to join</p>
+        <h1>Edit activity</h1>
+        <p>Update details and manage settings for your activity</p>
       </div>
 
-      <div class="form-card" id="create-form">
+      <div class="form-card" id="edit-form">
         <div class="field">
           <label for="title">Activity title</label>
           <input
@@ -121,8 +121,8 @@
         </div>
 
         <div class="form-btns">
-          <button class="submit-btn" id="create-btn" onclick="createActivity()">
-            <i class="ti ti-sparkles"></i> Create activity
+          <button class="submit-btn" id="save-btn" onclick="saveActivity()">
+            Save changes
           </button>
           <button class="btn-cancel-form" onclick="window.history.back()">
             Cancel
@@ -135,6 +135,6 @@
       CircleUp &copy; 2026 — find your people, find your vibe.
     </footer>
 
-    <script type="module" src="../js/create-activity.js"></script>
+    <script type="module" src="../js/edit-activity.js"></script>
   </body>
 </html>

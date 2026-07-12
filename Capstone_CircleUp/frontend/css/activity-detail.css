@@ -317,4 +317,16 @@
   .detail-body { grid-template-columns: 1fr; padding: 1rem; }
   .detail-title { font-size: 24px; }
   .detail-hero { padding: 2rem 1rem; }
+  .detail-meta-row { gap: 10px; }
+}
+
+/* ── PENDING NOTICE ── */
+.pending-notice {
+  text-align: center;
+  padding: 12px;
+  background: var(--peach);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--peach-dark);
 }

@@ -152,14 +152,14 @@ async function loadRequests(activityId) {
       return;
     }
 
-    renderRequests(requests);
+    await renderRequests(requests);
   } catch (e) {
     showToast("Could not load requests", "error");
   }
 }
 
 // ── RENDER REQUESTS ──
-function renderRequests(requests) {
+async function renderRequests(requests) {
   const list = document.getElementById("requests-list");
 
   const pending = requests.filter((r) => r.status === "pending");
@@ -169,17 +169,49 @@ function renderRequests(requests) {
   let html = "";
 
   if (pending.length > 0) {
-    html += `<div class="requests-section-label">⏳ Pending (${pending.length})</div>`;
+    html += `<div class="requests-section-label"><i class="ti ti-clock"></i> Pending (${pending.length})</div>`;
     html += pending.map((r) => renderRequestCard(r)).join("");
   }
 
   if (approved.length > 0) {
-    html += `<div class="requests-section-label">✅ Approved (${approved.length})</div>`;
-    html += approved.map((r) => renderRequestCard(r)).join("");
+    html += `<div class="requests-section-label"><i class="ti ti-circle-check"></i> Approved Participants (${approved.length})</div>`;
+    const token = checkAuth();
+    const approvedWithContacts = await Promise.all(
+      approved.map(async (r) => {
+        try {
+          const res = await fetch(`${API}/participation/${r.id}/contact`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const contact = await res.json();
+            return { ...r, contact };
+          }
+        } catch (e) {
+          console.error(`Failed to load contact for request ${r.id}:`, e);
+        }
+        return { ...r, contact: { name: r.requester_name || `User #${r.requester_id}`, phone_number: "N/A" } };
+      })
+    );
+
+    html += `<div class="approved-participants-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">`;
+    approvedWithContacts.forEach(p => {
+      html += `
+        <div class="participant-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--green-light); border: 1px solid var(--green); border-radius: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="ti ti-user" style="font-size: 18px;"></i>
+            <span style="font-weight: 700; color: var(--text);">${p.contact.name}</span>
+          </div>
+          <div style="font-weight: 700; color: var(--green-dark); display: flex; align-items: center; gap: 4px;">
+            <i class="ti ti-phone"></i> ${p.contact.phone_number}
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
   }
 
   if (rejected.length > 0) {
-    html += `<div class="requests-section-label">❌ Rejected (${rejected.length})</div>`;
+    html += `<div class="requests-section-label"><i class="ti ti-circle-x"></i> Rejected (${rejected.length})</div>`;
     html += rejected.map((r) => renderRequestCard(r)).join("");
   }
 
@@ -188,61 +220,40 @@ function renderRequests(requests) {
 
 // ── RENDER REQUEST CARD ──
 function renderRequestCard(req) {
-  const date = new Date(req.requested_at).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
+  const date = new Date(req.requested_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
   const statusChip = `<span class="status-chip ${req.status}">${req.status}</span>`;
-
-  const actions =
-    req.status === "pending"
-      ? `
+  const displayName = req.requester_name || `User #${req.requester_id}`;
+  const actions = req.status === "pending" ? `
     <div class="request-actions">
-      <button class="btn-approve" onclick="handleApprove(${req.id})">
-        <i class="ti ti-check"></i> Approve
-      </button>
-      <button class="btn-reject" onclick="handleReject(${req.id})">
-        <i class="ti ti-x"></i> Reject
-      </button>
-    </div>
-  `
-      : "";
-
-  const contactSection =
-    req.status === "approved"
-      ? `
+      <button class="btn-approve" onclick="handleApprove(${req.id})"><i class="ti ti-check"></i> Approve</button>
+      <button class="btn-reject" onclick="handleReject(${req.id})"><i class="ti ti-x"></i> Reject</button>
+    </div>` : "";
+  // Name is always visible; phone is only revealed after approval
+  const contactSection = req.status === "approved" ? `
     <div class="contact-reveal" id="contact-${req.id}">
       <i class="ti ti-phone"></i>
       <div>
-        <div class="contact-reveal-text">Contact info available</div>
-        <div class="contact-reveal-sub">Tap to reveal participant's details</div>
+        <div class="contact-reveal-text">${displayName} — phone hidden</div>
+        <div class="contact-reveal-sub">Tap Reveal to see their phone number</div>
       </div>
-      <button class="btn-reveal" onclick="revealContact(${req.id})">
-        Reveal
-      </button>
-    </div>
-  `
-      : "";
+      <button class="btn-reveal" onclick="revealContact(${req.id})">Reveal Phone</button>
+    </div>` : "";
 
   return `
-    <div class="request-card ${req.status}" id="request-card-${req.id}">
-      <div class="request-card-top">
-        <div class="requester-info">
-          <div class="requester-avatar">👤</div>
-          <div>
-            <div class="requester-name">User #${req.requester_id}</div>
-            <div class="requester-date">${date}</div>
-          </div>
+  <div class="request-card ${req.status}" id="request-card-${req.id}">
+    <div class="request-card-top">
+      <div class="requester-info">
+        <div class="requester-avatar"><i class="ti ti-user" style="font-size: 18px;"></i></div>
+        <div>
+          <div class="requester-name">${displayName}</div>
+          <div class="requester-date">Requested: ${date}</div>
         </div>
-        ${statusChip}
       </div>
-      ${actions}
-      ${contactSection}
+      ${statusChip}
     </div>
-  `;
+    ${actions}
+    ${contactSection}
+  </div>`;
 }
 
 // ── APPROVE ──
@@ -308,10 +319,10 @@ async function revealContact(requestId) {
     const el = document.getElementById(`contact-${requestId}`);
     if (el) {
       el.innerHTML = `
-        <i class="ti ti-phone"></i>
+        <i class="ti ti-phone" style="color:var(--green-dark)"></i>
         <div>
           <div class="contact-reveal-text">${contact.name}</div>
-          <div class="contact-reveal-sub">📞 ${contact.phone_number}</div>
+          <div class="contact-reveal-sub" style="color:var(--green-dark);font-weight:700;display:flex;align-items:center;gap:4px;"><i class="ti ti-phone"></i> ${contact.phone_number}</div>
         </div>
       `;
     }
@@ -321,8 +332,15 @@ async function revealContact(requestId) {
 }
 
 // ── INIT ──
-document.addEventListener("DOMContentLoaded", () => {
-  if (checkAuth()) loadMyActivities();
+document.addEventListener("DOMContentLoaded", async () => {
+  if (checkAuth()) {
+    await loadMyActivities();
+    const params = new URLSearchParams(window.location.search);
+    const actId = params.get("id");
+    if (actId) {
+      selectActivity(parseInt(actId));
+    }
+  }
 });
 
 window.selectActivity = selectActivity;
