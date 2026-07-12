@@ -11,6 +11,17 @@ let manageActivities = [];
 let activeAppFilter = "all";
 
 // ── AUTH ──────────────────────────────────────────────────
+const ITEMS_PER_PAGE = 5;
+let activitiesPage = 1;
+let activeActivityFilter = "all";
+let applicationsPage = 1;
+let myActivities = [];
+let myRequests = [];
+let selectedManageActivityId = null;
+let manageActivities = [];
+let activeAppFilter = "all";
+
+// ── AUTH ──────────────────────────────────────────────────
 function getToken() {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -236,8 +247,25 @@ function renderProfile(user) {
 async function loadMyActivities(token) {
   try {
     const actRes = await fetch(`${API}/activities/mine`, {
+    const actRes = await fetch(`${API}/activities/mine`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    myActivities = await actRes.json();
+    setText("stat-hosted", myActivities.length);
+    setText(
+      "badge-my-activities",
+      myActivities.length > 0 ? myActivities.length : "",
+    );
+    activitiesPage = 1;
+    renderActivitiesPage();
+  } catch (e) {
+    console.error("Failed to load activities:", e);
+  }
+}
+
+function renderActivitiesPage() {
+  const container = document.getElementById("activities-list");
+  if (!container) return;
     myActivities = await actRes.json();
     setText("stat-hosted", myActivities.length);
     setText(
@@ -260,6 +288,23 @@ function renderActivitiesPage() {
     return;
   }
 
+  // Filter activities based on activeActivityFilter
+  const filteredActivities = myActivities.filter((a) => {
+    const rs = resolveStatus(a);
+    if (activeActivityFilter === "all") return true;
+    return rs === activeActivityFilter;
+  });
+
+  if (filteredActivities.length === 0) {
+    const filterLabel = activeActivityFilter === "all" ? "any" : activeActivityFilter;
+    container.innerHTML = `<div class="empty-state"><i class="ti ti-filter-off"></i><p>No ${filterLabel} activities found.</p></div>`;
+    return;
+  }
+
+  const total = filteredActivities.length;
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  const start = (activitiesPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = filteredActivities.slice(start, start + ITEMS_PER_PAGE);
   // Filter activities based on activeActivityFilter
   const filteredActivities = myActivities.filter((a) => {
     const rs = resolveStatus(a);
@@ -312,6 +357,7 @@ function renderActivitiesPage() {
       `;
 
       return `
+    <div class="activity-card ${resolvedStatus === 'cancelled' ? 'status-cancelled' : ''}">
     <div class="activity-card ${resolvedStatus === 'cancelled' ? 'status-cancelled' : ''}">
       <div class="activity-icon" style="background:${style.bg}">
         <i class="ti ${icon}" style="color:${style.color};font-size:20px"></i>
@@ -381,6 +427,7 @@ window.cancelHostedActivity = async function (activityId) {
 };
 
 // ── MY APPLICATIONS (requests I sent) 
+// ── MY APPLICATIONS (requests I sent) 
 async function loadMyRequests(token) {
   try {
     const res = await fetch(`${API}/participation/mine`, {
@@ -420,9 +467,31 @@ export function setActivityFilter(filter) {
   renderActivitiesPage();
 }
 
+export function setAppFilter(filter) {
+  activeAppFilter = filter;
+  applicationsPage = 1;
+  // Update tab active states
+  document.querySelectorAll(".app-filter-tab").forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === filter));
+  renderApplicationsPage();
+}
+
+// New activity filter for My Activities
+export function setActivityFilter(filter) {
+  activeActivityFilter = filter;
+  activitiesPage = 1;
+  // Update tab active states for activity filter tabs
+  document.querySelectorAll("#my-activities-filter-tabs .app-filter-tab").forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === filter));
+  renderActivitiesPage();
+}
+
 function renderApplicationsPage() {
   const container = document.getElementById("my-requests-list");
   if (!container) return;
+
+  const filtered =
+    activeAppFilter === "all"
+      ? myRequests
+      : myRequests.filter((r) => r.status === activeAppFilter);
 
   const filtered =
     activeAppFilter === "all"
@@ -440,7 +509,14 @@ function renderApplicationsPage() {
   }
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><i class="ti ti-filter-off"></i><p>No ${activeAppFilter} requests found.</p></div>`;
+    return;
+  }
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const start = (applicationsPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
   const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
 
   const statusColors = {
@@ -448,17 +524,20 @@ function renderApplicationsPage() {
       bg: "var(--peach)",
       color: "var(--peach-dark)",
       icon: `<i class="ti ti-loader"></i>`,
+      icon: `<i class="ti ti-loader"></i>`,
       pill: "status-full",
     },
     approved: {
       bg: "var(--green-light)",
       color: "var(--green-dark)",
       icon: `<i class="ti ti-check"></i>`,
+      icon: `<i class="ti ti-check"></i>`,
       pill: "status-open",
     },
     rejected: {
       bg: "#F0EBE1",
       color: "var(--text-muted)",
+      icon: `<i class="ti ti-x"></i>`,
       icon: `<i class="ti ti-x"></i>`,
       pill: "status-cancelled",
     },
@@ -488,12 +567,18 @@ function renderApplicationsPage() {
           ? `<div class="request-host-contact"><i class="ti ti-user"></i> <strong>${req.host_name}</strong>${req.host_phone ? ` &nbsp;·&nbsp; <i class="ti ti-phone"></i> ${req.host_phone}` : ""}</div>`
           : "";
 
+      const hostContact =
+        req.status === "approved" && req.host_name
+          ? `<div class="request-host-contact"><i class="ti ti-user"></i> <strong>${req.host_name}</strong>${req.host_phone ? ` &nbsp;·&nbsp; <i class="ti ti-phone"></i> ${req.host_phone}` : ""}</div>`
+          : "";
+
       return `
     <div class="request-row" onclick="window.location.href='activity-detail.html?id=${req.activity_id}'" style="cursor:pointer">
       <div class="request-status-icon" style="background:${s.bg};color:${s.color}">${s.icon}</div>
       <div class="request-info">
         <div class="request-activity-name">${activityTitle}</div>
         <div class="request-date">Applied: ${formatDate(req.requested_at)}${activityDate ? ` &nbsp;·&nbsp; Activity: ${activityDate}` : ""}</div>
+        ${hostContact}
         ${hostContact}
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
@@ -673,9 +758,11 @@ async function renderManageRequests(requests) {
   let html = "";
   if (pending.length > 0) {
     html += `<div class="requests-section-label"><i class="ti ti-clock"></i> Pending (${pending.length})</div>`;
+    html += `<div class="requests-section-label"><i class="ti ti-clock"></i> Pending (${pending.length})</div>`;
     html += pending.map(renderRequestCard).join("");
   }
   if (approved.length > 0) {
+    html += `<div class="requests-section-label"><i class="ti ti-circle-check"></i> Approved Participants (${approved.length})</div>`;
     html += `<div class="requests-section-label"><i class="ti ti-circle-check"></i> Approved Participants (${approved.length})</div>`;
     const token = getToken();
     const approvedWithContacts = await Promise.all(
@@ -701,8 +788,11 @@ async function renderManageRequests(requests) {
         <div class="participant-item" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--green-light); border: 1px solid var(--green); border-radius: 10px;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <i class="ti ti-user" style="font-size: 18px;"></i>
+            <i class="ti ti-user" style="font-size: 18px;"></i>
             <span style="font-weight: 700; color: var(--text);">${p.contact.name}</span>
           </div>
+          <div style="font-weight: 700; color: var(--green-dark); display: flex; align-items: center; gap: 4px;">
+            <i class="ti ti-phone"></i> ${p.contact.phone_number}
           <div style="font-weight: 700; color: var(--green-dark); display: flex; align-items: center; gap: 4px;">
             <i class="ti ti-phone"></i> ${p.contact.phone_number}
           </div>
@@ -712,6 +802,7 @@ async function renderManageRequests(requests) {
     html += `</div>`;
   }
   if (rejected.length > 0) {
+    html += `<div class="requests-section-label"><i class="ti ti-circle-x"></i> Rejected (${rejected.length})</div>`;
     html += `<div class="requests-section-label"><i class="ti ti-circle-x"></i> Rejected (${rejected.length})</div>`;
     html += rejected.map(renderRequestCard).join("");
   }
@@ -754,6 +845,7 @@ function renderRequestCard(req) {
     <div class="request-card-top">
       <div class="requester-info">
         <i class="ti ti-user" style="font-size: 18px;"></i>
+        <i class="ti ti-user" style="font-size: 18px;"></i>
         <div>
           <div class="requester-name">${displayName}</div>
           <div class="requester-date">Requested: ${date}</div>
@@ -779,6 +871,7 @@ window.handleApprove = async function (requestId) {
       showToast(d.detail || "Could not approve", "error");
       return;
     }
+    showToast("Request approved!", "success");
     showToast("Request approved!", "success");
     await loadManageRequests(selectedManageActivityId);
     loadPendingCount(selectedManageActivityId);
@@ -826,6 +919,7 @@ window.revealContact = async function (requestId) {
       <i class="ti ti-phone" style="color:var(--green-dark)"></i>
       <div>
         <div class="contact-reveal-text">${contact.name}</div>
+        <div class="contact-reveal-sub" style="color:var(--green-dark);font-weight:700;display:flex;align-items:center;gap:4px;"><i class="ti ti-phone"></i> ${contact.phone_number}</div>
         <div class="contact-reveal-sub" style="color:var(--green-dark);font-weight:700;display:flex;align-items:center;gap:4px;"><i class="ti ti-phone"></i> ${contact.phone_number}</div>
       </div>
     `;
@@ -944,6 +1038,10 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   );
 });
+
+window.selectManageActivity = window.selectManageActivity;
+window.setAppFilter = setAppFilter;
+window.setActivityFilter = setActivityFilter;
 
 window.selectManageActivity = window.selectManageActivity;
 window.setAppFilter = setAppFilter;
