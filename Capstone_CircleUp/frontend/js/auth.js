@@ -1,6 +1,5 @@
 const API = "http://localhost:8000";
 
-// Validation regex patterns
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^[6-9]\d{9}$/;
 const passwordRegex =

@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel, field_validator
 
-from app.models.activity import ActivityStatus
+from app.enums.activity import ActivityStatus  
 
 GenderFilter = Literal["all", "female_only"]
 

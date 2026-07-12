@@ -1,0 +1,538 @@
+/* Browse page styles */
+
+.browse-header {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+
+.browse-header h1 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.browse-header p {
+  font-size: 16px;
+  color: var(--text-sub);
+}
+
+.filters-section {
+  padding: 1.5rem 2rem;
+  background: var(--wheat-dark);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden; /* prevent child overflow on narrow screens */
+}
+
+.filters-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%; /* ensure it never exceeds parent */
+}
+
+.filters-header-mobile {
+  display: none;
+}
+
+.btn-mobile-filter {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  margin-bottom: 12px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--green-dark);
+  box-shadow: 0 0 0 3px rgba(59, 122, 87, 0.1);
+}
+
+/* ── RESET BUTTON — looks intentionally different from filter controls ── */
+.btn-reset {
+  align-self: flex-end;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1.5px dashed #c0392b;
+  border-radius: var(--radius);
+  color: #c0392b;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-reset:hover {
+  background: #fdf0ef;
+  border-color: #e74c3c;
+  color: #e74c3c;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.15);
+}
+
+.activities-section {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem 2rem;
+  font-size: 16px;
+  color: var(--text-sub);
+}
+
+.loading i {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.activity-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.activity-card:hover {
+  border-color: var(--green-dark);
+  box-shadow: 0 8px 24px rgba(59, 122, 87, 0.12);
+  transform: translateY(-3px);
+}
+
+.activity-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.activity-badge.female-only {
+  background: #FFE0EE;
+  color: #A02060;
+}
+
+.activity-badge.sports {
+  background: #FFE8DC;
+  color: #B04010;
+}
+
+.activity-badge.art {
+  background: #EAE6FF;
+  color: #4030A0;
+}
+
+.activity-badge.wellness {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+.activity-badge.food {
+  background: #FFF0D0;
+  color: #905010;
+}
+
+.activity-badge.outdoors {
+  background: var(--sky);
+  color: var(--sky-dark);
+}
+
+.activity-badge.learning {
+  background: var(--lavender);
+  color: var(--lavender-dark);
+}
+
+.activity-badge.social {
+  background: #FFE0EE;
+  color: #A02060;
+}
+
+.activity-badge.music {
+  background: #E8D5F0;
+  color: #603090;
+}
+
+.activity-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.activity-desc {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.activity-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.activity-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.activity-meta-item i {
+  font-size: 14px;
+  color: var(--green-dark);
+}
+
+.capacity-bar {
+  height: 6px;
+  background: var(--green-light);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.capacity-fill {
+  height: 100%;
+  background: var(--green-dark);
+  transition: width 0.3s;
+}
+
+.capacity-text {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+}
+
+.activity-action {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-view {
+  flex: 1;
+  padding: 10px;
+  background: var(--green-dark);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.15s;
+}
+
+.btn-view:hover {
+  background: var(--green-hover);
+}
+
+.btn-request {
+  flex: 1;
+  padding: 10px;
+  background: var(--white);
+  color: var(--green-dark);
+  border: 1.5px solid var(--green-dark);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.15s;
+}
+
+.btn-request:hover {
+  background: var(--green-light);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.plant-emoji {
+  font-size: 64px;
+  margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+  font-size: 24px;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-sub);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.nav-link:hover {
+  color: var(--green-dark);
+}
+
+@media (max-width: 768px) {
+  .filters-section {
+    padding: 1.25rem 1rem; /* side padding prevents right-edge cutoff */
+  }
+  .filters-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .search-bar-wrap {
+    margin-bottom: 12px;
+  }
+  .activities-grid {
+    grid-template-columns: 1fr;
+  }
+  .browse-header h1 {
+    font-size: 24px;
+  }
+}
+
+/* ── PAGINATION (browse) ── */
+#browse-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.page-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text-sub);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: all 0.15s;
+}
+.page-btn:hover:not(:disabled) { border-color: var(--green-dark); color: var(--green-dark); }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-info { font-size: 14px; font-weight: 600; color: var(--text-sub); }
+
+.page-num-btn {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text-sub);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.15s;
+}
+.page-num-btn:hover { border-color: var(--green-dark); color: var(--green-dark); }
+.page-num-btn.active {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  color: #fff;
+}
+
+/* ── ALREADY APPLIED BUTTON ── */
+.btn-already-applied {
+  background: var(--green-light) !important;
+  color: var(--green-dark) !important;
+  border-color: var(--green) !important;
+  cursor: not-allowed !important;
+  opacity: 0.9;
+}
+
+/* ── REJECTED BUTTON ── */
+.btn-rejected {
+  background: #fdf0ef !important;
+  color: #c0392b !important;
+  border: 1.5px solid #e74c3c !important;
+  cursor: not-allowed !important;
+  opacity: 1;
+  font-weight: 700 !important;
+}
+
+/* ── SEARCH BAR ── */
+.search-bar-wrap {
+  max-width: 1200px;
+  margin: 0 auto 16px;
+}
+
+.search-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 17px;
+  color: var(--text-sub);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 11px 14px 11px 42px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'Nunito', sans-serif;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--green-dark);
+  box-shadow: 0 0 0 3px rgba(59, 122, 87, 0.1);
+}
+
+/* ── RESPONSIVE IMPROVEMENTS (mobile ≤640px) ── */
+@media (max-width: 640px) {
+  .activities-grid {
+    grid-template-columns: 1fr;
+  }
+  .filters-header-mobile {
+    display: flex;
+  }
+  .btn-mobile-filter {
+    display: flex;
+    width: 100%; /* full-width toggle button on mobile */
+    justify-content: center;
+  }
+  .filters-section {
+    padding: 1rem; /* 16px on all sides including right */
+  }
+  .filters-container {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .filters-container.show {
+    display: grid;
+  }
+  .filter-group {
+    min-width: unset;
+  }
+  .filter-group input,
+  .filter-group select {
+    font-size: 14px; /* slightly smaller on mobile */
+    padding: 8px 10px;
+  }
+  .btn-reset {
+    grid-column: span 2;
+    justify-content: center;
+    width: 100%;
+  }
+  .search-bar-wrap {
+    margin-bottom: 10px;
+  }
+  .search-input {
+    font-size: 14px;
+  }
+  .browse-header { padding: 1.5rem 1rem; }
+  .browse-header h1 { font-size: 22px; }
+  .browse-header p { font-size: 14px; }
+  .activities-section { padding: 1rem; }
+  .activity-action { flex-direction: column; }
+  .btn-view, .btn-request { flex: unset; width: 100%; }
+  .pagination { gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .page-num-btn { min-width: 30px; height: 30px; font-size: 13px; }
+}
+
