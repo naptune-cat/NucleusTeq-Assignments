@@ -36,7 +36,26 @@
 
     <!-- FILTERS -->
     <section class="filters-section">
-      <div class="filters-container">
+      <!-- Search bar -->
+      <div class="search-bar-wrap">
+        <div class="search-input-group">
+          <i class="ti ti-search search-icon"></i>
+          <input
+            type="text"
+            id="filter-search"
+            class="search-input"
+            placeholder="Search activities by name or description…"
+            oninput="applyFilters()"
+          />
+        </div>
+      </div>
+
+      <div class="filters-header-mobile">
+        <button class="btn-mobile-filter" onclick="document.getElementById('filters-container').classList.toggle('show')">
+          <i class="ti ti-filter"></i> Filters
+        </button>
+      </div>
+      <div class="filters-container" id="filters-container">
         <div class="filter-group">
           <label for="filter-category">Category</label>
           <select id="filter-category" onchange="applyFilters()">
@@ -67,6 +86,7 @@
             <option value="Pune">Pune</option>
             <option value="Goa">Goa</option>
             <option value="Hyderabad">Hyderabad</option>
+            <option value="Virtual">Virtual</option>
           </select>
         </div>
         <div class="filter-group">
@@ -90,8 +110,9 @@
           </select>
         </div>
 
-        <button class="btn-reset" onclick="resetFilters()">
-          <i class="ti ti-refresh"></i> Reset
+        <!-- Distinctive small reset button -->
+        <button class="btn-reset" onclick="resetFilters()" title="Reset all filters">
+          <i class="ti ti-x"></i> Clear
         </button>
       </div>
     </section>
@@ -107,6 +128,7 @@
         <p>Try adjusting your filters or check back soon!</p>
       </div>
       <div id="activities-grid" class="activities-grid"></div>
+      <div id="browse-pagination"></div>
     </section>
 
     <footer class="footer">
