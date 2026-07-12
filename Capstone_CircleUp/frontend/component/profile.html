@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CircleUp — My Profile</title>
+    <meta name="description" content="Manage your CircleUp profile, activities, and join requests all in one place." />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
@@ -12,8 +13,9 @@
     <link rel="stylesheet" href="../css/profile.css" />
   </head>
   <body>
+    <!-- NAV -->
     <nav class="nav">
-      <a class="logo" href="index.html">
+      <a class="logo" href="browse.html">
         <div class="logo-mark">
           <i class="ti ti-circles-relation" aria-hidden="true"></i>
         </div>
@@ -29,201 +31,299 @@
       </div>
     </nav>
 
-    <div class="page">
-      <!-- PROFILE HERO -->
-      <div class="profile-hero">
-        <div class="avatar" id="avatar-initials">--</div>
-        <div class="profile-info">
-          <div class="profile-name" id="display-name">Loading...</div>
-          <div class="profile-meta">
-            <span class="meta-pill pill-lavender">
-              <i class="ti ti-user" aria-hidden="true"></i>
-              <span id="display-gender">—</span>
-            </span>
-            <span class="meta-pill pill-sky">
-              <i class="ti ti-map-pin" aria-hidden="true"></i>
-              <span id="display-city">—</span>
-            </span>
-            <span class="meta-pill pill-peach">
-              <i class="ti ti-phone" aria-hidden="true"></i>
-              <span id="display-phone">—</span>
-            </span>
-          </div>
-          <div class="profile-bio" id="display-bio"></div>
-        </div>
-        <button class="edit-btn" onclick="toggleEdit()">
-          <i class="ti ti-edit" aria-hidden="true"></i> Edit profile
-        </button>
-      </div>
+    <!-- PROFILE LAYOUT: SIDEBAR + CONTENT -->
+    <div class="profile-layout">
 
-      <!-- EDIT PANEL -->
-      <div class="edit-panel" id="edit-panel">
-        <div class="edit-panel-title">
-          <i
-            class="ti ti-edit"
-            style="color: var(--green-dark)"
-            aria-hidden="true"
-          ></i>
-          Edit your profile
+      <!-- ── SIDEBAR ── -->
+      <aside class="profile-sidebar">
+        <!-- Avatar + Name block -->
+        <div class="sidebar-identity">
+          <div class="avatar" id="sidebar-avatar">--</div>
+          <div class="sidebar-name" id="sidebar-name">Loading...</div>
+          <div class="sidebar-email" id="sidebar-email"></div>
         </div>
-        <div class="msg error" id="edit-error"></div>
-        <div class="msg success" id="edit-success"></div>
-        <div class="two-col">
-          <div class="field">
-            <label for="edit-name">Full name</label>
-            <input type="text" id="edit-name" placeholder="Your name" />
-            <div class="field-error" id="edit-name-error"></div>
-          </div>
-          <div class="field">
-            <label for="edit-phone">Phone</label>
-            <input type="tel" id="edit-phone" placeholder="+91 98765 43210" />
-            <div class="field-error" id="edit-phone-error"></div>
-          </div>
-        </div>
-        <div class="two-col">
-          <div class="field">
-            <label for="edit-city">City <span class="opt-label">(optional)</span></label>
-            <select id="edit-city">
-              <option value="">Select a city</option>
-              <option value="Bangalore">Bangalore</option>
-              <option value="Indore">Indore</option>
-              <option value="Bhopal">Bhopal</option>
-              <option value="Delhi">Delhi</option>
-              <option value="Mumbai">Mumbai</option>
-              <option value="Jabalpur">Jabalpur</option>
-              <option value="Kolkata">Kolkata</option>
-              <option value="Chennai">Chennai</option>
-              <option value="Pune">Pune</option>
-              <option value="Goa">Goa</option>
-              <option value="Hyderabad">Hyderabad</option>
-            </select>
-            <div class="field-error" id="edit-city-error"></div>
-          </div>
-          <div class="field">
-            <label for="edit-gender">Gender</label>
-            <select id="edit-gender">
-              <option value="female">Female</option>
-              <option value="male">Male</option>
-              <option value="other">Other</option>
-              <option value="prefer_not_to_say">Prefer not to say</option>
-            </select>
-            <div class="field-error" id="edit-gender-error"></div>
-          </div>
-        </div>
-        <div class="field">
-          <label for="edit-bio">Bio <span class="opt-label">(optional)</span></label>
-          <textarea
-            id="edit-bio"
-            rows="2"
-            placeholder="Coffee lover, weekend hiker..."
-          ></textarea>
-          <div class="field-error" id="edit-bio-error"></div>
-        </div>
-        <div class="form-btns">
-          <button class="btn-save" id="save-btn" onclick="saveProfile()">
-            Save changes
+
+        <!-- Nav links -->
+        <nav class="sidebar-nav" aria-label="Profile sections">
+          <button class="sidebar-link active" id="nav-overview" onclick="switchSection('overview')">
+            <i class="ti ti-user-circle"></i>
+            <span>Overview</span>
           </button>
-          <button class="btn-cancel-form" onclick="toggleEdit()">Cancel</button>
-        </div>
-      </div>
+          <button class="sidebar-link" id="nav-my-activities" onclick="switchSection('my-activities')">
+            <i class="ti ti-layout-list"></i>
+            <span>My Activities</span>
+            <span class="sidebar-badge" id="badge-my-activities"></span>
+          </button>
+          <button class="sidebar-link" id="nav-my-applications" onclick="switchSection('my-applications')">
+            <i class="ti ti-send"></i>
+            <span>My Applications</span>
+            <span class="sidebar-badge" id="badge-my-applications"></span>
+          </button>
+          <button class="sidebar-link" id="nav-manage-requests" onclick="switchSection('manage-requests')">
+            <i class="ti ti-users"></i>
+            <span>Manage Requests</span>
+            <span class="sidebar-badge pending-badge" id="badge-manage-requests"></span>
+          </button>
+        </nav>
 
-      <!-- INFO CARDS -->
-      <div class="info-grid">
-        <div class="card">
-          <div class="card-title">About you</div>
-          <div class="info-row">
-            <div class="info-icon" style="background: var(--green-light)">
-              <i
-                class="ti ti-mail"
-                style="color: var(--green-dark)"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div>
-              <div class="info-label">Email</div>
-              <div class="info-val" id="display-email">—</div>
-            </div>
-          </div>
-          <div class="info-row">
-            <div class="info-icon" style="background: var(--sky)">
-              <i
-                class="ti ti-map-pin"
-                style="color: var(--sky-dark)"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div>
-              <div class="info-label">City</div>
-              <div class="info-val" id="display-city-2">—</div>
-            </div>
-          </div>
-          <div class="info-row">
-            <div class="info-icon" style="background: var(--lavender)">
-              <i
-                class="ti ti-user"
-                style="color: var(--lavender-dark)"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div>
-              <div class="info-label">Gender</div>
-              <div class="info-val" id="display-gender-2">—</div>
-            </div>
-          </div>
+        <!-- Quick action -->
+        <div class="sidebar-footer">
+          <button class="btn-primary sidebar-create-btn" onclick="window.location.href = 'create-activity.html'">
+            <i class="ti ti-plus"></i> Create Activity
+          </button>
         </div>
+      </aside>
 
-        <div class="card">
-          <div class="card-title">Your stats</div>
-          <div class="info-row">
-            <div class="info-icon" style="background: var(--peach)">
-              <i
-                class="ti ti-calendar-event"
-                style="color: var(--peach-dark)"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div>
-              <div class="info-label">Activities hosted</div>
-              <div class="info-val" id="stat-hosted">—</div>
-            </div>
-          </div>
-          <div class="info-row">
-            <div class="info-icon" style="background: var(--green-light)">
-              <i
-                class="ti ti-star"
-                style="color: var(--green-dark)"
-                aria-hidden="true"
-              ></i>
-            </div>
-            <div>
-              <div class="info-label">Member since</div>
-              <div class="info-val" id="stat-joined">—</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- ── MAIN CONTENT ── -->
+      <main class="profile-main">
 
-      <!-- MY ACTIVITIES -->
-      <div class="section-title">
-        <i
-          class="ti ti-layout-list"
-          style="color: var(--green-dark)"
-          aria-hidden="true"
-        ></i>
-        My activities
-      </div>
-      <div id="activities-list">
-        <div
-          style="text-align: center; padding: 2rem; color: var(--text-muted)"
-        >
-          <i
-            class="ti ti-loader"
-            style="font-size: 24px"
-            aria-hidden="true"
-          ></i>
-        </div>
-      </div>
+        <!-- ════════════════════════════════════════
+             SECTION: OVERVIEW
+        ════════════════════════════════════════ -->
+        <section id="section-overview" class="profile-section active">
+
+          <!-- Profile Hero -->
+          <div class="profile-hero">
+            <div class="avatar hero-avatar" id="avatar-initials">--</div>
+            <div class="profile-info">
+              <div class="profile-name" id="display-name">Loading...</div>
+              <div class="profile-meta">
+                <span class="meta-pill pill-lavender">
+                  <i class="ti ti-user" aria-hidden="true"></i>
+                  <span id="display-gender">—</span>
+                </span>
+                <span class="meta-pill pill-sky">
+                  <i class="ti ti-map-pin" aria-hidden="true"></i>
+                  <span id="display-city">—</span>
+                </span>
+                <span class="meta-pill pill-peach">
+                  <i class="ti ti-phone" aria-hidden="true"></i>
+                  <span id="display-phone">—</span>
+                </span>
+              </div>
+              <div class="profile-bio" id="display-bio"></div>
+            </div>
+            <button class="edit-btn" onclick="toggleEdit()">
+              <i class="ti ti-edit" aria-hidden="true"></i> Edit profile
+            </button>
+          </div>
+
+          <!-- Edit Panel -->
+          <div class="edit-panel" id="edit-panel">
+            <div class="edit-panel-title">
+              <i class="ti ti-edit" style="color: var(--green-dark)" aria-hidden="true"></i>
+              Edit your profile
+            </div>
+            <div class="msg error" id="edit-error"></div>
+            <div class="msg success" id="edit-success"></div>
+            <div class="two-col">
+              <div class="field">
+                <label for="edit-name">Full name</label>
+                <input type="text" id="edit-name" placeholder="Your name" />
+                <div class="field-error" id="edit-name-error"></div>
+              </div>
+              <div class="field">
+                <label for="edit-phone">Phone</label>
+                <input type="tel" id="edit-phone" placeholder="+91 98765 43210" />
+                <div class="field-error" id="edit-phone-error"></div>
+              </div>
+            </div>
+            <div class="two-col">
+              <div class="field">
+                <label for="edit-city">City <span class="opt-label">(optional)</span></label>
+                <select id="edit-city">
+                  <option value="">Select a city</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Indore">Indore</option>
+                  <option value="Bhopal">Bhopal</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Jabalpur">Jabalpur</option>
+                  <option value="Kolkata">Kolkata</option>
+                  <option value="Chennai">Chennai</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Goa">Goa</option>
+                  <option value="Hyderabad">Hyderabad</option>
+                  <option value="Virtual">Virtual</option>
+                </select>
+                <div class="field-error" id="edit-city-error"></div>
+              </div>
+              <div class="field">
+                <label for="edit-gender">Gender</label>
+                <select id="edit-gender">
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                  <option value="other">Other</option>
+                  <option value="prefer_not_to_say">Prefer not to say</option>
+                </select>
+                <div class="field-error" id="edit-gender-error"></div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="edit-bio">Bio <span class="opt-label">(optional)</span></label>
+              <textarea id="edit-bio" rows="2" placeholder="Coffee lover, weekend hiker..."></textarea>
+              <div class="field-error" id="edit-bio-error"></div>
+            </div>
+            <div class="form-btns">
+              <button class="btn-save" id="save-btn" onclick="saveProfile()">Save changes</button>
+              <button class="btn-cancel-form" onclick="toggleEdit()">Cancel</button>
+            </div>
+          </div>
+
+          <!-- Info Grid -->
+          <div class="info-grid">
+            <div class="card">
+              <div class="card-title">About you</div>
+              <div class="info-row">
+                <div class="info-icon" style="background: var(--green-light)">
+                  <i class="ti ti-mail" style="color: var(--green-dark)" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="info-label">Email</div>
+                  <div class="info-val" id="display-email">—</div>
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-icon" style="background: var(--sky)">
+                  <i class="ti ti-map-pin" style="color: var(--sky-dark)" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="info-label">City</div>
+                  <div class="info-val" id="display-city-2">—</div>
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-icon" style="background: var(--lavender)">
+                  <i class="ti ti-user" style="color: var(--lavender-dark)" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="info-label">Gender</div>
+                  <div class="info-val" id="display-gender-2">—</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Your stats</div>
+              <div class="info-row">
+                <div class="info-icon" style="background: var(--peach)">
+                  <i class="ti ti-calendar-event" style="color: var(--peach-dark)" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="info-label">Activities hosted</div>
+                  <div class="info-val" id="stat-hosted">—</div>
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-icon" style="background: var(--green-light)">
+                  <i class="ti ti-send" style="color: var(--green-dark)" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="info-label">Activities applied to</div>
+                  <div class="info-val" id="stat-applied">—</div>
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-icon" style="background: var(--lavender)">
+                  <i class="ti ti-star" style="color: var(--lavender-dark)" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="info-label">Member since</div>
+                  <div class="info-val" id="stat-joined">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ════════════════════════════════════════
+             SECTION: MY ACTIVITIES (Hosted)
+        ════════════════════════════════════════ -->
+        <section id="section-my-activities" class="profile-section">
+          <div class="section-header-row">
+            <div class="section-title">
+              <i class="ti ti-layout-list" style="color: var(--green-dark)"></i>
+              My Activities
+            </div>
+            <button class="btn-primary" onclick="window.location.href = 'create-activity.html'" style="display:flex;align-items:center;gap:6px;font-size:14px;padding:8px 16px">
+              <i class="ti ti-plus"></i> New Activity
+            </button>
+          </div>
+          <div id="activities-list">
+            <div style="text-align:center;padding:2rem;color:var(--text-muted)">
+              <i class="ti ti-loader" style="font-size:24px" aria-hidden="true"></i>
+            </div>
+          </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+             SECTION: MY APPLICATIONS (Requests I sent)
+        ════════════════════════════════════════ -->
+        <section id="section-my-applications" class="profile-section">
+          <div class="section-header-row">
+            <div class="section-title">
+              <i class="ti ti-send" style="color: var(--green-dark)"></i>
+              My Applications
+            </div>
+          </div>
+          <p class="section-hint">Activities you've requested to join. Cancel a pending request anytime.</p>
+          <div id="my-requests-list">
+            <div style="text-align:center;padding:2rem;color:var(--text-muted)">
+              <i class="ti ti-loader" style="font-size:24px"></i>
+            </div>
+          </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+             SECTION: MANAGE REQUESTS (Approve/Reject)
+        ════════════════════════════════════════ -->
+        <section id="section-manage-requests" class="profile-section">
+          <div class="section-header-row">
+            <div class="section-title">
+              <i class="ti ti-users" style="color: var(--green-dark)"></i>
+              Manage Join Requests
+            </div>
+          </div>
+          <p class="section-hint">Select one of your activities to review and respond to join requests.</p>
+
+          <div class="manage-layout">
+            <!-- Left: activity picker -->
+            <div class="manage-activities-panel">
+              <div class="manage-panel-title">Your Activities</div>
+              <div id="manage-activities-loading" class="panel-loading">
+                <i class="ti ti-loader"></i> Loading...
+              </div>
+              <div id="manage-activities-list"></div>
+              <div id="manage-activities-empty" class="panel-empty" style="display:none">
+                <span>🌱</span>
+                <p>No activities yet. <a href="create-activity.html">Create one!</a></p>
+              </div>
+            </div>
+
+            <!-- Right: requests panel -->
+            <div class="manage-requests-panel">
+              <div class="manage-panel-title" id="manage-requests-title">Select an activity</div>
+              <div id="manage-requests-placeholder" class="requests-placeholder">
+                <span>👈</span>
+                <p>Pick an activity to see its requests</p>
+              </div>
+              <div id="manage-requests-loading" class="panel-loading" style="display:none">
+                <i class="ti ti-loader"></i> Loading...
+              </div>
+              <div id="manage-requests-list"></div>
+              <div id="manage-requests-empty" class="panel-empty" style="display:none">
+                <span>✉️</span>
+                <p>No requests yet for this activity.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
     </div>
+
+    <div id="toast-container" class="toast-container"></div>
 
     <script type="module" src="../js/profile.js"></script>
     <script type="module">
@@ -232,10 +332,12 @@
         toggleEdit,
         saveProfile,
         logout,
+        switchSection,
       } from "../js/profile.js";
       window.toggleEdit = toggleEdit;
       window.saveProfile = saveProfile;
       window.logout = logout;
+      window.switchSection = switchSection;
       loadProfile();
     </script>
   </body>

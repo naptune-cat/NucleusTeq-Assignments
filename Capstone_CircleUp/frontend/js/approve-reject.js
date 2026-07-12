@@ -188,61 +188,40 @@ function renderRequests(requests) {
 
 // ── RENDER REQUEST CARD ──
 function renderRequestCard(req) {
-  const date = new Date(req.requested_at).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
+  const date = new Date(req.requested_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
   const statusChip = `<span class="status-chip ${req.status}">${req.status}</span>`;
-
-  const actions =
-    req.status === "pending"
-      ? `
+  const displayName = req.requester_name || `User #${req.requester_id}`;
+  const actions = req.status === "pending" ? `
     <div class="request-actions">
-      <button class="btn-approve" onclick="handleApprove(${req.id})">
-        <i class="ti ti-check"></i> Approve
-      </button>
-      <button class="btn-reject" onclick="handleReject(${req.id})">
-        <i class="ti ti-x"></i> Reject
-      </button>
-    </div>
-  `
-      : "";
-
-  const contactSection =
-    req.status === "approved"
-      ? `
+      <button class="btn-approve" onclick="handleApprove(${req.id})"><i class="ti ti-check"></i> Approve</button>
+      <button class="btn-reject" onclick="handleReject(${req.id})"><i class="ti ti-x"></i> Reject</button>
+    </div>` : "";
+  // Name is always visible; phone is only revealed after approval
+  const contactSection = req.status === "approved" ? `
     <div class="contact-reveal" id="contact-${req.id}">
       <i class="ti ti-phone"></i>
       <div>
-        <div class="contact-reveal-text">Contact info available</div>
-        <div class="contact-reveal-sub">Tap to reveal participant's details</div>
+        <div class="contact-reveal-text">${displayName} — phone hidden</div>
+        <div class="contact-reveal-sub">Tap Reveal to see their phone number</div>
       </div>
-      <button class="btn-reveal" onclick="revealContact(${req.id})">
-        Reveal
-      </button>
-    </div>
-  `
-      : "";
+      <button class="btn-reveal" onclick="revealContact(${req.id})">Reveal Phone</button>
+    </div>` : "";
 
   return `
-    <div class="request-card ${req.status}" id="request-card-${req.id}">
-      <div class="request-card-top">
-        <div class="requester-info">
-          <div class="requester-avatar">👤</div>
-          <div>
-            <div class="requester-name">User #${req.requester_id}</div>
-            <div class="requester-date">${date}</div>
-          </div>
+  <div class="request-card ${req.status}" id="request-card-${req.id}">
+    <div class="request-card-top">
+      <div class="requester-info">
+        <div class="requester-avatar">👤</div>
+        <div>
+          <div class="requester-name">${displayName}</div>
+          <div class="requester-date">Requested: ${date}</div>
         </div>
-        ${statusChip}
       </div>
-      ${actions}
-      ${contactSection}
+      ${statusChip}
     </div>
-  `;
+    ${actions}
+    ${contactSection}
+  </div>`;
 }
 
 // ── APPROVE ──
@@ -308,10 +287,10 @@ async function revealContact(requestId) {
     const el = document.getElementById(`contact-${requestId}`);
     if (el) {
       el.innerHTML = `
-        <i class="ti ti-phone"></i>
+        <i class="ti ti-phone" style="color:var(--green-dark)"></i>
         <div>
           <div class="contact-reveal-text">${contact.name}</div>
-          <div class="contact-reveal-sub">📞 ${contact.phone_number}</div>
+          <div class="contact-reveal-sub" style="color:var(--green-dark);font-weight:700">📞 ${contact.phone_number}</div>
         </div>
       `;
     }

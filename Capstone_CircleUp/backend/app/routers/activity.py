@@ -10,6 +10,7 @@ from app.services.activity_service import (
     create_activity,
     get_activity_by_id,
     get_all_activities,
+    get_my_activities,
     browse_activities,
     update_activity,
     delete_activity,
@@ -42,6 +43,14 @@ def browse(
 @router.get("", response_model=list[ActivityOut])
 def list_activities(db: Session = Depends(get_db)):
     return get_all_activities(db)
+
+
+@router.get("/mine", response_model=list[ActivityOut])
+def my_activities(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_my_activities(db, current_user)
 
 
 @router.get("/{activity_id}", response_model=ActivityOut)
