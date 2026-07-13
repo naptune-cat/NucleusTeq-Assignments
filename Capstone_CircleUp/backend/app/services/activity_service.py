@@ -129,6 +129,13 @@ def delete_activity(db: Session, activity_id: int, current_user: User) -> None:
     for req in requests:
         req.status = RequestStatus.rejected
 
+    # Reject all participation requests in DB
+    requests = db.query(ParticipationRequest).filter(
+        ParticipationRequest.activity_id == activity_id
+    ).all()
+    for req in requests:
+        req.status = RequestStatus.rejected
+
     activity.status = ActivityStatus.cancelled
     repo_delete_activity(db, activity)
     logger.info(f"Activity {activity_id} cancelled by user {current_user.id}")
