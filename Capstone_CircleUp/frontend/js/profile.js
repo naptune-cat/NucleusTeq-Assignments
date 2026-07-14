@@ -273,6 +273,19 @@ function renderActivitiesPage() {
     return;
   }
 
+  // Filter activities based on activeActivityFilter
+  const filteredActivities = myActivities.filter((a) => {
+    const rs = resolveStatus(a);
+    if (activeActivityFilter === "all") return true;
+    return rs === activeActivityFilter;
+  });
+
+  if (filteredActivities.length === 0) {
+    const filterLabel = activeActivityFilter === "all" ? "any" : activeActivityFilter;
+    container.innerHTML = `<div class="empty-state"><i class="ti ti-filter-off"></i><p>No ${filterLabel} activities found.</p></div>`;
+    return;
+  }
+
   const total = filteredActivities.length;
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
   const start = (activitiesPage - 1) * ITEMS_PER_PAGE;
