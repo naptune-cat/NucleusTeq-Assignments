@@ -87,7 +87,7 @@ pytest --cov
 The project documentation is available in the repository:
 
 
--  [Project Presentation](docs/MCP-2026_CircleUp-ZoyaKhanam.pdf)
+-  [Project Presentation](docs/MCP-2026 _CircleUp-ZoyaKhanam.pdf)
 -  [Swagger API Documentation](docs/swaggerDocs.pdf)
 -  [Database Schema](database_schema.md)
 -  [System Architecture](architecture.md)
