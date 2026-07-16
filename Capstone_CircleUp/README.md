@@ -79,5 +79,15 @@ Unit tests are included for validation rules, capacity logic, and authentication
 To run the tests with coverage, ensure your virtual environment is active and run:
 ```bash
 cd backend
-pytest --cov=app tests/
+pytest --cov
 ```
+
+##  Documentation
+
+The project documentation is available in the repository:
+
+
+-  [Project Presentation](docs/MCP-2026_CircleUp-ZoyaKhanam.pptx)
+-  [Swagger API Documentation](docs/swaggerDocs.pdf)
+-  [Database Schema](database_schema.md)
+-  [System Architecture](architecture.md)
