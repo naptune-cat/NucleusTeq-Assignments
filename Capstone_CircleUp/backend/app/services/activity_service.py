@@ -17,8 +17,7 @@ from app.repositories.activity_repository import (
     update_activity as repo_update_activity,
     delete_activity as repo_delete_activity,
 )
-from app.models.participation import ParticipationRequest
-
+ from app.models.participation import ParticipationRequest, RequestStatus
 
 def create_activity(db: Session, data: ActivityCreate, current_user: User) -> Activity:
     """Create a new activity and save it to the database."""
@@ -122,6 +121,20 @@ def delete_activity(db: Session, activity_id: int, current_user: User) -> None:
         raise PermissionDeniedError("You are not the creator of this activity")
 
     # Reject all pending participation requests before cancelling
+    requests = db.query(ParticipationRequest).filter(
+        ParticipationRequest.activity_id == activity_id
+    ).all()
+    for req in requests:
+        req.status = RequestStatus.rejected
+
+    # Reject all participation requests in DB
+    requests = db.query(ParticipationRequest).filter(
+        ParticipationRequest.activity_id == activity_id
+    ).all()
+    for req in requests:
+        req.status = RequestStatus.rejected
+
+    # Reject all participation requests in DB
     requests = db.query(ParticipationRequest).filter(
         ParticipationRequest.activity_id == activity_id
     ).all()
