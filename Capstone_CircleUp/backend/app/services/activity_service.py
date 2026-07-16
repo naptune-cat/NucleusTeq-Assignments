@@ -17,7 +17,7 @@ from app.repositories.activity_repository import (
     update_activity as repo_update_activity,
     delete_activity as repo_delete_activity,
 )
- from app.models.participation import ParticipationRequest, RequestStatus
+from app.models.participation import ParticipationRequest, RequestStatus
 
 def create_activity(db: Session, data: ActivityCreate, current_user: User) -> Activity:
     """Create a new activity and save it to the database."""

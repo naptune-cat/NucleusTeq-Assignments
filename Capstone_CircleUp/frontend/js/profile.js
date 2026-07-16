@@ -227,8 +227,7 @@ function renderProfile(user) {
   setVal("edit-name", user.name);
   setVal("edit-phone", user.phone_number || "");
   setVal("edit-city", user.city || "");
-  setVal("edit-bio", user.bio || "");
-  setVal("edit-gender", user.gender || "");
+    setVal("edit-bio", user.bio || "");
   setText("stat-joined", "Jun 2026");
 }
 
@@ -879,7 +878,6 @@ export async function saveProfile() {
   const phone = document.getElementById("edit-phone")?.value.trim();
   const city = document.getElementById("edit-city")?.value;
   const bio = document.getElementById("edit-bio")?.value.trim();
-  const gender = document.getElementById("edit-gender")?.value;
   let hasError = false;
 
   if (!name) {
@@ -916,7 +914,6 @@ export async function saveProfile() {
   if (phone) body.phone_number = phone;
   if (city) body.city = city;
   if (bio) body.bio = bio;
-  if (gender) body.gender = gender;
 
   try {
     const res = await fetch(`${API}/users/me`, {
@@ -947,7 +944,7 @@ export async function saveProfile() {
 
 // ── INIT ──────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  ["edit-name", "edit-phone", "edit-city", "edit-bio", "edit-gender"].forEach(
+  ["edit-name", "edit-phone", "edit-city", "edit-bio"].forEach(
     (id) => {
       const el = document.getElementById(id);
       if (el) {
