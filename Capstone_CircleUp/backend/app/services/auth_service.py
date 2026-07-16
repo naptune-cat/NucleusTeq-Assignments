@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import BadRequestError, NotFoundError, UnauthorizedError
+from app.core.exceptions import BadRequestError, NotFoundError, UnauthorizedError, ConflictError
 from app.core.security import hash_password, verify_password, create_access_token
 from app.core.logger import logger
 from app.models.user import User
@@ -15,7 +15,7 @@ from app.repositories.user_repository import (
 def register_user(db: Session, data: UserCreate) -> User:
     # email must be unique
     if get_user_by_email(db, data.email):
-        raise BadRequestError("Email already registered")
+        raise ConflictError("Email already registered")
 
     user = User(
         name=data.name,

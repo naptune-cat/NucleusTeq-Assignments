@@ -63,14 +63,32 @@ async function fetchActivities() {
   document.getElementById("activities-grid").innerHTML = "";
 
   try {
-    const res = await fetch(`${API}/activities/browse`, {
+    const category = document.getElementById("filter-category").value;
+    const location = document.getElementById("filter-location").value;
+    const dateFrom = document.getElementById("filter-date").value;
+    const sortBy = document.getElementById("sort-by").value;
+    const girlsOnly = document.getElementById("filter-girls-only").value;
+    const searchEl = document.getElementById("filter-search");
+    const search = searchEl ? searchEl.value.trim() : "";
+
+    const params = new URLSearchParams();
+    if (category) params.append("category", category);
+    if (location) params.append("location", location);
+    if (dateFrom) params.append("date_from", dateFrom);
+    if (sortBy) params.append("sort_by", sortBy);
+    if (girlsOnly) params.append("girls_only", girlsOnly);
+    if (search) params.append("search", search);
+
+    const res = await fetch(`${API}/activities/browse?${params.toString()}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     if (!res.ok) throw new Error("Failed to fetch");
 
     allActivities = await res.json();
-    applyFilters();
+    filteredActivities = allActivities; // already filtered by backend
+    browsePage = 1;
+    renderActivities();
   } catch (e) {
     console.error("Error fetching activities:", e);
     document.getElementById("loading").innerHTML = "Failed to load activities. Try again.";
@@ -79,67 +97,7 @@ async function fetchActivities() {
 
 // ── APPLY FILTERS ──
 function applyFilters() {
-  const category = document.getElementById("filter-category").value;
-  const location = document.getElementById("filter-location").value;
-  const dateFrom = document.getElementById("filter-date").value;
-  const sortBy = document.getElementById("sort-by").value;
-  const girlsOnly = document.getElementById("filter-girls-only").value;
-  const searchEl = document.getElementById("filter-search");
-  const search = searchEl ? searchEl.value.trim().toLowerCase() : "";
-
-  let filtered = allActivities;
-
-  // Keyword search across title and description
-  if (search) {
-    filtered = filtered.filter(a =>
-      a.title.toLowerCase().includes(search) ||
-      (a.description || "").toLowerCase().includes(search)
-    );
-  }
-
-  // Keyword search across title and description
-  if (search) {
-    filtered = filtered.filter(a =>
-      a.title.toLowerCase().includes(search) ||
-      (a.description || "").toLowerCase().includes(search)
-    );
-  }
-
-  if (category) {
-    filtered = filtered.filter(a => a.category.toLowerCase() === category.toLowerCase());
-  }
-
-  if (location) {
-    filtered = filtered.filter(a => a.location.toLowerCase().includes(location.toLowerCase()));
-  }
-
-  if (dateFrom) {
-    const parts = dateFrom.split('-');
-    const fromDate = new Date(parts[0], parts[1] - 1, parts[2]); // local midnight
-    filtered = filtered.filter(a => {
-      const actDate = new Date(a.activity_date);
-      return actDate >= fromDate;
-    });
-  }
-
-  if (girlsOnly === "female_only") {
-    filtered = filtered.filter(a => a.gender_filter === "female_only");
-  } else if (girlsOnly === "all") {
-    filtered = filtered.filter(a => a.gender_filter === "all");
-  }
-
-  if (sortBy === "popular") {
-    filtered.sort((a, b) =>
-      (b.max_participants - (b.participants_count || 0)) -
-      (a.max_participants - (a.participants_count || 0))
-    );
-  } else {
-    filtered.sort((a, b) => new Date(a.activity_date) - new Date(b.activity_date));
-  }
-
-  filteredActivities = filtered;
-  browsePage = 1;
-  renderActivities();
+  fetchActivities();
 }
 
 // ── RENDER ACTIVITIES ──
@@ -231,7 +189,7 @@ function createActivityCard(activity) {
 
   return `
     <div class="activity-card">
-      <span class="activity-badge ${badge}">${activity.gender_filter === "female_only" ? "👧 Girls only" : activity.category}</span>
+      <span class="activity-badge ${badge}">${activity.gender_filter === "female_only" ? "<i class='ti ti-gender-female'></i>Girls only" : activity.category}</span>
 
       <h3 class="activity-title">${activity.title}</h3>
       <p class="activity-desc">${activity.description}</p>
@@ -285,7 +243,7 @@ async function requestToJoin(activityId, btn) {
     myAppliedActivityIds.add(activityId);
     btn.classList.add("btn-already-applied");
     btn.innerHTML = `<i class="ti ti-check"></i> Already Applied`;
-    showToast("Request sent! Waiting for approval. 🎉", "success");
+    showToast("Request sent! Waiting for approval.", "success");
   } catch (e) {
     showToast("Could not reach the server", "error");
     btn.disabled = false;

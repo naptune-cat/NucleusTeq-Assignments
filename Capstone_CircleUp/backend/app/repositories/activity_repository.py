@@ -151,13 +151,17 @@ def get_activities_by_creator(db: Session, creator_id: int) -> list[Activity]:
     return activities
 
 
+from sqlalchemy import or_
+
 def browse_activities(
     db: Session,
     category: str | None = None,
     location: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
-    gender_filter: str | None = None,
+    search: str | None = None,
+    sort_by: str | None = None,
+    girls_only: str | None = None,
     current_user_gender: str | None = None,
 ) -> list[Activity]:
     """
@@ -165,6 +169,15 @@ def browse_activities(
     Non-female users only see activities open to everyone.
     """
     query = db.query(Activity).filter(Activity.status != ActivityStatus.cancelled)
+
+    if search:
+        search_pattern = f"%{search}%"
+        query = query.filter(
+            or_(
+                Activity.title.ilike(search_pattern),
+                Activity.description.ilike(search_pattern)
+            )
+        )
 
     if category:
         query = query.filter(Activity.category.ilike(f"%{category}%"))
@@ -175,17 +188,28 @@ def browse_activities(
     if date_to:
         query = query.filter(Activity.activity_date <= date_to)
 
+    if girls_only == "female_only":
+        query = query.filter(Activity.gender_filter == "female_only")
+    elif girls_only == "all":
+        query = query.filter(Activity.gender_filter == "all")
+
     # hide female-only activities from non-female users
     if current_user_gender != "female":
         query = query.filter(Activity.gender_filter == "all")
 
-    activities = query.order_by(Activity.activity_date).all()
+    activities = query.all()
 
     for a in activities:
         a.participants_count = db.query(ParticipationRequest).filter(
             ParticipationRequest.activity_id == a.id,
             ParticipationRequest.status == RequestStatus.approved,
         ).count()
+        
+    if sort_by == "popular":
+        activities.sort(key=lambda x: (x.max_participants - (x.participants_count or 0)))
+    else:
+        activities.sort(key=lambda x: x.activity_date)
+
     return activities
 
 

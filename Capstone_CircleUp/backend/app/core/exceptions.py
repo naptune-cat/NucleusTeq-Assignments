@@ -27,3 +27,8 @@ class BadRequestError(CircleUpError):
 class UnauthorizedError(CircleUpError):
     message = "Unauthorized"
     status_code = 401
+
+
+class ConflictError(CircleUpError):
+    message = "Conflict"
+    status_code = 409

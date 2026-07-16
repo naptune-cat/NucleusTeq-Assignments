@@ -34,10 +34,13 @@ def browse(
     location: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
+    search: str | None = None,
+    sort_by: str | None = None,
+    girls_only: str | None = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return browse_activities(db, current_user, category, location, date_from, date_to)
+    return browse_activities(db, current_user, category, location, date_from, date_to, search, sort_by, girls_only)
 
 
 @router.get("", response_model=list[ActivityOut])
