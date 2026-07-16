@@ -55,4 +55,6 @@ class ParticipationRequest(Base):
 
     @property
     def host_phone(self) -> str | None:
+        if self.status != RequestStatus.approved:
+            return None
         return self.activity.creator.phone_number if self.activity and self.activity.creator else None

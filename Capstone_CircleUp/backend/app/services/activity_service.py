@@ -63,6 +63,9 @@ def browse_activities(
     location: str | None = None,
     date_from: datetime | None = None,
     date_to: datetime | None = None,
+    search: str | None = None,
+    sort_by: str | None = None,
+    girls_only: str | None = None,
 ) -> list[Activity]:
     """Return filtered activities visible to the current user based on their gender."""
     return repo_browse_activities(
@@ -71,6 +74,9 @@ def browse_activities(
         location=location,
         date_from=date_from,
         date_to=date_to,
+        search=search,
+        sort_by=sort_by,
+        girls_only=girls_only,
         current_user_gender=current_user.gender,
     )
 
