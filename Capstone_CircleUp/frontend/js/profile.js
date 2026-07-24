@@ -227,7 +227,8 @@ function renderProfile(user) {
   setVal("edit-name", user.name);
   setVal("edit-phone", user.phone_number || "");
   setVal("edit-city", user.city || "");
-    setVal("edit-bio", user.bio || "");
+  setVal("edit-bio", user.bio || "");
+  setVal("edit-gender", user.gender || "");
   setText("stat-joined", "Jun 2026");
 }
 
@@ -256,19 +257,6 @@ function renderActivitiesPage() {
 
   if (myActivities.length === 0) {
     container.innerHTML = `<div class="empty-state"><i class="ti ti-calendar-off"></i><p>No activities yet — <a href="create-activity.html">create one!</a></p></div>`;
-    return;
-  }
-
-  // Filter activities based on activeActivityFilter
-  const filteredActivities = myActivities.filter((a) => {
-    const rs = resolveStatus(a);
-    if (activeActivityFilter === "all") return true;
-    return rs === activeActivityFilter;
-  });
-
-  if (filteredActivities.length === 0) {
-    const filterLabel = activeActivityFilter === "all" ? "any" : activeActivityFilter;
-    container.innerHTML = `<div class="empty-state"><i class="ti ti-filter-off"></i><p>No ${filterLabel} activities found.</p></div>`;
     return;
   }
 
@@ -369,7 +357,7 @@ window.cancelHostedActivity = async function (activityId) {
   if (!confirm("Are you sure you want to cancel this activity?")) {
     return;
   }
-  
+
   const token = getToken();
   if (!token) return;
 
@@ -392,7 +380,7 @@ window.cancelHostedActivity = async function (activityId) {
   }
 };
 
-// ── MY APPLICATIONS (requests I sent) 
+// ── MY APPLICATIONS (requests I sent) ─────────────────────
 async function loadMyRequests(token) {
   try {
     const res = await fetch(`${API}/participation/mine`, {
@@ -418,7 +406,6 @@ async function loadMyRequests(token) {
 export function setAppFilter(filter) {
   activeAppFilter = filter;
   applicationsPage = 1;
-  // Update tab active states
   document.querySelectorAll(".app-filter-tab").forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === filter));
   renderApplicationsPage();
 }
@@ -427,7 +414,6 @@ export function setAppFilter(filter) {
 export function setActivityFilter(filter) {
   activeActivityFilter = filter;
   activitiesPage = 1;
-  // Update tab active states for activity filter tabs
   document.querySelectorAll("#my-activities-filter-tabs .app-filter-tab").forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === filter));
   renderActivitiesPage();
 }
@@ -747,7 +733,6 @@ function renderRequestCard(req) {
       <button class="btn-reject" onclick="handleReject(${req.id})"><i class="ti ti-x"></i> Reject</button>
     </div>`
       : "";
-  // Name is always visible; phone is only revealed after approval
   const contactSection =
     req.status === "approved"
       ? `
@@ -878,6 +863,7 @@ export async function saveProfile() {
   const phone = document.getElementById("edit-phone")?.value.trim();
   const city = document.getElementById("edit-city")?.value;
   const bio = document.getElementById("edit-bio")?.value.trim();
+  const gender = document.getElementById("edit-gender")?.value;
   let hasError = false;
 
   if (!name) {
@@ -914,6 +900,7 @@ export async function saveProfile() {
   if (phone) body.phone_number = phone;
   if (city) body.city = city;
   if (bio) body.bio = bio;
+  if (gender) body.gender = gender;
 
   try {
     const res = await fetch(`${API}/users/me`, {
@@ -944,7 +931,7 @@ export async function saveProfile() {
 
 // ── INIT ──────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  ["edit-name", "edit-phone", "edit-city", "edit-bio"].forEach(
+  ["edit-name", "edit-phone", "edit-city", "edit-bio", "edit-gender"].forEach(
     (id) => {
       const el = document.getElementById(id);
       if (el) {

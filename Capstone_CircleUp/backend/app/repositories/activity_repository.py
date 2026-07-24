@@ -51,7 +51,7 @@ def get_all_activities(db: Session) -> list[Activity]:
             ParticipationRequest.activity_id == a.id,
             ParticipationRequest.status == RequestStatus.approved,
         ).count()
-
+    return activities
 
 
 def browse_activities(
