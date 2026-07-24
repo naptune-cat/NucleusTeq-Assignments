@@ -4,90 +4,176 @@ CircleUp is a platform that helps users discover and organize social activities.
 
 ## Technology Stack
 
-- **Backend**: Python, FastAPI
-- **Frontend**: HTML, CSS, JavaScript (Vanilla)
-- **Database**: PostgreSQL
-- **API Documentation**: Swagger / OpenAPI
+- **Backend:** Python, FastAPI
+- **Frontend:** HTML, CSS, JavaScript (Vanilla)
+- **Database:** PostgreSQL
+- **Containerization:** Docker & Docker Compose
+- **API Documentation:** Swagger / OpenAPI
+
+---
 
 ## Features
 
-- **User Management**: Register, Login, Profile Management. Authentication via JWT.
-- **Activity Management**: Create, View, Edit (own), Cancel (own).
-- **Activity Discovery**: Browse and filter activities by Category, Location, Date.
-- **Participation**: Request to join, Approve/Reject requests.
-- **Capacity Management**: Automatic full status, prevent over-capacity.
+- User Registration & JWT Authentication
+- User Profile Management
+- Create, Edit, and Cancel Activities
+- Browse and Filter Activities
+- Participation Requests
+- Approve/Reject Participation Requests
+- Capacity Management
+- PostgreSQL Database Integration
+- Dockerized Deployment
 
-## Setup Instructions
+---
 
-### Backend Setup
+# Running the Project with Docker (Recommended)
 
-1. **Navigate to the backend directory**:
-   ```bash
-   cd backend
-   ```
+## Prerequisites
 
-2. **Create a virtual environment**:
-   ```bash
-   python -m venv .venv
-   ```
+- Docker Desktop
+- Docker Compose
 
-3. **Activate the virtual environment**:
-   - On Windows:
-     ```bash
-     .venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```bash
-     source .venv/bin/activate
-     ```
+## Start the Application
 
-4. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+From the project root, run:
 
-5. **Database Configuration**:
-   - Ensure you have PostgreSQL installed and running.
-   - Update the `.env` file with your database credentials:
-     ```env
-     DATABASE_URL=postgresql://user:password@localhost/circleup
-     ```
+```bash
+docker compose up --build
+```
 
-6. **Run Database Migrations**:
-   ```bash
-   alembic upgrade head
-   ```
+This will:
 
-7. **Start the API Server**:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+- Build the FastAPI application image
+- Start a PostgreSQL container
+- Start the CircleUp backend
+- Create the required Docker network
+- Mount persistent database storage using Docker Volumes
 
-### Frontend Setup
+## Stop the Application
 
-1. Open the "http://localhost:8000/frontend/component/index.html" page in your browser.
+```bash
+docker compose down
+```
 
-## API Documentation
+To also remove the database volume:
 
-Once the backend server is running, the Swagger UI API documentation is available at:
-- `http://localhost:8000/docs`
+```bash
+docker compose down -v
+```
 
-## Testing
+---
 
-Unit tests are included for validation rules, capacity logic, and authentication checks.
+## Application URLs
 
-To run the tests with coverage, ensure your virtual environment is active and run:
+| Service | URL |
+|---------|-----|
+| API | http://localhost:8000 |
+| Swagger Docs | http://localhost:8000/docs |
+| ReDoc | http://localhost:8000/redoc |
+
+---
+
+# Running Without Docker
+
+## Backend Setup
+
+1. Navigate to the backend directory
+
+```bash
+cd backend
+```
+
+2. Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+3. Activate it
+
+Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+macOS/Linux
+
+```bash
+source .venv/bin/activate
+```
+
+4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+5. Configure the database
+
+Update the `.env` file:
+
+```env
+DATABASE_URL=postgresql://user:password@localhost/circleup
+```
+
+6. Run migrations
+
+```bash
+alembic upgrade head
+```
+
+7. Start the application
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+## Frontend
+
+Open:
+
+```
+http://localhost:8000/frontend/component/index.html
+```
+
+---
+
+# Testing
+
+Run tests from the backend folder:
+
 ```bash
 cd backend
 pytest --cov
 ```
 
-##  Documentation
+---
 
-The project documentation is available in the repository:
+# Project Structure
 
+```
+CircleUp/
+│
+├── backend/
+├── frontend/
+├── docs/
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
+├── architecture.md
+├── database_schema.md
+└── README.md
+```
 
--  [Project Presentation](docs/MCP-2026_CircleUp-ZoyaKhanam.pdf)
--  [Swagger API Documentation](docs/swaggerDocs.pdf)
--  [Database Schema](database_schema.md)
--  [System Architecture](architecture.md)
+---
+
+# Documentation
+
+- Project Presentation → `docs/MCP-2026_CircleUp-ZoyaKhanam.pdf`
+- Swagger API Documentation → `docs/swaggerDocs.pdf`
+- Database Schema → `database_schema.md`
+- System Architecture → `architecture.md`
+
