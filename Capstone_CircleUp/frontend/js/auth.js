@@ -1,5 +1,6 @@
 const API = "http://localhost:8000";
 
+// Validation regex patterns
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^[6-9]\d{9}$/;
 const passwordRegex =
@@ -132,22 +133,20 @@ export function initDoodles() {
 
 export function switchTab(tab) {
   ["login", "register"].forEach((t) => {
-    const panel = document.getElementById("panel-" + t);
-    const form = document.getElementById("form-" + t);
-    const tabEl = document.getElementById("tab-" + t);
+    const form = document.getElementById(`form-${t}`);
+    const tabEl = document.getElementById(`tab-${t}`);
 
-    if (panel) panel.classList.toggle("active", t === tab);
     if (form) form.classList.toggle("active", t === tab);
     if (tabEl) tabEl.classList.toggle("active", t === tab);
   });
 
-  // Clear errors when switching tabs
-  document
-    .querySelectorAll(".field-error")
-    .forEach((el) => (el.textContent = ""));
-  document
-    .querySelectorAll(".field")
-    .forEach((el) => el.classList.remove("error"));
+  document.querySelectorAll(".field-error").forEach((el) => {
+    el.textContent = "";
+  });
+
+  document.querySelectorAll(".field").forEach((el) => {
+    el.classList.remove("error");
+  });
 }
 
 export function showAuth(tab) {
@@ -210,10 +209,10 @@ export async function handleLogin(event) {
     }
 
     localStorage.setItem("token", data.access_token);
-    showToast("Logged in! Redirecting...", "success");
+    showToast("Logged in! Welcome back ", "success");
 
     setTimeout(() => {
-      window.location.href = "../component/profile.html";
+      window.location.href = "../component/browse.html";
     }, 1200);
   } catch (e) {
     showToast("Could not reach the server.", "error");
@@ -241,6 +240,9 @@ export async function handleRegister(event) {
   // Validate name
   if (!name) {
     setFieldError("reg-name", "Name is required");
+    hasError = true;
+  } else if (name.length < 2) {
+    setFieldError("reg-name", "Name must be at least 2 characters long");
     hasError = true;
   } else if (!/^[A-Za-z ]+$/.test(name)) {
     setFieldError("reg-name", "Name can only contain letters and spaces");

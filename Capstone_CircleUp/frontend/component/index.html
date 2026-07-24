@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/index.css" />
+      <script src="../js/fetch-interceptor.js"></script>
   </head>
   <body>
     <!-- NAV -->
@@ -194,10 +195,10 @@
         </div>
 
         <!-- LOGIN -->
-            <form class="panel active" id="form-login" onsubmit="handleLogin(event)">
+            <form class="panel active" id="form-login" onsubmit="handleLogin(event)" novalidate>
               <div class="auth-body">
                 <div class="field">
-                  <label for="login-email">Email</label>
+                  <label for="login-email">Email <span class="req">*</span></label>
                   <input
                     type="email"
                     id="login-email"
@@ -207,7 +208,7 @@
                   <div class="field-error" id="login-email-error"></div>
                 </div>
                 <div class="field">
-                  <label for="login-pass">Password</label>
+                  <label for="login-pass">Password <span class="req">*</span></label>
                   <input
                     type="password"
                     id="login-pass"
@@ -227,10 +228,10 @@
             </form>
 
             <!-- REGISTER -->
-            <form class="panel" id="form-register" onsubmit="handleRegister(event)">
+            <form class="panel" id="form-register" onsubmit="handleRegister(event)" novalidate>
               <div class="auth-body">
                 <div class="field">
-                  <label for="reg-name">Full name*</label>
+                  <label for="reg-name">Full name <span class="req">*</span></label>
                   <input
                     type="text"
                     id="reg-name"
@@ -242,7 +243,7 @@
                   <div class="field-error" id="reg-name-error"></div>
                 </div>
                 <div class="field">
-                  <label for="reg-email">Email*</label>
+                  <label for="reg-email">Email <span class="req">*</span></label>
                   <input
                     type="email"
                     id="reg-email"
@@ -253,7 +254,7 @@
                 </div>
                 <div class="two-col">
                   <div class="field">
-                    <label for="reg-pass">Password*</label>
+                    <label for="reg-pass">Password <span class="req">*</span></label>
                     <input
                       type="password"
                       id="reg-pass"
@@ -264,7 +265,7 @@
                     <div class="field-error" id="reg-pass-error"></div>
                   </div>
                   <div class="field">
-                    <label for="reg-phone">Phone*</label>
+                    <label for="reg-phone">Phone <span class="req">*</span></label>
                     <input
                       type="tel"
                       id="reg-phone"
@@ -278,9 +279,7 @@
                 </div>
                 <div class="two-col">
                   <div class="field">
-                    <label for="reg-city"
-                      >City* <span class="opt-label">(optional)</span></label
-                    >
+                    <label for="reg-city">City <span class="opt-label">(optional)</span></label>
                     <select id="reg-city" maxlength="50">
                       <option value="">Select a city</option>
                       <option value="Bangalore">Bangalore</option>
@@ -299,7 +298,7 @@
                     <div class="field-error" id="reg-city-error"></div>
                   </div>
                   <div class="field">
-                    <label for="reg-gender">Gender*</label>
+                    <label for="reg-gender">Gender <span class="req">*</span></label>
                     <select id="reg-gender" required>
                       <option value="">Select gender</option>
                       <option value="female">Female</option>

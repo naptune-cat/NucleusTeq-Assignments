@@ -1,0 +1,36 @@
+﻿services:
+  db:
+    image: postgres:16
+    container_name: circleup-db
+    environment:
+      POSTGRES_USER: circleup
+      POSTGRES_PASSWORD: circleup
+      POSTGRES_DB: circleup
+    ports:
+      - "5432:5432"
+    volumes:
+      - circleup_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U circleup"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: circleup-backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://circleup:circleup@db:5432/circleup
+      SECRET_KEY: 7a5529be5fa25d5350b93c8d94728761388c2d80fc15b8504da3db1f0671bf00
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  circleup_pg_data:

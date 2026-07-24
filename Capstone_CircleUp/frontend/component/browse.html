@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/browse.css" />
+    <script src="../js/fetch-interceptor.js"></script>
   </head>
   <body>
     <!-- NAV -->
@@ -36,7 +37,26 @@
 
     <!-- FILTERS -->
     <section class="filters-section">
-      <div class="filters-container">
+      <!-- Search bar -->
+      <div class="search-bar-wrap">
+        <div class="search-input-group">
+          <i class="ti ti-search search-icon"></i>
+          <input
+            type="text"
+            id="filter-search"
+            class="search-input"
+            placeholder="Search activities by name or description…"
+            oninput="applyFilters()"
+          />
+        </div>
+      </div>
+
+      <div class="filters-header-mobile">
+        <button class="btn-mobile-filter" onclick="document.getElementById('filters-container').classList.toggle('show')">
+          <i class="ti ti-filter"></i> Filters
+        </button>
+      </div>
+      <div class="filters-container" id="filters-container">
         <div class="filter-group">
           <label for="filter-category">Category</label>
           <select id="filter-category" onchange="applyFilters()">
@@ -53,13 +73,22 @@
         </div>
 
         <div class="filter-group">
-          <label for="filter-location">Location</label>
-          <input
-            type="text"
-            id="filter-location"
-            placeholder="City or area"
-            onchange="applyFilters()"
-          />
+          <label for="filter-location">City</label>
+          <select id="filter-location" onchange="applyFilters()">
+            <option value="">All cities</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Indore">Indore</option>
+            <option value="Bhopal">Bhopal</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Jabalpur">Jabalpur</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Pune">Pune</option>
+            <option value="Goa">Goa</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Virtual">Virtual</option>
+          </select>
         </div>
         <div class="filter-group">
           <label for="filter-girls-only">Activity type</label>
@@ -82,8 +111,9 @@
           </select>
         </div>
 
-        <button class="btn-reset" onclick="resetFilters()">
-          <i class="ti ti-refresh"></i> Reset
+        <!-- Distinctive small reset button -->
+        <button class="btn-reset" onclick="resetFilters()" title="Reset all filters">
+          <i class="ti ti-x"></i> Clear
         </button>
       </div>
     </section>
@@ -99,6 +129,7 @@
         <p>Try adjusting your filters or check back soon!</p>
       </div>
       <div id="activities-grid" class="activities-grid"></div>
+      <div id="browse-pagination"></div>
     </section>
 
     <footer class="footer">

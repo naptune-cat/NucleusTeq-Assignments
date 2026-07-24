@@ -1,6 +1,6 @@
-from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import BadRequestError
 from app.models.user import User
 from app.schemas.user import UserUpdate
 
@@ -16,10 +16,8 @@ def update_user_profile(db: Session, user: User, data: UserUpdate) -> User:
     update_data = data.model_dump(exclude_unset=True)
 
     if not update_data:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No fields provided to update",
-        )
+        raise BadRequestError("No fields provided to update")
+
 
     for field, value in update_data.items():
         setattr(user, field, value)

@@ -1,0 +1,7 @@
+@"
+__pycache__
+*.pyc
+.env
+.git
+venv
+"@ | Set-Content -Path .dockerignore -Encoding UTF8
