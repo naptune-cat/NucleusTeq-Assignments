@@ -1,4 +1,4 @@
-const API = "http://localhost:8000";
+const API = "";
 
 const ITEMS_PER_PAGE = 5;
 let activitiesPage = 1;
