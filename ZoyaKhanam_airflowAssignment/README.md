@@ -239,21 +239,6 @@ far better than a plain `@daily` schedule would.
 
 ---
 
-## Coding Practices Followed
-
-- **Logging, not print** — every task uses `context["ti"].log` and moves
-  through every log level from `debug` up to `critical`, especially to
-  explain why a task was skipped.
-- **Meaningful names** — task IDs and variables describe what they do,
-  for example `check_perimeter`, `zombies_detected`, `survivor_count`.
-- **No hardcoded values** — the threat engage threshold, minimum survivor
-  headcount, and base callsign are all pulled from Airflow Variables with
-  sensible defaults, rather than being baked directly into the code.
-- **PEP8 compliant** — verified with `flake8` at a 100 character line
-  limit.
-
----
-
 ## Triggering the DAG via the REST API
 
 This is a **mandatory** deliverable. The DAG must be triggered through the
